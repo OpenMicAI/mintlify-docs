@@ -7,9 +7,9 @@
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#311432",
+    "light": "#A45EE5",
+    "dark": "#A45EE5",
     "anchors": {
       "from": "#0D9373",
       "to": "#07C983"
@@ -58,28 +58,26 @@
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Phone Numbers",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "api-reference/phone-numbers/get-number",
+        "api-reference/phone-numbers/list-numbers"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "Bots",
       "pages": [
-        "api-reference/introduction"
+        "api-reference/bots/create-bot",
+        "api-reference/bots/list-bots",
+        "api-reference/bots/get-bot"
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "phone-numbers",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "api-reference/phone-numbers/get-number",
+        "api-reference/phone-numbers/list-numbers"
+        
       ]
     }
   ],
