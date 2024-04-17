@@ -1,0 +1,482 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenMic API",
+    "description": "Public APIs for managing interactions, phone numbers, and bots.",
+    "version": "1.0.0"
+  },
+  "tags": [
+    { "name": "Bots" },
+    { "name": "Interactions" },
+    { "name": "Phone Numbers" }
+  ],
+  "paths": {
+    "/api/public/interactions": {
+      "post": {
+        "summary": "Create Interaction",
+        "description": "Endpoint to create a new interaction between a bot and a phone number.",
+        "tags": ["Interactions"],
+        "parameters": [
+          {
+            "name": "x-openmic-public-key",
+            "in": "header",
+            "description": "API key for authentication.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing details of the interaction.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InteractionRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Interaction created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmptyResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, invalid input",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized, JWT token is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        },
+        "security": [{ "apikey-header-x-openmic-public-key": [] }]
+      },
+      "get": {
+        "summary": "List Interactions",
+        "description": "Retrieves all interactions associated with the authenticated user.",
+        "tags": ["Interactions"],
+        "parameters": [
+          {
+            "name": "x-openmic-public-key",
+            "in": "header",
+            "description": "API key for authentication.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Interactions found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InteractionListResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized, JWT token is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        },
+        "security": [{ "apikey-header-x-openmic-public-key": [] }]
+      }
+    },
+    "/api/public/phoneNumbers": {
+      "get": {
+        "summary": "List Numbers",
+        "description": "Retrieves all phone numbers associated with the authenticated user.",
+        "tags": ["Phone Numbers"],
+        "parameters": [
+          {
+            "name": "x-openmic-public-key",
+            "in": "header",
+            "description": "API key for authentication.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phone numbers found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PhoneNumberListResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized, JWT token is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        },
+        "security": [{ "apikey-header-x-openmic-public-key": [] }]
+      }
+    },
+    "/api/public/phoneNumbers/{phoneNumberId}": {
+      "get": {
+        "summary": "Get Number",
+        "description": "Retrieves details of a specific phone number identified by its ID.",
+        "tags": ["Phone Numbers"],
+        "parameters": [
+          {
+            "name": "phoneNumberId",
+            "in": "path",
+            "description": "The ID of the phone number to retrieve",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "x-openmic-public-key",
+            "in": "header",
+            "description": "API key for authentication.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phone number found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PhoneNumberResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized, JWT token is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Phone number not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        },
+        "security": [{ "apikey-header-x-openmic-public-key": [] }]
+      }
+    },
+    "/api/public/bots": {
+      "post": {
+        "summary": "Create Bot",
+        "description": "Endpoint to create a new bot.",
+        "tags": ["Bots"],
+        "parameters": [
+          {
+            "name": "x-openmic-public-key",
+            "in": "header",
+            "description": "API key for authentication.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body containing details of the bot to be created.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BotRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BotResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "apikey-header-x-openmic-public-key": [] }]
+      },
+      "get": {
+        "summary": "List Bots",
+        "description": "Retrieves all bots associated with the authenticated user.",
+        "tags": ["Bots"],
+        "parameters": [
+          {
+            "name": "x-openmic-public-key",
+            "in": "header",
+            "description": "API key for authentication.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BotListResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "apikey-header-x-openmic-public-key": [] }]
+      }
+    },
+    "/api/public/interactions/{interactionId}": {
+      "get": {
+        "summary": "Get Interaction",
+        "description": "Retrieves details of a specific interaction identified by its ID.",
+        "tags": ["Interactions"],
+        "parameters": [
+          {
+            "name": "interactionId",
+            "in": "path",
+            "description": "The ID of the interaction to retrieve",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "x-openmic-public-key",
+            "in": "header",
+            "description": "API key for authentication.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Interaction found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InteractionResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized, JWT token is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Interaction not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        },
+        "security": [{ "apikey-header-x-openmic-public-key": [] }]
+      }
+    },
+    "/api/public/bots/{id}": {
+      "get": {
+        "summary": "Get Bot",
+        "description": "Retrieves details of a specific bot identified by its ID.",
+        "tags": ["Bots"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the bot to retrieve",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "x-openmic-public-key",
+            "in": "header",
+            "description": "API key for authentication.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bot found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/BotResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized, JWT token is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Bot not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        },
+        "security": [{ "apikey-header-x-openmic-public-key": [] }]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InteractionRequest": {
+        "type": "object",
+        "properties": {
+          "fromPhoneNumberId": { "type": "integer", "description": "The ID of the phone number initiating the interaction." },
+          "toPhoneNumber": { "type": "string", "description": "The phone number receiving the interaction." },
+          "botId": { "type": "integer", "description": "The ID of the bot involved in the interaction." }
+        },
+        "required": ["fromPhoneNumberId", "toPhoneNumber", "botId"]
+      },
+      "InteractionResponse": {
+        "type": "object",
+        "properties": {
+          "interactionId": { "type": "integer", "description": "The ID of the interaction." },
+          "fromPhoneNumberId": { "type": "integer", "description": "The ID of the phone number initiating the interaction." },
+          "toPhoneNumber": { "type": "string", "description": "The phone number receiving the interaction." },
+          "botId": { "type": "integer", "description": "The ID of the bot involved in the interaction." },
+          "timestamp": { "type": "string", "format": "date-time", "description": "The timestamp when the interaction occurred." }
+        }
+      },
+      "InteractionListResponse": {
+        "type": "array",
+        "items": { "$ref": "#/components/schemas/InteractionResponse" }
+      },
+      "PhoneNumberResponse": {
+        "type": "object",
+        "properties": {
+          "phoneNumberId": { "type": "integer", "description": "The ID of the phone number." },
+          "phoneNumber": { "type": "string", "description": "The phone number." },
+          "ownerId": { "type": "integer", "description": "The ID of the user who owns the phone number." }
+        }
+      },
+      "PhoneNumberListResponse": {
+        "type": "array",
+        "items": { "$ref": "#/components/schemas/PhoneNumberResponse" }
+      },
+      "BotRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "webhookUrl": { "type": "string" },
+          "forwardingNumber": { "type": "string" },
+          "script": { "type": "string" },
+          "prompt": { "type": "string" }
+        },
+        "required": ["name", "webhookUrl", "forwardingNumber", "script", "prompt"]
+      },
+      "BotResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "ID" },
+          "name": { "type": "string", "description": "name" },
+          "webhookUrl": { "type": "string" },
+          "forwardingUrl": { "type": "string" },
+          "script": { "type": "string" },
+          "prompt": { "type": "string" }
+        },
+        "required": ["id", "name", "webhookUrl", "script", "prompt", "forwardingUrl"]
+      },
+      "BotListResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string", "description": "ID" },
+            "name": { "type": "string", "description": "name" }
+          },
+          "required": ["id", "name"]
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" }
+        }
+      },
+      "EmptyResponse": {}
+    },
+    "securitySchemes": {
+      "apikey-header-x-openmic-public-key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-openmic-public-key"
+      }
+    }
+  },
+  "servers": [{ "url": "https://api.openmic.ai", "description": "Production Environment" }]
+}

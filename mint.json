@@ -57,6 +57,16 @@
         "development"
       ]
     },
+
+    {
+      "group": "Bots",
+      "pages": [
+        "api-reference/bots/create-bot",
+        "api-reference/bots/get-bot",
+        "api-reference/bots/list-bots"
+      ]
+
+    },
     {
       "group": "Phone Numbers",
       "pages": [
@@ -64,19 +74,13 @@
         "api-reference/phone-numbers/list-numbers"
       ]
     },
+   
     {
-      "group": "Bots",
+      "group": "Interactions",
       "pages": [
-        "api-reference/bots/create-bot",
-        "api-reference/bots/list-bots",
-        "api-reference/bots/get-bot"
-      ]
-    },
-    {
-      "group": "phone-numbers",
-      "pages": [
-        "api-reference/phone-numbers/get-number",
-        "api-reference/phone-numbers/list-numbers"
+        "api-reference/interactions/create-interaction",
+        "api-reference/interactions/get-interaction",
+        "api-reference/interactions/list-interactions"
         
       ]
     }
