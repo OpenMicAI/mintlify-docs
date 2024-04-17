@@ -7,23 +7,23 @@
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#311432",
+    "primary": "#C0C0C0",
     "light": "#A45EE5",
     "dark": "#A45EE5",
     "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
+      "from": "#C0C0C0",
+      "to": "#C0C0C0"
     }
   },
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "url": "mailto:founders@openmic.ai"
     }
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "url": "https://openmic-e0fa83.webflow.io"
   },
   "tabs": [
     {
@@ -35,17 +35,17 @@
     {
       "name": "Documentation",
       "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
+      "url": "https://docs.openmic.ai"
     },
     {
       "name": "Community",
-      "icon": "slack",
+      "icon": "Discord",
       "url": "https://mintlify.com/community"
     },
     {
       "name": "Blog",
       "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "url": "https://openmic-e0fa83.webflow.io/blog"
     }
   ],
   "navigation": [
@@ -86,8 +86,8 @@
     }
   ],
   "footerSocials": {
-    "twitter": "https://twitter.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "twitter": "https://twitter.com/openmic",
+    "github": "https://github.com/OpenMic",
+    "linkedin": "https://www.linkedin.com/showcase/openmicai/"
   }
 }
