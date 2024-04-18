@@ -8,11 +8,11 @@
   "favicon": "/favicon.svg",
   "colors": {
     "primary": "#C0C0C0",
-    "light": "#A45EE5",
-    "dark": "#A45EE5",
+    "light": "#9900cc",
+    "dark": "#9900cc",
     "anchors": {
-      "from": "#C0C0C0",
-      "to": "#C0C0C0"
+      "from": "#9900cc",
+      "to": "#9900cc"
     }
   },
   "topbarLinks": [
@@ -23,7 +23,7 @@
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://openmic-e0fa83.webflow.io"
+    "url": "https://chat.openmic.ai/login"
   },
   "tabs": [
     {
@@ -40,47 +40,48 @@
     {
       "name": "Community",
       "icon": "Slack",
-      "url": "https://mintlify.com/community"
+      "url": "https://join.slack.com/t/openmicai/shared_invite/zt-2ha8kt9pt-jaElinNxF4VgN5gyCC6spg"
     },
     {
       "name": "Blog",
       "icon": "newspaper",
-      "url": "https://openmic-e0fa83.webflow.io/blog"
+      "url": "https://openmic.ai/blog"
     }
   ],
   "navigation": [
     {
       "group": "Get Started",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "introduction"
       ]
     },
 
     {
       "group": "Bots",
       "pages": [
+        "api-reference/bots/list-bots",
         "api-reference/bots/create-bot",
-        "api-reference/bots/get-bot",
-        "api-reference/bots/list-bots"
+        "api-reference/bots/get-bot"
+       
       ]
 
     },
     {
       "group": "Phone Numbers",
       "pages": [
-        "api-reference/phone-numbers/get-number",
-        "api-reference/phone-numbers/list-numbers"
+        "api-reference/phone-numbers/list-numbers",
+        "api-reference/phone-numbers/get-number"
+       
       ]
     },
    
     {
       "group": "Interactions",
       "pages": [
+        "api-reference/interactions/list-interactions",
         "api-reference/interactions/create-interaction",
-        "api-reference/interactions/get-interaction",
-        "api-reference/interactions/list-interactions"
+        "api-reference/interactions/get-interaction"
+        
         
       ]
     }
