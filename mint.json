@@ -1,94 +1,95 @@
 {
-  "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
-  "logo": {
-    "dark": "/images/openmic-logo.svg",
-    "light": "/images/openmic-logo.svg"
-  },
-  "favicon": "/favicon.svg",
-  "colors": {
-    "primary": "#C0C0C0",
-    "light": "#9900cc",
-    "dark": "#9900cc",
-    "anchors": {
-      "from": "#9900cc",
-      "to": "#9900cc"
-    }
-  },
-  "topbarLinks": [
-    {
-      "name": "Support",
-      "url": "mailto:founders@openmic.ai"
-    }
-  ],
-  "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://chat.openmic.ai/login"
-  },
-  "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
-  ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://docs.openmic.ai"
-    },
-    {
-      "name": "Community",
-      "icon": "Slack",
-      "url": "https://join.slack.com/t/openmicai/shared_invite/zt-2ha8kt9pt-jaElinNxF4VgN5gyCC6spg"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://openmic.ai/blog"
-    }
-  ],
-  "navigation": [
-    {
-      "group": "Get Started",
-      "pages": [
-        "introduction"
-      ]
-    },
+	"$schema": "https://mintlify.com/schema.json",
+	"name": "Starter Kit",
+	"openapi": "OpenMic.json",
+	"logo": {
+		"dark": "/images/openmic-logo.svg",
+		"light": "/images/openmic-logo.svg"
+	},
+	"favicon": "/favicon.svg",
+	"colors": {
+		"primary": "#C0C0C0",
+		"light": "#9900cc",
+		"dark": "#9900cc",
+		"anchors": {
+			"from": "#9900cc",
+			"to": "#9900cc"
+		}
+	},
 
-    {
-      "group": "Bots",
-      "pages": [
-        "api-reference/bots/list-bots",
-        "api-reference/bots/create-bot",
-        "api-reference/bots/get-bot"
-       
-      ]
+	"contextual": {
+		"options": ["copy", "view", "chatgpt", "claude"]
+	},
 
-    },
-    {
-      "group": "Phone Numbers",
-      "pages": [
-        "api-reference/phone-numbers/list-numbers",
-        "api-reference/phone-numbers/get-number"
-       
-      ]
-    },
-   
-    {
-      "group": "Interactions",
-      "pages": [
-        "api-reference/interactions/list-interactions",
-        "api-reference/interactions/create-interaction",
-        "api-reference/interactions/get-interaction"
-        
-        
-      ]
-    }
-  ],
-  "footerSocials": {
-    "twitter": "https://twitter.com/openmic",
-    "github": "https://github.com/OpenMic",
-    "linkedin": "https://www.linkedin.com/showcase/openmicai/"
-  }
+	"topbarLinks": [
+		{
+			"name": "Support",
+			"url": "mailto:founders@openmic.ai"
+		}
+	],
+	"topbarCtaButton": {
+		"name": "Dashboard",
+		"url": "https://chat.openmic.ai/login"
+	},
+	"tabs": [
+		{
+			"name": "API Reference",
+			"url": "api-reference"
+		}
+	],
+	"anchors": [
+		{
+			"name": "Documentation",
+			"icon": "book-open-cover",
+			"url": "https://docs.openmic.ai"
+		},
+		{
+			"name": "Community",
+			"icon": "Slack",
+			"url": "https://join.slack.com/t/openmicai/shared_invite/zt-2ha8kt9pt-jaElinNxF4VgN5gyCC6spg"
+		},
+		{
+			"name": "Blog",
+			"icon": "newspaper",
+			"url": "https://openmic.ai/blog"
+		}
+	],
+	"navigation": [
+		{
+			"group": "Get Started",
+			"pages": ["introduction"]
+		},
+		{
+			"group": "Calls",
+			"pages": [
+				"api-reference/calls/create-call",
+				"api-reference/calls/list-calls",
+				"api-reference/calls/get-call"
+			]
+		},
+		{
+			"group": "Bots",
+			"pages": [
+				"api-reference/bots/list-bots",
+				"api-reference/bots/create-bot",
+				"api-reference/bots/get-bot",
+				"api-reference/bots/update-bot",
+				"api-reference/bots/delete-bot"
+			]
+		},
+		{
+			"group": "Phone Numbers",
+			"pages": [
+				"api-reference/phone-numbers/list-numbers",
+				"api-reference/phone-numbers/get-number",
+				"api-reference/phone-numbers/link-bot",
+				"api-reference/phone-numbers/unlink-bot"
+			]
+		}
+	],
+	"footerSocials": {
+		"twitter": "https://twitter.com/openmic",
+		"github": "https://github.com/OpenMic",
+		"linkedin": "https://www.linkedin.com/showcase/openmicai/"
+	}
 }
