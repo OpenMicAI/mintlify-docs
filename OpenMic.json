@@ -1535,19 +1535,23 @@
 					"from_number": {
 						"type": "string",
 						"pattern": "^\\+[1-9]\\d{1,14}$",
-						"description": "Originating phone number in E.164 format"
+						"example": "+1234567890",
+						"description": "The number you own in E.164 format. Must be a number purchased from OpenMic."
 					},
 					"to_number": {
 						"type": "string",
 						"pattern": "^\\+[1-9]\\d{1,14}$",
-						"description": "Destination phone number in E.164 format"
+						"example": "+0987654321",
+						"description": "The number you want to call in E.164 format."
 					},
 					"override_agent_id": {
 						"type": "string",
-						"description": "Bot UID to override default agent"
+						"example": "bvrg8wzi487w02m2bc7dh0ev",
+						"description": "The bot UID to override the default agent."
 					},
 					"customer_id": {
 						"type": "string",
+						"example": "customer_001",
 						"description": "Customer identifier for tracking"
 					}
 				},
