@@ -481,7 +481,7 @@
 							"example": {
 								"from_number": "+1234567890",
 								"to_number": "+0987654321",
-								"override_agent_id": "bot_12345678-abcd-efgh-ijkl-123456789012",
+								"override_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
 								"customer_id": "customer_001"
 							}
 						}
@@ -494,6 +494,16 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/CallResponse"
+								},
+								"example": {
+									"call_type": "phonecall",
+									"from_number": "+1234567890",
+									"to_number": "+0987654321",
+									"direction": "outbound",
+									"call_id": "cmbbvrg8wzi487w02m2bc7dji",
+									"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+									"call_status": "registered",
+									"customer_id": "customer_001"
 								}
 							}
 						}
@@ -504,6 +514,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Invalid request format, please check API reference."
 								}
 							}
 						}
@@ -514,6 +527,10 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Unauthorized",
+									"message": "Invalid or expired API key"
 								}
 							}
 						}
@@ -524,6 +541,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Bot with the specified override_agent_id was not found."
 								}
 							}
 						}
@@ -534,6 +554,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "An unexpected error occurred. Please try again later."
 								}
 							}
 						}
@@ -563,6 +586,20 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/CallResponse"
+								},
+								"example": {
+									"call_type": "phonecall",
+									"from_number": "+1234567890",
+									"to_number": "+0987654321",
+									"direction": "outbound",
+									"call_id": "cmbbvrg8wzi487w02m2bc7dji",
+									"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+									"call_status": "ended",
+									"customer_id": "customer_001",
+									"start_timestamp": 1678886400,
+									"end_timestamp": 1678886700,
+									"duration_ms": 300000,
+									"recording_url": "https://recordings.openmic.ai/call_98765.mp3"
 								}
 							}
 						}
@@ -573,6 +610,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Missing organization information in request."
 								}
 							}
 						}
@@ -583,6 +623,10 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Unauthorized",
+									"message": "Invalid or expired API key"
 								}
 							}
 						}
@@ -593,6 +637,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Call with the specified ID was not found."
 								}
 							}
 						}
@@ -603,6 +650,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "An unexpected error occurred. Please try again later."
 								}
 							}
 						}
@@ -695,6 +745,26 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ListCallsResponse"
+								},
+								"example": {
+									"calls": [
+										{
+											"call_type": "phonecall",
+											"from_number": "+1234567890",
+											"to_number": "+0987654321",
+											"direction": "outbound",
+											"call_id": "cmbbvrg8wzi487w02m2bc7dji",
+											"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+											"call_status": "ended",
+											"customer_id": "customer_001"
+										}
+									],
+									"pagination": {
+										"limit": 1,
+										"offset": 0,
+										"total": 1,
+										"has_more": false
+									}
 								}
 							}
 						}
@@ -705,6 +775,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Invalid query parameters provided."
 								}
 							}
 						}
@@ -715,6 +788,10 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Unauthorized",
+									"message": "Invalid or expired API key"
 								}
 							}
 						}
@@ -725,6 +802,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "An unexpected error occurred. Please try again later."
 								}
 							}
 						}
@@ -775,6 +855,25 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/ListPhoneNumbersResponse"
+								},
+								"example": {
+									"phone_numbers": [
+										{
+											"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+											"phone_number": "+15551112222",
+											"name": "Main Support Line",
+											"inbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+											"outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+											"created_at": "2023-01-01T12:00:00Z",
+											"updated_at": "2023-01-02T15:30:00Z"
+										}
+									],
+									"pagination": {
+										"limit": 1,
+										"offset": 0,
+										"total": 1,
+										"has_more": false
+									}
 								}
 							}
 						}
@@ -785,6 +884,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Invalid query parameters provided."
 								}
 							}
 						}
@@ -795,6 +897,10 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Unauthorized",
+									"message": "Invalid or expired API key"
 								}
 							}
 						}
@@ -805,6 +911,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "An unexpected error occurred. Please try again later."
 								}
 							}
 						}
@@ -834,6 +943,15 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/PhoneNumberResponse"
+								},
+								"example": {
+									"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+									"phone_number": "+15551112222",
+									"name": "Main Support Line",
+									"inbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+									"outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+									"created_at": "2023-01-01T12:00:00Z",
+									"updated_at": "2023-01-02T15:30:00Z"
 								}
 							}
 						}
@@ -844,6 +962,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Missing organization information in request."
 								}
 							}
 						}
@@ -854,6 +975,10 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Unauthorized",
+									"message": "Invalid or expired API key"
 								}
 							}
 						}
@@ -864,6 +989,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Phone number with the specified UID was not found."
 								}
 							}
 						}
@@ -874,6 +1002,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "An unexpected error occurred. Please try again later."
 								}
 							}
 						}
@@ -894,6 +1025,11 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/LinkBotToPhoneNumberRequest"
+							},
+							"example": {
+								"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+								"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+								"direction": "both"
 							}
 						}
 					}
@@ -905,6 +1041,13 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/LinkBotToPhoneNumberResponse"
+								},
+								"example": {
+									"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+									"phone_number": "+15551112222",
+									"inbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+									"outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+									"message": "Bot linked successfully for inbound and outbound calls."
 								}
 							}
 						}
@@ -915,6 +1058,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Invalid direction specified. Must be one of 'inbound', 'outbound', 'both'."
 								}
 							}
 						}
@@ -925,6 +1071,10 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Unauthorized",
+									"message": "Invalid or expired API key"
 								}
 							}
 						}
@@ -935,6 +1085,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "The specified phone number or bot was not found."
 								}
 							}
 						}
@@ -945,6 +1098,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "An unexpected error occurred. Please try again later."
 								}
 							}
 						}
@@ -977,6 +1133,10 @@
 									}
 								},
 								"required": ["phone_number_id", "direction"]
+							},
+							"example": {
+								"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+								"direction": "inbound"
 							}
 						}
 					}
@@ -988,6 +1148,13 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/LinkBotToPhoneNumberResponse"
+								},
+								"example": {
+									"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+									"phone_number": "+15551112222",
+									"inbound_agent_id": null,
+									"outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+									"message": "Bot unlinked successfully for inbound calls."
 								}
 							}
 						}
@@ -998,6 +1165,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Invalid request body."
 								}
 							}
 						}
@@ -1008,6 +1178,10 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Unauthorized",
+									"message": "Invalid or expired API key"
 								}
 							}
 						}
@@ -1018,6 +1192,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "Phone number with the specified UID was not found."
 								}
 							}
 						}
@@ -1028,6 +1205,9 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/Error"
+								},
+								"example": {
+									"error": "An unexpected error occurred. Please try again later."
 								}
 							}
 						}
