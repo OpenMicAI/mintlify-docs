@@ -16,6 +16,11 @@
 	"contextual": {
 		"options": ["copy", "view", "claude"]
 	},
+	"integrations": {
+		"mixpanel": {
+			"projectToken": "6ccb514cfdb55d58633aa1ced0b19bcf"
+		}
+	},
 	"navigation": {
 		"tabs": [
 			{
