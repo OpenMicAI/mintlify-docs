@@ -596,10 +596,47 @@
 									"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
 									"call_status": "ended",
 									"customer_id": "customer_001",
-									"start_timestamp": 1678886400,
-									"end_timestamp": 1678886700,
+									"start_timestamp": 1678886400000,
+									"end_timestamp": 1678886700000,
 									"duration_ms": 300000,
-									"recording_url": "https://recordings.openmic.ai/call_98765.mp3"
+									"transcript": [
+										[
+											"assistant",
+											"Hello! How can I help you today?"
+										],
+										[
+											"user",
+											"I'd like to schedule an appointment."
+										],
+										[
+											"assistant",
+											"I'd be happy to help you schedule an appointment. What type of service are you looking for?"
+										]
+									],
+									"recording_url": "https://recordings.openmic.ai/call_98765.mp3",
+									"latency": {
+										"e2e_min_latency": 0.5,
+										"e2e_median_latency": 1.2,
+										"e2e_p90_latency": 2.1,
+										"llm_min_latency": 0.3,
+										"llm_median_latency": 0.8,
+										"llm_p90_latency": 1.5,
+										"tts_min_latency": 0.2,
+										"tts_median_latency": 0.4,
+										"tts_p90_latency": 0.6
+									},
+									"call_analysis": {
+										"summary": "Customer called to schedule an appointment and was successfully assisted.",
+										"is_successful": true,
+										"success_evaluation": "excellent",
+										"extracted_data": null
+									},
+									"call_cost": {
+										"total_cost": 0.0822,
+										"llm_cost": 0.0052548,
+										"tts_cost": 0.0242269,
+										"stt_cost": 0.0527183
+									}
 								}
 							}
 						}
@@ -756,7 +793,44 @@
 											"call_id": "cmbbvrg8wzi487w02m2bc7dji",
 											"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
 											"call_status": "ended",
-											"customer_id": "customer_001"
+											"customer_id": "customer_001",
+											"start_timestamp": 1678886400000,
+											"end_timestamp": 1678886700000,
+											"duration_ms": 300000,
+											"transcript": [
+												[
+													"assistant",
+													"Hello! How can I help you today?"
+												],
+												[
+													"user",
+													"I'd like to schedule an appointment."
+												]
+											],
+											"recording_url": "https://recordings.openmic.ai/call_98765.mp3",
+											"latency": {
+												"e2e_min_latency": 0.5,
+												"e2e_median_latency": 1.2,
+												"e2e_p90_latency": 2.1,
+												"llm_min_latency": 0.3,
+												"llm_median_latency": 0.8,
+												"llm_p90_latency": 1.5,
+												"tts_min_latency": 0.2,
+												"tts_median_latency": 0.4,
+												"tts_p90_latency": 0.6
+											},
+											"call_analysis": {
+												"summary": "Customer called to schedule an appointment and was successfully assisted.",
+												"is_successful": true,
+												"success_evaluation": "excellent",
+												"extracted_data": null
+											},
+											"call_cost": {
+												"total_cost": 0.0822,
+												"llm_cost": 0.0052548,
+												"tts_cost": 0.0242269,
+												"stt_cost": 0.0527183
+											}
 										}
 									],
 									"pagination": {
@@ -1601,11 +1675,11 @@
 					},
 					"start_timestamp": {
 						"type": "integer",
-						"description": "Call start time (Unix timestamp)"
+						"description": "Call start time (Unix timestamp in milliseconds)"
 					},
 					"end_timestamp": {
 						"type": "integer",
-						"description": "Call end time (Unix timestamp)"
+						"description": "Call end time (Unix timestamp in milliseconds)"
 					},
 					"duration_ms": {
 						"type": "integer",
@@ -1614,9 +1688,15 @@
 					"transcript": {
 						"type": "array",
 						"items": {
-							"type": "object"
+							"type": "array",
+							"items": {
+								"type": "string"
+							},
+							"minItems": 2,
+							"maxItems": 2,
+							"description": "Transcript entry with [speaker, message] format"
 						},
-						"description": "Call transcript"
+						"description": "Call transcript as array of [speaker, message] pairs"
 					},
 					"recording_url": {
 						"type": "string",
@@ -1624,15 +1704,89 @@
 					},
 					"latency": {
 						"type": "object",
-						"description": "Latency metrics"
+						"properties": {
+							"e2e_min_latency": {
+								"type": "number",
+								"description": "Minimum end-to-end latency in seconds"
+							},
+							"e2e_median_latency": {
+								"type": "number",
+								"description": "Median end-to-end latency in seconds"
+							},
+							"e2e_p90_latency": {
+								"type": "number",
+								"description": "90th percentile end-to-end latency in seconds"
+							},
+							"llm_min_latency": {
+								"type": "number",
+								"description": "Minimum LLM processing latency in seconds"
+							},
+							"llm_median_latency": {
+								"type": "number",
+								"description": "Median LLM processing latency in seconds"
+							},
+							"llm_p90_latency": {
+								"type": "number",
+								"description": "90th percentile LLM processing latency in seconds"
+							},
+							"tts_min_latency": {
+								"type": "number",
+								"description": "Minimum text-to-speech latency in seconds"
+							},
+							"tts_median_latency": {
+								"type": "number",
+								"description": "Median text-to-speech latency in seconds"
+							},
+							"tts_p90_latency": {
+								"type": "number",
+								"description": "90th percentile text-to-speech latency in seconds"
+							}
+						},
+						"description": "Latency metrics for different components"
 					},
 					"call_analysis": {
 						"type": "object",
-						"description": "Post-call analysis data"
+						"properties": {
+							"summary": {
+								"type": "string",
+								"description": "AI-generated summary of the call"
+							},
+							"is_successful": {
+								"type": "boolean",
+								"description": "Whether the call was deemed successful"
+							},
+							"success_evaluation": {
+								"type": "string",
+								"description": "Success evaluation result (e.g., 'good', 'excellent', 'poor')"
+							},
+							"extracted_data": {
+								"nullable": true,
+								"description": "Structured data extracted from the call based on post-call settings"
+							}
+						},
+						"description": "Post-call analysis results including summary and success metrics"
 					},
 					"call_cost": {
 						"type": "object",
-						"description": "Call cost information"
+						"properties": {
+							"total_cost": {
+								"type": "number",
+								"description": "Total cost of the call in USD"
+							},
+							"llm_cost": {
+								"type": "number",
+								"description": "Cost attributed to LLM usage in USD"
+							},
+							"tts_cost": {
+								"type": "number",
+								"description": "Cost attributed to text-to-speech in USD"
+							},
+							"stt_cost": {
+								"type": "number",
+								"description": "Cost attributed to speech-to-text in USD"
+							}
+						},
+						"description": "Detailed cost breakdown for the call"
 					}
 				},
 				"required": [
