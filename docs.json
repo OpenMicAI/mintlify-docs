@@ -14,7 +14,7 @@
 		"dark": "#5B21B6"
 	},
 	"contextual": {
-		"options": ["copy", "view", "claude"]
+		"options": ["copy", "view", "chatgpt", "claude", "perplexity"]
 	},
 	"integrations": {
 		"mixpanel": {
@@ -63,6 +63,10 @@
 						]
 					}
 				]
+			},
+			{
+				"tab": "Changelog",
+				"pages": ["changelog"]
 			}
 		],
 		"global": {
