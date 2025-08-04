@@ -641,6 +641,9 @@
 										"llm_cost": 0.0052548,
 										"tts_cost": 0.0242269,
 										"stt_cost": 0.0527183
+									},
+									"dynamic_variables": {
+										"name": "John"
 									}
 								}
 							}
@@ -835,6 +838,9 @@
 												"llm_cost": 0.0052548,
 												"tts_cost": 0.0242269,
 												"stt_cost": 0.0527183
+											},
+											"dynamic_variables": {
+												"name": "John"
 											}
 										}
 									],
