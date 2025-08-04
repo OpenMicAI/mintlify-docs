@@ -1,0 +1,286 @@
+---
+title: Pre-Call Webhooks
+subtitle: Dynamically configure call behavior and inject real-time data before calls begin
+---
+
+<Info>
+	**Dynamic Call Configuration**: Pre-call webhooks allow you to fetch
+	customer data, account information, and contextual details in real-time
+	before each call starts.
+</Info>
+
+## Overview
+
+Pre-call webhooks enable bidirectional communication between Openmic and your systems. When a call is about to begin, Openmic sends call details to your webhook endpoint, and your system responds with dynamic variables that customize the call experience.
+
+<CardGroup cols={2}>
+	<Card title="Real-time Data Injection" icon="database" iconType="solid">
+		Fetch customer details, account status, and contextual information from
+		your systems before the call starts
+	</Card>
+
+	<Card title="Personalized Conversations" icon="user-check" iconType="solid">
+		Use dynamic variables to personalize agent responses and call flows
+		based on caller information
+	</Card>
+</CardGroup>
+
+---
+
+## When Pre-call Webhooks Trigger
+
+Pre-call webhooks respect the `webhook_direction` configuration setting:
+
+<CardGroup cols={3}>
+	<Card title="Both" icon="arrows-up-down" iconType="solid">
+		Triggered for all inbound and outbound calls
+	</Card>
+
+	<Card title="Inbound" icon="phone" iconType="solid">
+		Only triggered for incoming calls to your agents
+	</Card>
+
+	<Card title="Outbound" icon="phone" iconType="solid">
+		Only triggered for calls initiated by your agents
+	</Card>
+</CardGroup>
+
+<Note>
+	If no webhook URL is configured or the webhook direction doesn't match the
+	call direction, the call proceeds without dynamic variables.
+</Note>
+
+---
+
+## Request Specification
+
+### HTTP Method and Timeout
+
+Openmic sends a `POST` request to your configured webhook URL with:
+
+-   **Content-Type**: `application/json`
+-   **Timeout**: 3 seconds per attempt
+-   **User-Agent**: `Openmic-Webhook/1.0`
+
+### Request Payload
+
+```json
+{
+	"event": "call",
+	"call": {
+		"direction": "outbound",
+		"bot_id": "cmdx5w8oc0005q671s3cbg063",
+		"from_number": "+16167948654",
+		"to_number": "+916297653534"
+	}
+}
+```
+
+### Payload Fields
+
+| Field              | Type   | Required | Description                                 |
+| ------------------ | ------ | -------- | ------------------------------------------- |
+| `event`            | string | Yes      | Always `"call"` for pre-call webhooks       |
+| `call.direction`   | string | Yes      | Call direction: `"inbound"` or `"outbound"` |
+| `call.bot_id`      | string | Yes      | Unique identifier for the bot/session       |
+| `call.from_number` | string | Yes      | Caller's phone number in E.164 format       |
+| `call.to_number`   | string | Yes      | Callee's phone number in E.164 format       |
+
+---
+
+## Expected Response
+
+### Success Response
+
+Your webhook must return a `200` status code with a JSON response containing dynamic variables:
+
+```json
+{
+	"call": {
+		"dynamic_variables": {
+			"customer_name": "John Doe",
+			"account_balance": "1,250.50",
+			"subscription_status": "premium",
+			"last_purchase_date": "2024-07-15",
+			"support_tier": "gold",
+			"preferred_language": "english"
+		}
+	}
+}
+```
+
+### Response Structure
+
+| Field                    | Type   | Required | Description                                          |
+| ------------------------ | ------ | -------- | ---------------------------------------------------- |
+| `call`                   | object | Yes      | Container for call-related data                      |
+| `call.dynamic_variables` | object | Yes      | Key-value pairs of variables to inject into the call |
+
+<Tip>
+	**Variable Usage**: Dynamic variables can be referenced in your agent
+	prompts using template syntax like `{{ customer_name }}`.
+</Tip>
+
+---
+
+## Retry Logic and Error Handling
+
+### Retry Configuration
+
+<CardGroup cols={3}>
+	<Card title="Max Attempts" icon="rotate-right" iconType="solid">
+		**3 total attempts** 1 initial request + 2 retries
+	</Card>
+
+	<Card title="Timeout" icon="clock" iconType="solid">
+		**3 seconds** Per individual request attempt
+	</Card>
+
+	<Card title="Backoff Strategy" icon="arrow-trend-up" iconType="solid">
+		**Exponential delays** 1s, 2s, 3s between retries
+	</Card>
+</CardGroup>
+
+### Retry Triggers
+
+Openmic retries your webhook in these scenarios:
+
+-   **Timeout**: No response within 3 seconds
+-   **HTTP Errors**: 4xx or 5xx status codes
+-   **Network Errors**: Connection failures or DNS resolution issues
+-   **Invalid JSON**: Malformed response body
+
+### Failure Handling
+
+<Warning>
+	**Graceful Degradation**: If all webhook attempts fail, the call proceeds
+	without dynamic variables. Design your agents to handle missing variables
+	gracefully.
+</Warning>
+
+```python
+# Example: Handling missing variables in agent prompts
+prompt = """
+You are a helpful customer service agent.
+If {{customer_name}} is not provided, ask for the customer's name to personalize the conversation.
+"""
+```
+
+---
+
+## Common Use Cases
+
+### Customer Data Enrichment
+
+<CardGroup cols={2}>
+	<Card title="CRM Integration" icon="address-book" iconType="solid">
+		**Fetch customer profiles** - Contact information and preferences -
+		Purchase history and account status - Support ticket history - Customer
+		tier and loyalty status
+	</Card>
+
+	<Card title="Account Lookup" icon="user-magnifying-glass" iconType="solid">
+		**Real-time account data** - Current account balances - Subscription
+		status and expiry - Recent transactions - Outstanding issues or alerts
+	</Card>
+</CardGroup>
+
+---
+
+## Implementation Examples
+
+### Basic Customer Lookup
+
+```python
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask(__name__)
+
+@app.route('/pre-call-webhook', methods=['POST'])
+def pre_call_webhook():
+    payload = request.json
+
+    # Extract call information
+    from_number = payload['call']['from_number']
+    direction = payload['call']['direction']
+
+    # Lookup customer in your system
+    customer = lookup_customer_by_phone(from_number)
+
+    if customer:
+        return jsonify({
+            "call": {
+                "dynamic_variables": {
+                    "customer_name": customer['name'],
+                    "account_status": customer['status'],
+                    "last_contact": customer['last_contact_date'],
+                    "customer_tier": customer['tier']
+                }
+            }
+        })
+
+    # Return empty variables if customer not found
+    return jsonify({
+        "call": {
+            "dynamic_variables": {}
+        }
+    })
+
+def lookup_customer_by_phone(phone_number):
+    # Your customer lookup logic here
+    return get_customer_from_database(phone_number)
+```
+
+---
+
+## Testing and Debugging
+
+### Debug Checklist
+
+<Accordion title="Webhook not being called">
+**Possible causes:**
+- Webhook URL not configured
+- `webhook_direction` doesn't match call direction
+- Invalid webhook URL format
+
+**Solutions:**
+
+-   Verify webhook URL in dashboard
+-   Check `webhook_direction` setting
+-   Ensure URL uses HTTPS and is publicly accessible
+</Accordion>
+
+<Accordion title="Webhook timing out">
+**Possible causes:**
+- Slow database queries
+- External API dependencies
+- Heavy processing logic
+
+**Solutions:**
+
+-   Optimize database queries with indexes
+-   Cache frequently accessed data
+-   Use asynchronous processing for heavy operations
+-   Set shorter timeouts for external API calls
+</Accordion>
+
+<Accordion title="Variables not appearing in calls">
+**Possible causes:**
+- Incorrect response format
+- HTTP status code other than 200
+- Variables not referenced in agent prompts
+
+**Solutions:**
+
+-   Validate JSON response structure
+-   Ensure 200 status code response
+-   Check agent prompt syntax for variable references
+</Accordion>
+
+### Error Handling
+
+<Tip>
+	**Always return 200**: Even if your internal logic fails, return a 200
+	status code with empty `dynamic_variables` to prevent call delays.
+</Tip>
