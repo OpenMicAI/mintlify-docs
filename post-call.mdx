@@ -1,0 +1,257 @@
+---
+title: Post-call Webhooks
+subtitle: Receive comprehensive call reports and outcomes after every call completes
+---
+
+<Info>
+	**Complete Call Intelligence**: Post-call webhooks deliver detailed reports
+	including transcripts, call analysis, success metrics, and dynamic variables
+	for every completed call.
+</Info>
+
+## Overview
+
+Post-call webhooks provide comprehensive notifications when calls complete, regardless of success or failure. These webhooks enable you to update your systems, trigger workflows, and analyze call outcomes in real-time.
+
+<CardGroup cols={2}>
+	<Card title="Real-time Notifications" icon="bell" iconType="solid">
+		Receive instant notifications when calls end with complete call data and
+		analysis
+	</Card>
+
+	<Card title="Complete Call Data" icon="file-text" iconType="solid">
+		Get transcripts, summaries, success metrics, and all dynamic variables
+		from the call
+	</Card>
+</CardGroup>
+
+---
+
+## Event Specification
+
+### HTTP Method and Headers
+
+Openmic sends a `POST` request to your configured post-call webhook URL with:
+
+-   **Content-Type**: `application/json`
+-   **User-Agent**: `Openmic-Webhook/1.0`
+-   **Expects**: `2xx` status code response
+-   **Timeout**: 10 seconds (no retries for post-call webhooks)
+
+### Event Type
+
+All post-call webhooks use the event type `"end-of-call-report"` regardless of call outcome.
+
+---
+
+## Request Payload
+
+### Successful Call Example
+
+```json
+{
+	"type": "end-of-call-report",
+	"sessionId": "cmdx5w8oc0005q671s3cbg063",
+	"toPhoneNumber": "+916297653534",
+	"fromPhoneNumber": "+16167948654",
+	"callType": "phonecall",
+	"disconnectionReason": "user_ended_call",
+	"direction": "outbound",
+	"createdAt": "2025-08-04T13:44:26.604Z",
+	"endedAt": "2025-08-04T13:45:03.325Z",
+	"transcript": [
+		["assistant", "Hello I am Jay."],
+		["user", "Yeah. Hi."],
+		[
+			"assistant",
+			"Hey Soumyadip! Great to hear from you. How can I help you today? Want me to reserve some raisins for you?"
+		],
+		["user", "Gotcha."],
+		[
+			"assistant",
+			"Awesome! I'll go ahead and reserve a pack of raisins for you at Shri Balaji Traders. Just let me know when you want to pick them up or if you'd like me to help with an online order. Cheers!"
+		]
+	],
+	"summary": "Jay greeted Soumyadip and offered to reserve a pack of raisins at Shri Balaji Traders. The conversation focused on confirming the reservation, with options for pickup or online order.",
+	"isSuccessful": false,
+	"dynamicVariables": {
+		"customerName": "Soumyadip Moni"
+	}
+}
+```
+
+### Failed Call Example
+
+```json
+{
+	"type": "end-of-call-report",
+	"sessionId": "cmdx5ozq60001q671n1vyoepy",
+	"toPhoneNumber": "+916297653534",
+	"fromPhoneNumber": "+16167948654",
+	"callType": "phonecall",
+	"disconnectionReason": "user_ended_call",
+	"direction": "outbound",
+	"createdAt": "2025-08-04T13:38:48.414Z",
+	"endedAt": "2025-08-04T13:39:38.816Z",
+	"transcript": [],
+	"summary": "Call failed: user_ended_call",
+	"dynamicVariables": {
+		"customerName": "Soumyadip Moni"
+	}
+}
+```
+
+---
+
+## Payload Fields Reference
+
+### Core Call Information
+
+| Field             | Type   | Description                                 |
+| ----------------- | ------ | ------------------------------------------- |
+| `type`            | string | Always `"end-of-call-report"`               |
+| `sessionId`       | string | Unique identifier for the call session      |
+| `callType`        | string | Type of call (e.g., `"phonecall"`)          |
+| `direction`       | string | Call direction: `"inbound"` or `"outbound"` |
+| `fromPhoneNumber` | string | Originating phone number in E.164 format    |
+| `toPhoneNumber`   | string | Destination phone number in E.164 format    |
+
+### Timestamps and Duration
+
+| Field       | Type   | Description                                |
+| ----------- | ------ | ------------------------------------------ |
+| `createdAt` | string | ISO 8601 timestamp when call was initiated |
+| `endedAt`   | string | ISO 8601 timestamp when call ended         |
+
+<Tip>
+	**Calculate Duration**: Subtract `createdAt` from `endedAt` to get the total
+	call duration in milliseconds.
+</Tip>
+
+### Call Outcome Data
+
+| Field                 | Type    | Description                                             |
+| --------------------- | ------- | ------------------------------------------------------- |
+| `disconnectionReason` | string  | Reason the call ended (see disconnection reasons below) |
+| `isSuccessful`        | boolean | Whether the call achieved its intended objective        |
+| `summary`             | string  | AI-generated summary of the call content                |
+| `transcript`          | array   | Conversation transcript as `[speaker, message]` pairs   |
+
+### Context Data
+
+| Field              | Type   | Description                                            |
+| ------------------ | ------ | ------------------------------------------------------ |
+| `dynamicVariables` | object | All dynamic variables that were active during the call |
+
+---
+
+## Disconnection Reasons
+
+Understanding why calls end helps you analyze performance and identify issues:
+
+<CardGroup cols={2}>
+	<Card title="Natural Endings" icon="check-circle" iconType="solid">
+		**Expected call completions** - `user_ended_call` - User hung up -
+		`agent_ended_call` - Agent ended the call - `call_completed` - Call
+		reached natural conclusion
+	</Card>
+
+	<Card
+		title="Connection Issues"
+		icon="exclamation-triangle"
+		iconType="solid">
+		**Technical problems** - `dial_failed` - Could not establish connection
+		- `dial_no_answer` - No one answered the call - `dial_busy` - Line was
+		busy - `network_error` - Network connectivity issues
+	</Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+	<Card title="System Issues" icon="gear" iconType="solid">
+		**Platform-related endings** - `agent_error` - AI agent encountered an
+		error - `timeout` - Call exceeded maximum duration - `system_error` -
+		Internal system error
+	</Card>
+
+	<Card title="Call Transfers" icon="phone-arrow-right" iconType="solid">
+		**Escalation scenarios** - `transferred_to_human` - Escalated to human
+		agent - `transferred_to_external` - Forwarded to external number -
+		`voicemail` - Call went to voicemail
+	</Card>
+</CardGroup>
+
+---
+
+## Transcript Format
+
+### Structure
+
+Transcripts are arrays of conversation turns, where each turn is a two-element array:
+
+```json
+["speaker", "message"]
+```
+
+### Speaker Types
+
+| Speaker       | Description                      |
+| ------------- | -------------------------------- |
+| `"assistant"` | AI agent responses               |
+| `"user"`      | Human caller input               |
+| `"system"`    | System messages or notifications |
+
+### Example Transcript Analysis
+
+```json
+{
+	"transcript": [
+		[
+			"assistant",
+			"Hello, this is Sarah from Openmic. How can I help you today?"
+		],
+		["user", "Hi, I need to check my account balance"],
+		[
+			"assistant",
+			"I'd be happy to help you with that. Let me look up your account information."
+		],
+		[
+			"assistant",
+			"I can see your current balance is $1,250.50. Is there anything else I can help you with?"
+		],
+		["user", "That's perfect, thank you!"],
+		["assistant", "You're welcome! Have a great day!"]
+	]
+}
+```
+
+<Note>
+	**Empty Transcripts**: Failed calls or very short calls may have empty
+	transcript arrays. Always check if the transcript exists and has content
+	before processing.
+</Note>
+
+---
+
+## Success Determination
+
+### Understanding `isSuccessful`
+
+The `isSuccessful` field indicates whether the call achieved its intended business objective, not just technical success:
+
+<CardGroup cols={2}>
+	<Card title="Successful Calls" icon="check-circle" iconType="solid">
+		**`isSuccessful: true`** - Appointment successfully booked - Customer
+		inquiry fully resolved - Sales lead qualified and interested - Support
+		issue resolved
+	</Card>
+
+	<Card title="Unsuccessful Calls" icon="x-circle" iconType="solid">
+		**`isSuccessful: false`** - Customer declined offer - Unable to resolve
+		issue - Incorrect number/wrong person - Call ended prematurely
+	</Card>
+</CardGroup>
+
+<Warning>
+	**Connected ≠ Successful**: A call can connect and have a full conversation
+	but still be marked as unsuccessful if it didn't achieve its goal.
+</Warning>
