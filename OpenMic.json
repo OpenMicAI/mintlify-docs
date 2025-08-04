@@ -482,7 +482,9 @@
 								"from_number": "+1234567890",
 								"to_number": "+0987654321",
 								"override_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-								"customer_id": "customer_001"
+								"customer_id": "customer_001",
+								"dynamic_variables": { "name": "John" },
+								"callback_url": "https://example.com/callback"
 							}
 						}
 					}
@@ -503,7 +505,10 @@
 									"call_id": "cmbbvrg8wzi487w02m2bc7dji",
 									"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
 									"call_status": "registered",
-									"customer_id": "customer_001"
+									"customer_id": "customer_001",
+									"dynamic_variables": {
+										"name": "John"
+									}
 								}
 							}
 						}
@@ -1501,6 +1506,7 @@
 						"description": "Prompt for structured data extraction"
 					},
 					"structured_extraction_json_schema": {
+						"type": "object",
 						"description": "JSON schema for structured extraction"
 					}
 				}
@@ -1627,6 +1633,16 @@
 						"type": "string",
 						"example": "customer_001",
 						"description": "Customer identifier for tracking"
+					},
+					"dynamic_variables": {
+						"type": "object",
+						"example": { "name": "John" },
+						"description": "Send dynamic variables in key value pairs to replace in the prompt."
+					},
+					"callback_url": {
+						"type": "string",
+						"example": "https://example.com/callback",
+						"description": "Callback URL to receive call events."
 					}
 				},
 				"required": ["from_number", "to_number"]
@@ -1760,6 +1776,7 @@
 								"description": "Success evaluation result (e.g., 'good', 'excellent', 'poor')"
 							},
 							"extracted_data": {
+								"type": "object",
 								"nullable": true,
 								"description": "Structured data extracted from the call based on post-call settings"
 							}
@@ -1787,6 +1804,11 @@
 							}
 						},
 						"description": "Detailed cost breakdown for the call"
+					},
+					"dynamic_variables": {
+						"type": "object",
+						"example": { "name": "John" },
+						"description": "Send dynamic variables in key value pairs to replace in the prompt."
 					}
 				},
 				"required": [
