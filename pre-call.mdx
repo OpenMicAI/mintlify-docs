@@ -233,6 +233,70 @@ def lookup_customer_by_phone(phone_number):
 ```
 
 ---
+## Pre Tool Webhooks
+
+### HTTP Method and Timeout
+
+Openmic sends a `POST` request to your configured webhook URL with:
+
+-   **Content-Type**: `application/json`
+-   **Timeout**: 3 seconds per attempt
+-   **User-Agent**: `Openmic-Webhook/1.0`
+
+### Request Payload
+
+```json
+{
+	"event": "transfer-call",
+	"transfer-call": {
+		"direction": "outbound",
+		"bot_id": "cmdx5w8oc0005q671s3cbg063",
+		"from_number": "+16167948654",
+		"to_number": "+916297653534"
+	}
+}
+```
+
+### Payload Fields
+
+| Field              | Type   | Required | Description                                 |
+| ------------------ | ------ | -------- | ------------------------------------------- |
+| `event`            | string | Yes      | Always `"call"` for pre-call webhooks       |
+| `transfer-call.direction`   | string | Yes      | Call direction: `"inbound"` or `"outbound"` |
+| `transfer-call.bot_id`      | string | Yes      | Unique identifier for the bot/session       |
+| `transfer-call.from_number` | string | Yes      | Caller's phone number in E.164 format       |
+| `transfer-call.to_number`   | string | Yes      | Callee's phone number in E.164 format       |
+
+---
+
+## Expected Response
+
+### Success Response
+
+Your webhook must return a `200` status code with a JSON response containing dynamic variables:
+
+```json
+{
+	"transfer-call": {
+		"dynamic_variables": {
+			"transfer-number": "+12534123456"
+		}
+	}
+}
+```
+
+### Response Structure
+
+| Field                    | Type   | Required | Description                                          |
+| ------------------------ | ------ | -------- | ---------------------------------------------------- |
+| `transfer-call`                   | object | Yes      | Container for call-related data                      |
+| `transfer-call.dynamic_variables` | object | Yes      | Key-value pairs of variables to inject into the call |
+
+<Tip>
+	**Variable Usage**: Dynamic variables can be referenced in your tools like `{{transfer-number}}`
+</Tip>
+
+---
 
 ## Testing and Debugging
 
