@@ -28,34 +28,6 @@ Pre-tool webhooks enable targeted data injection for specific tools during activ
 
 ---
 
-## Supported Tools
-
-Pre-tool webhooks are currently implemented for the following tools:
-
-<CardGroup cols={3}>
-	<Card title="Calendar Check" icon="calendar-days" iconType="solid">
-		Validate availability before checking schedules.
-	</Card>
-
-{" "}
-<Card title="Calendar Booking" icon="calendar-plus" iconType="solid">
-	Inject booking parameters and preferences.
-</Card>
-
-{" "}
-<Card title="Transfer Call" icon="phone-arrow-up-right" iconType="solid">
-	Dynamically determine transfer destinations.
-</Card>
-
-</CardGroup>
-
-<Note>
-	Pre-tool webhooks are tool-specific and must be enabled individually for
-	each tool through the configuration.
-</Note>
-
----
-
 ## Configuration Options
 
 ### Webhook URL Selection
@@ -73,6 +45,11 @@ Pre-tool webhooks support flexible URL configuration:
 </Card>
 
 </CardGroup>
+
+<Note>
+	Pre-tool webhooks are tool-specific and must be enabled individually for
+	each tool through the configuration.
+</Note>
 
 ---
 
