@@ -31,8 +31,8 @@
 						"pages": ["introduction"]
 					},
 					{
-						"group" : "Webhooks",
-						"pages" : ["pre-call"]
+						"group": "Webhooks",
+						"pages": ["pre-call", "pre-tool"]
 					}
 				]
 			},
