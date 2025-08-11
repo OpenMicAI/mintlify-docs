@@ -1,0 +1,199 @@
+---
+title: Pre-Tool Webhooks
+subtitle: Dynamically configure tool behavior and inject real-time data before specific tools execute.
+---
+
+<Info>
+	**Dynamic Tool Configuration**: Pre-tool webhooks allow you to fetch
+	contextual data and customize tool parameters in real-time before specific
+	tools are executed during calls.
+</Info>
+
+## Overview
+
+Pre-tool webhooks enable targeted data injection for specific tools during active calls. When certain tools are about to execute, Openmic can optionally send tool details to your webhook endpoint, and your system responds with dynamic variables that customize the tool's behavior.
+
+<CardGroup cols={2}>
+	<Card title="Tool-Specific Data" icon="wrench" iconType="solid">
+		Fetch relevant information and parameters specific to the tool being
+		executed.
+	</Card>
+
+    <Card title="Runtime Customization" icon="gear" iconType="solid">
+    	Modify tool parameters dynamically based on call context and external
+    	data sources.
+    </Card>
+
+</CardGroup>
+
+---
+
+## Supported Tools
+
+Pre-tool webhooks are currently implemented for the following tools:
+
+<CardGroup cols={3}>
+	<Card title="Calendar Check" icon="calendar-days" iconType="solid">
+		Validate availability before checking schedules.
+	</Card>
+
+{" "}
+<Card title="Calendar Booking" icon="calendar-plus" iconType="solid">
+	Inject booking parameters and preferences.
+</Card>
+
+{" "}
+<Card title="Transfer Call" icon="phone-arrow-up-right" iconType="solid">
+	Dynamically determine transfer destinations.
+</Card>
+
+</CardGroup>
+
+<Note>
+	Pre-tool webhooks are tool-specific and must be enabled individually for
+	each tool through the configuration.
+</Note>
+
+---
+
+## Configuration Options
+
+### Webhook URL Selection
+
+Pre-tool webhooks support flexible URL configuration:
+
+<CardGroup cols={2}>
+	<Card title="Use Pre-Call URL" icon="link" iconType="solid">
+		To reuse your existing pre-call webhook endpoint
+	</Card>
+
+{" "}
+<Card title="Dedicated URL" icon="globe" iconType="solid">
+	Specify a dedicated URL for a tool-specific webhook endpoint
+</Card>
+
+</CardGroup>
+
+---
+
+## Request Specification
+
+### HTTP Method and Timeout
+
+Openmic sends a `POST` request to your configured webhook URL with:
+
+-   **Content-Type**: `application/json`
+-   **Timeout**: 3 seconds per attempt
+-   **User-Agent**: `Openmic-Webhook/1.0`
+
+<Warning>
+	Unlike pre-call webhooks, pre-tool webhook failures do not terminate the
+	call. Tools will execute with original parameters if the webhook fails.
+</Warning>
+
+### Request Payload
+
+```json
+{
+	"event": "tool",
+	"tool_name": "calendar_booking",
+	"tool": {
+		"direction": "inbound",
+		"bot_id": "cmdx5w8oc0005q671s3cbg063",
+		"from_number": "+16167948654",
+		"to_number": "+916297653534",
+	}
+}
+```
+
+### Payload Fields
+
+| Field              | Type   | Required | Description                                 |
+| ------------------ | ------ | -------- | ------------------------------------------- |
+| `event`            | string | Yes      | Always `"tool"` for pre-tool webhooks       |
+| `tool_name`        | string | Yes      | Name of the tool being executed             |
+| `tool.direction`   | string | Yes      | Call direction: `"inbound"` or `"outbound"` |
+| `tool.bot_id`      | string | Yes      | Unique identifier for the bot/session       |
+| `tool.from_number` | string | Yes      | Caller's phone number in E.164 format       |
+| `tool.to_number`   | string | Yes      | Callee's phone number in E.164 format       |
+
+### Tool Names
+
+-   `calendar_check`
+-   `calendar_booking`
+-   `transfer_call`
+
+---
+
+## Expected Response
+
+### Success Response
+
+Your webhook must return a `200` status code with a JSON response containing dynamic variables:
+
+```json
+{
+	"tool": {
+		"dynamic_variables": {
+			"transfer_number": "+15551234567",
+			"booking_preference": "morning",
+			"calendar_timezone": "America/New_York",
+			"priority_level": "high"
+		}
+	}
+}
+```
+
+### Response Structure
+
+| Field                    | Type   | Required | Description                                          |
+| ------------------------ | ------ | -------- | ---------------------------------------------------- |
+| `tool`                   | object | Yes      | Container for tool-related data                      |
+| `tool.dynamic_variables` | object | Yes      | Key-value pairs of variables to inject into the tool |
+
+<Tip>
+	**Variable Merging**: Pre-tool dynamic variables are merged with existing
+	call variables, with pre-tool variables taking precedence for conflicts.
+</Tip>
+
+---
+
+## Retry Logic and Error Handling
+
+### Retry Configuration
+
+<CardGroup cols={3}>
+	<Card title="Max Attempts" icon="rotate-right" iconType="solid">
+		**3 total attempts** 1 initial request + 2 retries
+	</Card>
+  <Card title="Timeout" icon="clock" iconType="solid">
+  	**3 seconds** Per individual request attempt
+  </Card>
+  <Card title="Backoff Strategy" icon="arrow-trend-up" iconType="solid">
+  	**Exponential delays** 1s, 2s, 3s between retries
+  </Card>
+
+</CardGroup>
+
+### Retry Triggers
+
+Openmic retries your webhook in these scenarios:
+
+-   **Timeout**: No response within 3 seconds
+-   **HTTP Errors**: 4xx or 5xx status codes
+-   **Network Errors**: Connection failures or DNS resolution issues
+-   **Invalid JSON**: Malformed response body
+
+### Failure Handling
+
+<Info>
+	**Graceful Degradation**: If all webhook attempts fail, the tool will
+	execute using its original parameters without dynamic variables.
+</Info>
+
+Pre-tool webhooks are designed for graceful degradation. When webhook calls fail:
+
+1. The failure is logged for debugging purposes
+2. The tool continues execution with its original static parameters
+3. Any existing call-level dynamic variables remain available
+4. The call continues normally without interruption
