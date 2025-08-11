@@ -197,3 +197,51 @@ Pre-tool webhooks are designed for graceful degradation. When webhook calls fail
 2. The tool continues execution with its original static parameters
 3. Any existing call-level dynamic variables remain available
 4. The call continues normally without interruption
+
+---
+
+## Examples
+
+```js
+// Example transfer number lookup function
+async function getTransferNumber(fromNumber) {
+    // Pretend we're fetching from a transfer number lookup API
+    console.log(`Looking up transfer number for: ${fromNumber}`);
+    return {
+        transfer_number: '+1234567890' // match variable name from docs
+    };
+}
+
+app.post('/webhook/pre-tool', async (req, res) => {
+  const { tool_name, tool } = req.body;
+  console.log(`🔧 Pre-tool webhook for: ${tool_name}`, tool);
+
+  try {
+    if (tool_name === 'transfer_call') {
+      const transferNumber = await getTransferNumber(tool.from_number);
+
+      return res.json({
+        tool: {
+          dynamic_variables: transferNumber
+        }
+      });
+  	}
+
+    // Default: no customization for other tools
+    return res.json({
+      tool: {
+        dynamic_variables: {}
+      }
+    });
+  } catch (err) {
+    console.error('❌ Failed to fetch tool data', err);
+
+    // Graceful degradation: return empty vars if lookup fails
+    return res.json({
+      tool: {
+        dynamic_variables: {}
+      }
+    });
+  }
+});
+```
