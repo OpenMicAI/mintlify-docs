@@ -32,7 +32,7 @@
 					},
 					{
 						"group": "Webhooks",
-						"pages": ["pre-call", "pre-tool"]
+						"pages": ["pre-call-webhook", "pre-tool-webhook", "post-call-webhook"]
 					}
 				]
 			},
