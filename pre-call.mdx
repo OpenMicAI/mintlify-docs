@@ -183,6 +183,48 @@ When using this approach, ensure your agent prompts handle missing variables gra
 
 ---
 
+## Examples
+
+```js
+// Example CRM lookup function
+async function getCustomerData(phoneNumber) {
+  // Pretend we're calling an internal CRM API or DB
+  return {
+    customer_name: 'Alice Chen',
+    account_balance: '3452.75',
+  };
+}
+
+app.post('webhook/pre-call', async (req, res) => {
+  const { call } = req.body;
+  console.log('📞 Pre-call webhook received:', call);
+  try {
+    // Pull customer data based on from_number
+    const customerData = await getCustomerData(call.from_number);
+    // Return dynamic variables in correct format
+    res.json({
+      call: {
+        dynamic_variables: customerData
+      }
+    });
+  } catch (err) {
+    console.error('❌ Failed to fetch customer data', err);
+    // If this is the 3rd attempt, return empty variables to allow call
+    if (parseInt(call.attempt, 10) === 3) {
+      return res.json({
+        call: {
+          dynamic_variables: {}
+        }
+      });
+    }
+    // Any other attempt = fail (will trigger retry)
+    res.status(500).json({ error: 'Failed to fetch call data' });
+  }
+});
+```
+
+---
+
 ## Testing and Debugging
 
 <Accordion title="Webhook not being called">
