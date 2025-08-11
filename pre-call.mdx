@@ -1,6 +1,6 @@
 ---
 title: Pre-Call Webhooks
-subtitle: Dynamically configure call behavior and inject real-time data before calls begin
+subtitle: Dynamically configure call behavior and inject real-time data before calls begin.
 ---
 
 <Info>
@@ -62,6 +62,10 @@ Openmic sends a `POST` request to your configured webhook URL with:
 -   **Timeout**: 3 seconds per attempt
 -   **User-Agent**: `Openmic-Webhook/1.0`
 
+<Danger>
+	If all webhook attempts fail, the call will end. Please read [failure handling](#failure-handling) for more info.
+</Danger>
+
 ### Request Payload
 
 ```json
@@ -71,7 +75,8 @@ Openmic sends a `POST` request to your configured webhook URL with:
 		"direction": "outbound",
 		"bot_id": "cmdx5w8oc0005q671s3cbg063",
 		"from_number": "+16167948654",
-		"to_number": "+916297653534"
+		"to_number": "+916297653534",
+		"attempt": "2"
 	}
 }
 ```
@@ -85,6 +90,7 @@ Openmic sends a `POST` request to your configured webhook URL with:
 | `call.bot_id`      | string | Yes      | Unique identifier for the bot/session       |
 | `call.from_number` | string | Yes      | Caller's phone number in E.164 format       |
 | `call.to_number`   | string | Yes      | Callee's phone number in E.164 format       |
+| `call.attempt`     | string | Yes      | Attempt number of the webhook               |
 
 ---
 
@@ -152,155 +158,32 @@ Openmic retries your webhook in these scenarios:
 
 ### Failure Handling
 
-<Warning>
-	**Graceful Degradation**: If all webhook attempts fail, the call proceeds
-	without dynamic variables. Design your agents to handle missing variables
-	gracefully.
-</Warning>
+<Danger>
+	If all webhook attempts fail, the call will terminate.
+</Danger>
 
-```python
-# Example: Handling missing variables in agent prompts
-prompt = """
-You are a helpful customer service agent.
-If {{customer_name}} is not provided, ask for the customer's name to personalize the conversation.
-"""
-```
+To avoid an incomplete or awkward conversation caused by missing dynamic variables, the default behavior is to end the call after all retry attempts are exhausted.
 
----
+If you want the call to proceed even after repeated webhook failures, implement the following safeguard:
 
-## Common Use Cases
+* Track the `"attempt"` field included in each webhook request payload.
+* On the **third attempt** (final retry), return an **empty JSON object** for the dynamic variables.
 
-### Customer Data Enrichment
-
-<CardGroup cols={2}>
-	<Card title="CRM Integration" icon="address-book" iconType="solid">
-		**Fetch customer profiles** - Contact information and preferences -
-		Purchase history and account status - Support ticket history - Customer
-		tier and loyalty status
-	</Card>
-
-	<Card title="Account Lookup" icon="user-magnifying-glass" iconType="solid">
-		**Real-time account data** - Current account balances - Subscription
-		status and expiry - Recent transactions - Outstanding issues or alerts
-	</Card>
-</CardGroup>
-
----
-
-## Implementation Examples
-
-### Basic Customer Lookup
-
-```python
-from flask import Flask, request, jsonify
-import requests
-
-app = Flask(__name__)
-
-@app.route('/pre-call-webhook', methods=['POST'])
-def pre_call_webhook():
-    payload = request.json
-
-    # Extract call information
-    from_number = payload['call']['from_number']
-    direction = payload['call']['direction']
-
-    # Lookup customer in your system
-    customer = lookup_customer_by_phone(from_number)
-
-    if customer:
-        return jsonify({
-            "call": {
-                "dynamic_variables": {
-                    "customer_name": customer['name'],
-                    "account_status": customer['status'],
-                    "last_contact": customer['last_contact_date'],
-                    "customer_tier": customer['tier']
-                }
-            }
-        })
-
-    # Return empty variables if customer not found
-    return jsonify({
-        "call": {
-            "dynamic_variables": {}
-        }
-    })
-
-def lookup_customer_by_phone(phone_number):
-    # Your customer lookup logic here
-    return get_customer_from_database(phone_number)
-```
-
----
-## Pre Tool Webhooks
-
-### HTTP Method and Timeout
-
-Openmic sends a `POST` request to your configured webhook URL with:
-
--   **Content-Type**: `application/json`
--   **Timeout**: 3 seconds per attempt
--   **User-Agent**: `Openmic-Webhook/1.0`
-
-### Request Payload
+Example response to allow the call to continue without injected variables:
 
 ```json
 {
-	"event": "transfer-call",
-	"transfer-call": {
-		"direction": "outbound",
-		"bot_id": "cmdx5w8oc0005q671s3cbg063",
-		"from_number": "+16167948654",
-		"to_number": "+916297653534"
+	"call": {
+		"dynamic_variables": {}
 	}
 }
 ```
 
-### Payload Fields
-
-| Field              | Type   | Required | Description                                 |
-| ------------------ | ------ | -------- | ------------------------------------------- |
-| `event`            | string | Yes      | Always `"call"` for pre-call webhooks       |
-| `transfer-call.direction`   | string | Yes      | Call direction: `"inbound"` or `"outbound"` |
-| `transfer-call.bot_id`      | string | Yes      | Unique identifier for the bot/session       |
-| `transfer-call.from_number` | string | Yes      | Caller's phone number in E.164 format       |
-| `transfer-call.to_number`   | string | Yes      | Callee's phone number in E.164 format       |
-
----
-
-## Expected Response
-
-### Success Response
-
-Your webhook must return a `200` status code with a JSON response containing dynamic variables:
-
-```json
-{
-	"transfer-call": {
-		"dynamic_variables": {
-			"transfer-number": "+12534123456"
-		}
-	}
-}
-```
-
-### Response Structure
-
-| Field                    | Type   | Required | Description                                          |
-| ------------------------ | ------ | -------- | ---------------------------------------------------- |
-| `transfer-call`                   | object | Yes      | Container for call-related data                      |
-| `transfer-call.dynamic_variables` | object | Yes      | Key-value pairs of variables to inject into the call |
-
-<Tip>
-	**Variable Usage**: Dynamic variables can be referenced in your tools like `{{transfer-number}}`
-</Tip>
+When using this approach, ensure your agent prompts handle missing variables gracefully.
 
 ---
 
 ## Testing and Debugging
-
-### Debug Checklist
 
 <Accordion title="Webhook not being called">
 **Possible causes:**
@@ -341,10 +224,3 @@ Your webhook must return a `200` status code with a JSON response containing dyn
 -   Ensure 200 status code response
 -   Check agent prompt syntax for variable references
 </Accordion>
-
-### Error Handling
-
-<Tip>
-	**Always return 200**: Even if your internal logic fails, return a 200
-	status code with empty `dynamic_variables` to prevent call delays.
-</Tip>
