@@ -33,6 +33,12 @@
 					{
 						"group": "Webhooks",
 						"pages": ["pre-call-webhook", "pre-tool-webhook", "post-call-webhook"]
+					},
+					{
+						"group": "Integrations",
+						"pages": [
+							"essentials/ghl-integration"
+						]
 					}
 				]
 			},
