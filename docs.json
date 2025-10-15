@@ -37,7 +37,7 @@
 					{
 						"group": "Integrations",
 						"pages": [
-							"essentials/ghl-integration"
+							"integrations/ghl-integration"
 						]
 					}
 				]
