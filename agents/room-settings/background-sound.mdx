@@ -1,0 +1,279 @@
+---
+title: Background Sound
+subtitle: Add ambient background sounds to create a more engaging and branded call experience for your AI voice agents.
+description: Learn how to customize background ambience for your voice agents to create professional and immersive customer call experiences.
+slug: agents/room-settings/background-sound
+---
+
+import { ArcadeEmbed }  from '/snippets/ArcadeEmbed.jsx';
+
+<Info>
+  **Enhance the Call Experience**: Background sounds help create a more natural
+  and professional atmosphere during voice conversations, making interactions
+  feel more authentic and engaging.
+</Info>
+
+## Overview
+
+Background sound allows you to add ambient audio to your AI voice agent calls, creating a more immersive and branded experience for your customers. Whether you want to simulate a coffee shop ambience, an office environment, or any other setting, background sounds help set the tone and enhance the overall call quality.
+
+<CardGroup cols={2}>
+	<Card title="Professional Atmosphere" icon="microphone" iconType="solid">
+		Create a realistic environment that matches your brand and use case
+	</Card>
+
+    <Card title="Customizable Volume" icon="volume-high" iconType="solid">
+    	Fine-tune the background sound level to ensure your agent's voice remains clear
+    </Card>
+
+</CardGroup>
+
+---
+
+## Configure Background Sound
+
+Follow these steps to add and customize background sounds for your AI voice agent:
+
+### Step 1: Navigate to Simple Agents
+
+Start by accessing the agent management section:
+
+1. Log in to your [OpenMic Dashboard](https://chat.openmic.ai/login)
+2. Navigate to the **Simple Agents** section from the sidebar
+
+<Note>
+  This is where you'll manage all settings for your voice agents, including
+  personality, voice, and room settings.
+</Note>
+
+---
+
+### Step 2: Select Your Agent
+
+Choose the agent you want to customize:
+
+1. From the list of agents, click on the agent you want to configure
+2. This will open the agent's settings page
+
+<Tip>
+  If you don't have an agent yet, create one first by clicking the **Create
+  Agent** button.
+</Tip>
+
+---
+
+### Step 3: Open Voice & Personality Tab
+
+Access the voice and personality settings:
+
+1. In the agent settings, navigate to the **Voice & Personality** tab
+2. Scroll down to locate the **Background Sound** section
+
+<Note>
+  The Voice & Personality tab contains all audio-related settings for your
+  agent, including voice selection, personality traits, and background ambience.
+</Note>
+
+---
+
+### Step 4: Choose Background Sound Type
+
+Select the ambience that best fits your use case:
+
+1. Under **Background Sound**, click on the **Sound Type** dropdown menu
+2. Preview the available ambience options:
+   - **None** - No background sound (default)
+   - **Coffee Shop Ambience** - Casual, relaxed atmosphere
+   - **Office Environment** - Professional setting
+   - **Call Center** - Busy customer service environment
+   - **And more...**
+3. Select your preferred background sound
+
+<Tip>
+  You can preview each sound option before making your selection to find the
+  perfect match for your brand and use case.
+</Tip>
+
+---
+
+### Step 5: Adjust Volume Level
+
+Fine-tune the background sound volume:
+
+1. Use the **Volume** slider to adjust the background sound level
+2. Start with a lower value (e.g., 0.15 - 0.25) to ensure the agent's voice remains prominent
+3. Adjust incrementally until you achieve the perfect balance
+
+<Warning>
+  **Keep the agent's voice clear**: Set the background volume low enough that it
+  doesn't interfere with the agent's speech. The background sound should enhance
+  the experience, not overpower the conversation.
+</Warning>
+
+---
+
+### Step 6: Test Your Configuration
+
+Before deploying, test your background sound settings:
+
+1. Click the **Test Call** button in the top right corner of the agent settings
+2. Click **Start Test Call** to initiate a test conversation
+3. Interact with the agent to hear how the background sound works during an actual call
+4. Listen for:
+   - **Clarity** - Can you hear the agent clearly?
+   - **Balance** - Is the background sound at an appropriate level?
+   - **Atmosphere** - Does it create the desired ambience?
+
+<Tip>
+  Test multiple times with different volume levels to find the optimal setting
+  for your use case.
+</Tip>
+
+5. Close the test call window once you're satisfied with the configuration
+
+---
+
+## Interactive Demo
+
+See the Background Sound feature in action:
+
+<ArcadeEmbed 
+  url="https://demo.arcade.software/RFuIWWcuSuyu302MhWEe?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="Customize Background Sound for an AI Voice Agent"
+/>
+---
+
+## Best Practices
+
+### Volume Recommendations
+
+<CardGroup cols={3}>
+	<Card title="Customer Support" icon="headset" iconType="solid">
+		**0.15 - 0.20** Professional but subtle background presence
+	</Card>
+
+    <Card title="Sales Calls" icon="phone-office" iconType="solid">
+    	**0.10 - 0.15** Minimal distraction, focus on conversation
+    </Card>
+
+    <Card title="Casual Conversations" icon="comments" iconType="solid">
+    	**0.20 - 0.30** More noticeable ambience for relaxed interactions
+    </Card>
+
+</CardGroup>
+
+---
+
+### Choosing the Right Background Sound
+
+Consider these factors when selecting background sounds:
+
+<AccordionGroup>
+	<Accordion title="Brand Identity" icon="building">
+		**Match your brand personality**
+		
+		- **Professional services**: Office environment or minimal background
+		- **Hospitality**: Coffee shop or restaurant ambience
+		- **Healthcare**: Clean, quiet professional setting
+		- **Casual businesses**: More relaxed and friendly atmospheres
+	</Accordion>
+
+    <Accordion title="Use Case" icon="briefcase">
+    	**Consider the call purpose**
+
+    	- **Support calls**: Professional, non-distracting backgrounds
+    	- **Sales calls**: Clean audio for maximum clarity
+    	- **Appointment scheduling**: Neutral office or call center ambience
+    	- **Surveys**: Minimal background to avoid bias
+    </Accordion>
+
+    <Accordion title="Customer Demographics" icon="users">
+    	**Think about your audience**
+
+    	- **Older customers**: Keep backgrounds subtle or disabled
+    	- **Tech-savvy users**: Can handle more ambient sounds
+    	- **International calls**: Neutral sounds without cultural context
+    	- **Long conversations**: Less repetitive, more natural sounds
+    </Accordion>
+
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Background sound is too loud">
+    **Solution:**
+
+    1. Reduce the volume slider to a lower value (try 0.10 - 0.15)
+    2. Test again to ensure the agent's voice is clear and prominent
+    3. Adjust incrementally until you find the right balance
+  </Accordion>
+
+  <Accordion title="Background sound isn't playing">
+    **Possible causes:**
+
+    - Sound Type is set to "None"
+    - Volume is set to 0
+    - Browser audio issues
+
+    **Solution:**
+
+    1. Verify that a sound type is selected (not "None")
+    2. Check that the volume slider is above 0
+    3. Test your browser audio with other media
+    4. Refresh the dashboard and try again
+   </Accordion>
+
+  <Accordion title="Background sound cuts in and out">
+    **Possible causes:**
+
+    - Network connectivity issues
+    - Audio processing conflicts
+
+    **Solution:**
+
+    1. Check your internet connection
+    2. Try a different browser
+    3. Contact support if the issue persists
+   </Accordion>
+   </AccordionGroup>
+
+---
+
+## Tips for Success
+
+<CardGroup cols={2}>
+	<Card title="Start Subtle" icon="volume-low" iconType="solid">
+		Begin with lower volume settings (0.15) and increase gradually. It's easier to add more than to reduce later.
+	</Card>
+
+    <Card title="Test Multiple Scenarios" icon="flask" iconType="solid">
+    	Test your background sound with different conversation lengths and topics to ensure consistency.
+    </Card>
+
+    <Card title="Gather Feedback" icon="comments" iconType="solid">
+    	Ask real customers or colleagues for feedback on the background sound quality and appropriateness.
+    </Card>
+
+    <Card title="Monitor Call Quality" icon="chart-line" iconType="solid">
+    	Review call analytics and customer satisfaction scores to ensure background sounds enhance rather than detract from the experience.
+    </Card>
+
+</CardGroup>
+
+---
+
+## Next Steps
+
+After configuring your background sounds:
+
+1. **Deploy your agent** to production with the new settings
+2. **Monitor feedback** from customers about the call experience
+3. **Iterate and refine** based on real-world usage
+4. **Explore other Voice & Personality settings** to further customize your agent
+
+<Note>
+  Background sound settings can be updated at any time. Changes will apply to
+  all new calls immediately.
+</Note>
