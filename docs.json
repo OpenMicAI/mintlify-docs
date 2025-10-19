@@ -36,6 +36,10 @@
               {
                 "group": "Room Settings",
                 "pages": ["agents/room-settings/background-sound"]
+              },
+              {
+                "group": "Custom Functions",
+                "pages": ["agents/custom-functions/transfer-call"]
               }
             ]
           },

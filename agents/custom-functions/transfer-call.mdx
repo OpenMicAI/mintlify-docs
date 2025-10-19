@@ -1,0 +1,333 @@
+---
+title: 'Transfer Call'
+description: 'Configure call transfer settings to route calls to human agents or other AI agents'
+---
+
+import { ArcadeEmbed } from '/snippets/ArcadeEmbed.jsx'
+
+
+## Interactive Demo
+
+See the Transfer Call feature in action:
+
+<ArcadeEmbed 
+  url="https://demo.arcade.software/FH9B4EEk61ZdBHYt9l4w?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+  title="Set Up a Warm Call Transfer With Custom Handoff in OpenMic Bot"
+/>
+---
+
+## Overview
+
+It is common in call operations to transfer calls to another human agent or AI agent. OpenMic provides flexible transfer options through two modes:
+
+- **Static Mode**: Configure transfers directly in the dashboard with warm/cold transfer options, human detection, agent confirmation, and custom handoff messages
+- **Webhook Mode**: Dynamically route calls using your own backend logic for real-time destination determination with fallback support
+
+## Configuration Steps
+
+### 1. Add Transfer Call Function
+
+In your bot settings, navigate to the custom functions section and add a new "Transfer Call" function.
+
+### 2. Configure Basic Settings
+
+**Name**
+- Define the function name using snake_case (e.g., `transfer_call`)
+- This name will be used by the AI to trigger the transfer
+
+**Mode**
+Choose between two modes:
+- **Static**: Configure transfer settings directly in the dashboard
+- **Webhook**: Use dynamic routing via webhook to determine transfer destination at runtime
+
+#### Static Mode Configuration
+
+When using Static mode:
+
+**Transfer To**
+Select your transfer destination type:
+- **Static Number**: Specify a fixed phone number (E.164 format)
+- **Dynamic Routing**: Use a prompt to handle dynamic call transfer routing
+
+#### Webhook Mode Configuration
+
+When using Webhook mode, you can dynamically determine the transfer destination at runtime using your webhook endpoint.
+
+**Transfer Number**
+- Enter a phone number in E.164 format (e.g., +1234567890)
+- This number can be used as a fallback or default destination
+
+**Call a webhook before running this tool**
+<Info>Use this to validate or enrich data before the transfer happens.</Info>
+
+Toggle this option to call a webhook before executing the transfer. This allows you to:
+- Dynamically determine the transfer destination based on real-time data
+- Validate the transfer conditions
+- Enrich the call data with additional context from external systems (CRM, availability APIs, etc.)
+
+**Webhook URL Options**
+
+You can choose between two webhook URL sources:
+
+1. **Use the pre-call webhook URL**: Reuse the webhook URL configured in your agent settings
+   <Warning>If no pre-call webhook URL is configured in agent settings, this option cannot be used. Configure it first in your bot's main settings.</Warning>
+
+2. **Custom webhook URL**: Provide a specific webhook URL for this transfer function
+   - Example: `https://your-domain.com/webhook/pre-tool`
+   - This URL will receive the transfer request data and can return dynamic variables including the transfer destination
+
+**How Webhook Mode Works:**
+
+When the transfer_call tool is triggered:
+1. OpenMic sends a POST request to your webhook with call details
+2. Your webhook returns dynamic variables, including the `transfer_number`
+3. The call is transferred to the number specified in your webhook response
+
+For detailed webhook specifications, see the [Pre-Tool Webhook documentation](/pre-tool-webhook).
+
+<Info>
+**Graceful Degradation**: If your webhook fails or times out (3 seconds), the fallback transfer number you configured will be used.
+</Info>
+
+### 3. Configure Transfer Type
+
+<Warning>
+Warm and Cold transfer types are only available for **Static mode** as of now. Webhook mode support for these transfer type configurations will be available soon.
+</Warning>
+
+Choose between two transfer types:
+
+<Tabs>
+  <Tab title="Cold Transfer">
+    **Cold Transfer**: AI transfers the call without a debrief.
+    
+    The call is immediately transferred to the destination number. The AI agent disconnects after completing the transfer.
+  </Tab>
+  
+  <Tab title="Warm Transfer">
+    **Warm Transfer**: AI provides a debrief to the next agent after transferring.
+    
+    After the call is transferred, the AI agent:
+    1. Detects if the other side is a human (optional)
+    2. Speaks a private whisper message to the transfer target (optional)
+    3. Connects all parties and speaks a three-way message (optional)
+  </Tab>
+</Tabs>
+
+### 4. Configure Transfer Behavior Settings
+
+<Info>
+These settings are only available when using **Static mode** with warm transfer enabled.
+</Info>
+
+For warm transfers in static mode, you can configure advanced settings:
+
+#### On-hold Music
+Select the audio played to the caller while they are on hold during the transfer process. The default is a standard ringtone.
+
+#### Navigate IVR
+<Info>Toggle this setting if the transfer destination is an IVR system</Info>
+
+Enable this to help the AI navigate automated phone systems when the transfer target has an IVR menu.
+
+#### Human Detection
+<Warning>
+When enabled, the AI will only debrief if a real human is detected. It will not transfer if it detects a voicemail or non-human response.
+</Warning>
+
+**Detection Timeout**: Set the maximum time (default: 30s) the AI will wait to determine if the transfer target is a human.
+
+**Auto-greet**: When checked, the AI will automatically say "Hello" at the start to encourage a response from the transfer target.
+
+#### Whisper Message
+<Info>If checked: spoken only to the transfer agent</Info>
+
+Configure a private message that only the transfer target hears before connecting to the original caller. This can be:
+- **Prompt**: Dynamic message generated by AI based on call context
+- **Static Sentence**: Fixed message you define
+
+Example: "Hey, a user is on the call"
+
+#### Human Agent Confirmation
+
+When enabled, the AI will ask the human agent for confirmation before transferring the call. This ensures the agent is ready and available to take the call.
+
+If the agent declines or is unavailable, the transfer will be cancelled and the original caller will remain connected to the AI agent.
+
+#### Three-way Message
+<Info>If checked: spoken after transfer successful, both parties can hear</Info>
+
+Configure a message spoken to both the transfer target and the original caller once the connection is established.
+
+Choose between:
+- **Prompt**: Dynamic message based on call context
+- **Static Sentence**: Fixed message
+
+Example: "Say both are connected"
+
+## Best Practices
+
+### Update Your Agent Prompt
+
+Enhance the agent's understanding by incorporating transfer conditions into your bot's main prompt:
+
+```
+If the user is angry, frustrated, or requests to speak with a human, 
+use the transfer_call tool to transfer the conversation to a human agent.
+```
+
+### When to Use Webhook Mode
+
+Webhook mode is ideal for advanced routing scenarios:
+
+**Static Mode is best for:**
+- Fixed transfer destinations that don't change
+- Simple routing rules you can configure in the dashboard
+- Quick setup without backend development
+- Using built-in warm/cold transfer features with human detection and whisper messages
+- Configuring transfer behavior directly in the OpenMic UI
+
+**Webhook Mode is best for:**
+- Dynamic routing based on real-time data (e.g., agent availability, time of day, customer priority)
+- Integration with external systems (CRM, scheduling tools, queue management)
+- Complex routing logic that requires backend processing
+- A/B testing different transfer strategies
+- Load balancing across multiple agents or departments
+- Custom transfer logic implemented in your backend (you handle warm/cold transfer behavior in your code)
+
+### Define Clear Transfer Conditions
+
+Be specific about when transfers should occur:
+- User explicitly requests human assistance
+- User expresses frustration or dissatisfaction
+- Query is outside the AI's capabilities
+- High-value or sensitive situations requiring human judgment
+
+### Use Warm Transfer for Better Experience
+
+Warm transfers provide context to the receiving agent, resulting in:
+- Better customer experience (no need to repeat information)
+- More efficient handling by human agents
+- Higher first-call resolution rates
+
+### Configure Appropriate Timeouts
+
+Set detection timeouts based on your team's typical response patterns:
+- **Fast-paced teams**: 15-20 seconds
+- **Standard operations**: 30 seconds (default)
+- **High-volume periods**: 45-60 seconds
+
+## Example Use Cases
+
+<AccordionGroup>
+  <Accordion title="Customer Escalation">
+    When a customer is upset or dissatisfied, automatically detect sentiment and transfer to a human agent with context about the issue.
+    
+    **Setup:**
+    - Use warm transfer to provide context
+    - Enable human detection to ensure an agent answers
+    - Set whisper message: "Customer escalation - they are frustrated about billing issue"
+    - This allows the human agent to prepare before taking the call
+  </Accordion>
+
+  <Accordion title="Sales Handoff">
+    When a prospect shows interest in purchasing, transfer to sales team with qualification details.
+    
+    **Setup:**
+    - Configure warm transfer to sales team number
+    - Enable human agent confirmation to ensure availability
+    - Whisper message: "Qualified lead interested in enterprise plan"
+    - Three-way message: "I'm connecting you with our sales team now"
+    - This creates a smooth handoff with full context
+  </Accordion>
+
+  <Accordion title="Department Routing">
+    Route calls to different departments based on customer intent.
+    
+    **Setup:**
+    - Use dynamic routing with prompt-based destination
+    - Cold transfer for quick routing without AI intervention
+    - Routing logic: "Route to billing for payment issues, support for technical issues, sales for upgrades"
+    - Update your agent prompt to identify the correct department based on customer needs
+  </Accordion>
+
+  <Accordion title="Smart Agent Availability (Webhook Mode)">
+    Use webhook mode to route calls only to available agents in real-time.
+    
+    **Setup:**
+    - Select Webhook mode
+    - Enable "Call a webhook before running this tool"
+    - Configure custom webhook URL pointing to your agent availability system
+    - Your webhook receives call data and returns the phone number of an available agent
+    - If no agents available, webhook can return an alternative action (e.g., voicemail, callback scheduling)
+    - This ensures customers are only transferred when an agent is ready to help
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Transfer fails or drops">
+    **Possible causes:**
+    - Invalid destination phone number format (use E.164 format: +[country code][number])
+    - Detection timeout too short for agent to respond
+    - Human detection enabled but voicemail or IVR answered
+    
+    **Solutions:**
+    - Verify phone number format
+    - Increase detection timeout
+    - Disable human detection if transferring to known IVR systems
+  </Accordion>
+
+  <Accordion title="Agent doesn't hear whisper message">
+    **Possible causes:**
+    - Whisper message not enabled
+    - Agent answered but was placed on hold by their system
+    
+    **Solutions:**
+    - Verify whisper message is enabled in settings
+  </Accordion>
+
+  <Accordion title="Human detection not working properly">
+    **Possible causes:**
+    - Detection timeout too short
+    - Background noise causing false positives
+    - Auto-greet disabled, resulting in silence
+    
+    **Solutions:**
+    - Enable auto-greet to encourage response
+    - Increase detection timeout to 45-60 seconds
+    - Test in quiet environment first
+  </Accordion>
+
+  <Accordion title="Webhook not responding or timing out">
+    **Possible causes:**
+    - Webhook URL is incorrect or unreachable
+    - Webhook server is down or slow to respond (timeout is 3 seconds)
+    - Pre-call webhook URL not configured in agent settings
+    
+    **Solutions:**
+    - Verify the webhook URL is correct and accessible
+    - Optimize your webhook to respond within 3 seconds (OpenMic retries up to 3 times)
+    - If using "Use the pre-call webhook URL", ensure it's configured in your bot's main settings
+    - Check webhook logs for errors or timeouts
+    - Use custom webhook URL as an alternative if pre-call webhook is having issues
+    - If webhook fails, OpenMic will use the fallback transfer number you configured
+    
+    See [Pre-tool Webhook retry logic](/pre-tool-webhook#retry-logic-and-error-handling) for more details.
+  </Accordion>
+
+  <Accordion title="Webhook returns wrong transfer destination">
+    **Possible causes:**
+    - Webhook logic not properly handling call context
+    - Missing or incorrect data in webhook payload
+    - Response format doesn't match expected structure
+    
+    **Solutions:**
+    - Ensure your webhook returns `transfer_number` in the `dynamic_variables` object
+    - Review the [Pre-tool Webhook request/response format](/pre-tool-webhook#request-specification)
+    - Add logging to your webhook to debug what data is being received
+    - Verify the transfer number is in E.164 format (e.g., +1234567890)
+    - Test with different call scenarios to ensure routing logic covers all cases
+  </Accordion>
+</AccordionGroup>
