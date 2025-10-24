@@ -1,0 +1,193 @@
+---
+title: Dynamic Variables
+subtitle: Use dynamic variables to personalize your calls
+description: Use dynamic variables to personalize your calls
+---
+
+## Overview
+
+Dynamic variables allow you to inject personalized data into your agent's responses for each specific call. Using the `{{variable_name}}` syntax, you can create agents that adapt to different contexts while maintaining consistent conversation flows.
+
+### Common Use Cases
+
+-   **Personalized greetings**: "Hello `{{customer_name}}`, thanks for calling!"
+-   **Context-aware responses**: "I see you're calling about order `{{order_id}}`"
+-   **Dynamic routing**: Transfer to different numbers based on `{{department}}`
+-   **Time-sensitive information**: Reference `{{appointment_date}}` or `{{deadline}}`
+
+### Where Dynamic Variables Work
+
+Dynamic variables can be used in:
+
+-   **Prompts**: Agent instructions and personality
+-   **First message**: Opening greeting
+-   **Tool configurations**:
+    -   Custom function URLs
+    -   Tool descriptions
+    -   Property descriptions
+-   **Call handling**:
+    -   Voicemail prompts and messages
+    -   Transfer call phone numbers
+    -   Warm transfer instructions
+-   Webhook url
+
+## Add & test dynamic variables
+
+<Steps>
+  <Step title="Add dynamic variables in your prompts">
+    Dynamic variables are placeholders surrounded by double curly braces. For example:
+
+    ```json
+    "Hello {{name}}, I understand you're interested in {{product_name}}. How can I help you today?"
+    ```
+
+  </Step>
+
+  <Step title="Test your dynamic variables">
+    Before deploying, test your dynamic variables using the web interface
+
+    <Frame>
+      <img src="/images/dynamic-variables-test.png" alt="Testing dynamic variables in dashboard" />
+    </Frame>
+
+  </Step>
+
+  <Step title="Implement in production">
+    ### For Outbound Calls
+
+    When using the [Create Phone Call](/api-reference/calls/create-call) API, set your variables in the
+    `dynamic_variables` field. Note that all values must be strings:
+
+    ```json
+    {
+        "name": "John Smith",
+        "product_name": "Premium Plan"
+    }
+    ```
+
+  </Step>
+</Steps>
+
+<Note>
+	The spaces around the variable name will be trimmed when evaluating the
+	variable.
+</Note>
+
+## Default Variables
+
+OpenMic automatically provides these system variables - no configuration required:
+
+### Basic Date/Time Variables
+
+| Variable    | Description                         | Example                 |
+| ----------- | ----------------------------------- | ----------------------- |
+| `{{now}}`   | Current UTC time in readable format | "Oct 24, 2025 02:30 PM" |
+| `{{date}}`  | Current UTC date                    | "Oct 24, 2025"          |
+| `{{time}}`  | Current UTC time                    | "02:30 PM"              |
+| `{{month}}` | Current month name                  | "October"               |
+| `{{day}}`   | Current day of month                | "24"                    |
+| `{{year}}`  | Current year                        | "2025"                  |
+
+### Timezone-Specific Variables
+
+OpenMic supports comprehensive timezone variables with the following format: `{{variable.timezone_suffix}}`
+
+#### US Timezones
+
+| Suffix | Timezone    | Example Variables                                |
+| ------ | ----------- | ------------------------------------------------ |
+| `est`  | US/Eastern  | `{{now.est}}`, `{{date.est}}`, `{{time.est}}`    |
+| `cst`  | US/Central  | `{{now.cst}}`, `{{date.cst}}`, `{{time.cst}}`    |
+| `mst`  | US/Mountain | `{{now.mst}}`, `{{date.mst}}`, `{{time.mst}}`    |
+| `pst`  | US/Pacific  | `{{now.pst}}`, `{{date.pst}}`, `{{time.pst}}`    |
+| `hst`  | US/Hawaii   | `{{now.hst}}`, `{{date.hst}}`, `{{time.hst}}`    |
+| `akst` | US/Alaska   | `{{now.akst}}`, `{{date.akst}}`, `{{time.akst}}` |
+
+#### European Timezones
+
+| Suffix | Timezone      | Example Variables                             |
+| ------ | ------------- | --------------------------------------------- |
+| `gmt`  | Europe/London | `{{now.gmt}}`, `{{date.gmt}}`, `{{time.gmt}}` |
+| `cet`  | Europe/Paris  | `{{now.cet}}`, `{{date.cet}}`, `{{time.cet}}` |
+| `eet`  | Europe/Athens | `{{now.eet}}`, `{{date.eet}}`, `{{time.eet}}` |
+| `msk`  | Europe/Moscow | `{{now.msk}}`, `{{date.msk}}`, `{{time.msk}}` |
+
+#### Asian Timezones
+
+| Suffix     | Timezone       | Example Variables                                            |
+| ---------- | -------------- | ------------------------------------------------------------ |
+| `ist`      | Asia/Kolkata   | `{{now.ist}}`, `{{date.ist}}`, `{{time.ist}}`                |
+| `jst`      | Asia/Tokyo     | `{{now.jst}}`, `{{date.jst}}`, `{{time.jst}}`                |
+| `kst`      | Asia/Seoul     | `{{now.kst}}`, `{{date.kst}}`, `{{time.kst}}`                |
+| `cst_asia` | Asia/Shanghai  | `{{now.cst_asia}}`, `{{date.cst_asia}}`, `{{time.cst_asia}}` |
+| `sgt`      | Asia/Singapore | `{{now.sgt}}`, `{{date.sgt}}`, `{{time.sgt}}`                |
+| `hkt`      | Asia/Hong_Kong | `{{now.hkt}}`, `{{date.hkt}}`, `{{time.hkt}}`                |
+
+#### Australian Timezones
+
+| Suffix | Timezone           | Example Variables                                |
+| ------ | ------------------ | ------------------------------------------------ |
+| `awst` | Australia/Perth    | `{{now.awst}}`, `{{date.awst}}`, `{{time.awst}}` |
+| `acst` | Australia/Adelaide | `{{now.acst}}`, `{{date.acst}}`, `{{time.acst}}` |
+| `aest` | Australia/Sydney   | `{{now.aest}}`, `{{date.aest}}`, `{{time.aest}}` |
+
+#### Other Global Timezones
+
+| Suffix   | Timezone                       | Example Variables                                      |
+| -------- | ------------------------------ | ------------------------------------------------------ |
+| `nzst`   | Pacific/Auckland               | `{{now.nzst}}`, `{{date.nzst}}`, `{{time.nzst}}`       |
+| `fjt`    | Pacific/Fiji                   | `{{now.fjt}}`, `{{date.fjt}}`, `{{time.fjt}}`          |
+| `brt`    | America/Sao_Paulo              | `{{now.brt}}`, `{{date.brt}}`, `{{time.brt}}`          |
+| `art`    | America/Argentina/Buenos_Aires | `{{now.art}}`, `{{date.art}}`, `{{time.art}}`          |
+| `eat`    | Africa/Nairobi                 | `{{now.eat}}`, `{{date.eat}}`, `{{time.eat}}`          |
+| `cat`    | Africa/Harare                  | `{{now.cat}}`, `{{date.cat}}`, `{{time.cat}}`          |
+| `wat`    | Africa/Lagos                   | `{{now.wat}}`, `{{date.wat}}`, `{{time.wat}}`          |
+| `sast`   | Africa/Johannesburg            | `{{now.sast}}`, `{{date.sast}}`, `{{time.sast}}`       |
+| `trt`    | Europe/Istanbul                | `{{now.trt}}`, `{{date.trt}}`, `{{time.trt}}`          |
+| `israel` | Asia/Jerusalem                 | `{{now.israel}}`, `{{date.israel}}`, `{{time.israel}}` |
+| `gst`    | Asia/Dubai                     | `{{now.gst}}`, `{{date.gst}}`, `{{time.gst}}`          |
+| `utc`    | UTC                            | `{{now.utc}}`, `{{date.utc}}`, `{{time.utc}}`          |
+
+<Note>
+	All timezone variables follow the same format patterns as the basic
+	variables (now, date, time, month, day, year) but adjusted for the specific
+	timezone.
+</Note>
+
+## Handling Missing Variables
+
+### Default Behavior
+
+When a dynamic variable has no assigned value, it remains in its raw form with the curly braces intact:
+
+**Example:**
+
+-   Prompt: `"Hello {{name}}, how can I help you today?"`
+-   If `name` is not provided: `"Hello {{name}}, how can I help you today?"`
+-   If `name` is "John": `"Hello John, how can I help you today?"`
+
+### Checking for Unset Variables
+
+#### In Conversation Flow (Equations)
+
+To check if a variable is set in conversation flow conditions:
+
+```
+Equation: {{name}} exists
+Result: True if variable is set
+```
+
+#### In Prompts
+
+To handle unset variables in your prompts, you can add conditional logic:
+
+```markdown
+If {{name}} appears with curly braces, use a generic greeting.
+Otherwise, greet the customer by name.
+```
+
+### Best Practices for Missing Variables
+
+1. **Use defensive prompting**: Design prompts that work with or without variables
+2. **Test thoroughly**: Always test with both set and unset variables
+3. **Document requirements**: Clearly indicate which variables are required vs optional
