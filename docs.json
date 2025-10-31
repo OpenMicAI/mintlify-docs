@@ -45,7 +45,8 @@
 									"agents/custom-functions/transfer-call"
 								]
 							},
-							"dynamic-variables"
+							"dynamic-variables",
+							"knowledge-base"
 						]
 					},
 					{
