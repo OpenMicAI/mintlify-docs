@@ -7,12 +7,24 @@ import { ArcadeEmbed } from "/snippets/ArcadeEmbed.jsx";
 
 ## Interactive Demo
 
-See how to set up and use a Knowledge Base:
+See how to set up and use a Knowledge Base with both simple agents and workflow agents:
 
-<ArcadeEmbed
-  url="https://demo.arcade.software/YKW7sJ5yasNpP4Qc2lZ4?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
-  title="Connect a Knowledge Base to Your AI Bot"
-/>
+<Tabs>
+  <Tab title="Simple Agent Demo">
+    <ArcadeEmbed
+      url="https://demo.arcade.software/YKW7sJ5yasNpP4Qc2lZ4?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+      title="Connect a Knowledge Base to Your AI Bot"
+    />
+  </Tab>
+  
+  <Tab title="Workflow Agent Demo">
+    <ArcadeEmbed
+      url="https://demo.arcade.software/WIJfSayuGDheQJZ7OPcN?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+      title="Connect a Knowledge Base to an AI Workflow"
+    />
+  </Tab>
+</Tabs>
+
 ---
 
 ## Overview
@@ -255,35 +267,91 @@ Click **"Add to Knowledge Base"** to start adding content. You have four options
   </Tab>
 </Tabs>
 
-## Connecting Knowledge Base to Agent
+## Connecting Knowledge Base to Agents
 
-Once you've created and populated your knowledge base, connect it to your agent:
+Once you've created and populated your knowledge base, you can connect it to both simple agents and workflow agents.
 
-<Steps>
-  <Step title="Open Agent Settings">
-    Navigate to your agent's configuration page.
-  </Step>
+<Tabs>
+  <Tab title="Simple Agents">
 
-  <Step title="Locate Knowledge Base Section">
-    Find the **Knowledge Base** section in the agent settings.
-  </Step>
+    Connect your knowledge base to a simple agent for straightforward AI conversations:
 
-  <Step title="Select Knowledge Base">
-    Choose the knowledge base(s) you want to connect to this agent.
-  </Step>
-</Steps>
+    <Steps>
+      <Step title="Open Agent Settings">
+        Navigate to your simple agent's configuration page.
+      </Step>
 
-<Frame>
-  <img
-    src="/images/knowlege-base/connect-kb-to-agent.png"
-    alt="Connect knowledge base to agent"
-  />
-</Frame>
+      <Step title="Locate Knowledge Base Section">
+        Find the **Knowledge Base** section in the agent settings.
+      </Step>
 
-<Check>
-  Your agent will now automatically reference the knowledge base during
-  conversations!
-</Check>
+      <Step title="Select Knowledge Base">
+        Choose the knowledge base(s) you want to connect to this agent.
+      </Step>
+    </Steps>
+
+    <Frame>
+      <img
+        src="/images/knowlege-base/connect-kb-to-agent.png"
+        alt="Connect knowledge base to simple agent"
+      />
+    </Frame>
+
+    <Check>
+      Your simple agent will now automatically reference the knowledge base during
+      conversations!
+    </Check>
+  </Tab>
+
+  <Tab title="Workflow Agents">
+
+    For workflow agents, you can connect knowledge bases to individual **Conversation Nodes**, giving you granular control over which parts of your workflow have access to which information.
+
+    <Steps>
+      <Step title="Open Workflow Editor">
+        Navigate to your workflow agent and open the workflow editor.
+        <Frame>
+          <img
+            src="/images/knowlege-base/select-workflow-agent.png"
+            alt="Select workflow agent"
+          />
+        </Frame>
+      </Step>
+
+      <Step title="Select a Conversation Node">
+        Click on the conversation node where you want to add knowledge base access.
+        <Frame>
+          <img
+            src="/images/knowlege-base/click-on-conversation-node.png"
+            alt="Click on conversation node"
+          />
+        </Frame>
+      </Step>
+
+      <Step title="Add Knowledge Base to Node">
+        In the node settings panel, locate the **Knowledge Base** section and select the knowledge base(s) you want to connect to this specific conversation node.
+        <Frame>
+          <img
+            src="/images/knowlege-base/add-kb-to-convo-node.png"
+            alt="Add knowledge base to conversation node"
+          />
+        </Frame>
+      </Step>
+
+      <Step title="Save Changes">
+        Save your workflow to apply the knowledge base connection.
+      </Step>
+    </Steps>
+
+    <Info>
+      Each conversation node in a workflow can have different knowledge bases attached, allowing you to provide context-specific information at different stages of your workflow.
+    </Info>
+
+    <Check>
+      The conversation node will now automatically reference the connected knowledge base when processing conversations!
+    </Check>
+  </Tab>
+</Tabs>
 
 ## Best Practices
 
