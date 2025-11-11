@@ -59,6 +59,10 @@
 					{
 						"group": "Integrations",
 						"pages": ["integrations/ghl-integration"]
+					},
+					{
+						"group": "Resources",
+						"pages": ["faq"]
 					}
 				]
 			},
