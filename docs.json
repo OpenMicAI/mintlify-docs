@@ -14,7 +14,14 @@
 		"dark": "#5B21B6"
 	},
 	"contextual": {
-		"options": ["copy", "view", "chatgpt", "claude", "perplexity", "cursor"]
+		"options": [
+			"copy",
+			"view",
+			"chatgpt",
+			"claude",
+			"perplexity",
+			"cursor"
+		]
 	},
 	"integrations": {
 		"mixpanel": {
@@ -28,7 +35,9 @@
 				"groups": [
 					{
 						"group": "Get Started",
-						"pages": ["introduction"]
+						"pages": [
+							"introduction"
+						]
 					},
 					{
 						"group": "Agents",
@@ -45,7 +54,8 @@
 									"agents/custom-functions/transfer-call"
 								]
 							},
-							"dynamic-variables"
+							"dynamic-variables",
+							"knowledge-base"
 						]
 					},
 					{
@@ -58,7 +68,15 @@
 					},
 					{
 						"group": "Integrations",
-						"pages": ["integrations/ghl-integration"]
+						"pages": [
+							"integrations/ghl-integration"
+						]
+					},
+					{
+						"group": "Campaign",
+						"pages": [
+							"campaign/how-to-schedule-outbound-calls"
+						]
 					},
 					{
 						"group": "Resources",
@@ -100,7 +118,9 @@
 			},
 			{
 				"tab": "Changelog",
-				"pages": ["changelog"]
+				"pages": [
+					"changelog"
+				]
 			}
 		],
 		"global": {
