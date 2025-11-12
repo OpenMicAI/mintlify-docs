@@ -51,7 +51,8 @@
 							{
 								"group": "Custom Functions",
 								"pages": [
-									"agents/custom-functions/transfer-call"
+									"agents/custom-functions/transfer-call",
+									"agents/custom-functions/send-email"
 								]
 							},
 							"dynamic-variables",
