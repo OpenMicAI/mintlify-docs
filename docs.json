@@ -45,7 +45,8 @@
 							{
 								"group": "Room Settings",
 								"pages": [
-									"agents/room-settings/background-sound"
+									"agents/room-settings/background-sound",
+									"agents/room-settings/voicemail-detection"
 								]
 							},
 							{
