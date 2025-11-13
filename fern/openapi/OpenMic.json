@@ -54,6 +54,9 @@
 									"silence_timeout_message": "I didn't hear anything. Are you still there?",
 									"call_recording_enabled": true,
 									"voicemail_detection_enabled": true,
+									"voicemail_action": "leave_message",
+									"voicemail_message_type": "static",
+									"voicemail_message": "Hey, sorry we couldn't reach you directly. Please give us a callback if you can.",
 									"hipaa_compliance_enabled": false,
 									"pci_compliance_enabled": false
 								},
@@ -334,7 +337,11 @@
 								"llm_model_temperature": 0.8,
 								"call_settings": {
 									"max_call_duration": 15,
-									"silence_timeout": 20
+									"silence_timeout": 20,
+									"voicemail_detection_enabled": true,
+									"voicemail_action": "leave_message",
+									"voicemail_message_type": "prompt",
+									"voicemail_message": "Generate a voicemail explaining why I called based on the customer's recent support ticket."
 								}
 							}
 						}
@@ -1410,6 +1417,20 @@
 					"voicemail_detection_enabled": {
 						"type": "boolean",
 						"description": "Whether to detect voicemail"
+					},
+					"voicemail_action": {
+						"type": "string",
+						"enum": ["leave_message", "hangup"],
+						"description": "Action to take when voicemail is detected. 'leave_message' will deliver a custom voicemail message, 'hangup' will end the call immediately."
+					},
+					"voicemail_message_type": {
+						"type": "string",
+						"enum": ["static", "prompt"],
+						"description": "Type of voicemail message. 'static' uses a fixed pre-written message, 'prompt' uses AI-generated messages based on conversation context."
+					},
+					"voicemail_message": {
+						"type": "string",
+						"description": "The voicemail message content. Required when voicemail_action is 'leave_message'. For 'static' type, this is the exact message to be delivered. For 'prompt' type, this provides instructions to the AI."
 					},
 					"hipaa_compliance_enabled": {
 						"type": "boolean",
