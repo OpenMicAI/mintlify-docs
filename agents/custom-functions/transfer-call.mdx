@@ -1,33 +1,79 @@
 ---
 title: 'Transfer Call'
-description: 'Configure call transfer settings to route calls to human agents or other AI agents'
+subtitle: Enable your AI agents to transfer calls to human agents or other AI agents with smart routing and handoff capabilities.
+description: Learn how to configure call transfer settings for both simple agents and workflow agents, with options for warm transfers, cold transfers, and webhook-based dynamic routing.
+slug: agents/custom-functions/transfer-call
 ---
 
 import { ArcadeEmbed } from '/snippets/ArcadeEmbed.jsx'
 
+<Info>
+  **Seamless Handoffs**: The Transfer Call function enables your AI agents to intelligently route calls to human agents or other AI agents, with options for warm transfers (with context), cold transfers (immediate), and dynamic webhook-based routing.
+</Info>
 
 ## Interactive Demo
 
-See the Transfer Call feature in action:
+See how to set up the Transfer Call function for both simple agents and workflow agents:
 
-<ArcadeEmbed 
-  url="https://demo.arcade.software/FH9B4EEk61ZdBHYt9l4w?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
-  title="Set Up a Warm Call Transfer With Custom Handoff in OpenMic Bot"
-/>
+<Tabs>
+  <Tab title="Simple Agent Demo">
+    <ArcadeEmbed 
+      url="https://demo.arcade.software/FH9B4EEk61ZdBHYt9l4w?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+      title="Set Up a Warm Call Transfer With Custom Handoff in OpenMic Bot"
+    />
+  </Tab>
+  
+  <Tab title="Workflow Agent Demo">
+    <ArcadeEmbed
+      url="https://demo.arcade.software/WSPMA9Ve5otBPuywvWsC?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+      title="Configure a Warm Transfer Step in an AI Workflow"
+    />
+  </Tab>
+</Tabs>
+
 ---
 
 ## Overview
 
-It is common in call operations to transfer calls to another human agent or AI agent. OpenMic provides flexible transfer options through two modes:
+The Transfer Call function allows your AI agents to seamlessly route calls to human agents or other AI agents during conversations. OpenMic provides flexible transfer options to match your business needs.
 
+**Key Benefits:**
+- Route calls to the right person or department automatically
+- Provide context to receiving agents with warm transfers
+- Integrate with external systems for dynamic routing
+- Improve customer satisfaction with intelligent handoffs
+
+**Transfer Modes:**
 - **Static Mode**: Configure transfers directly in the dashboard with warm/cold transfer options, human detection, agent confirmation, and custom handoff messages
 - **Webhook Mode**: Dynamically route calls using your own backend logic for real-time destination determination with fallback support
 
-## Configuration Steps
+---
 
-### 1. Add Transfer Call Function
+## Add Transfer Call to Simple Agents
 
-In your bot settings, navigate to the custom functions section and add a new "Transfer Call" function.
+Follow these steps to add the Transfer Call function to your AI voice agent:
+
+### Step 1: Navigate to Simple Agents
+
+From your dashboard sidebar, click on **Simple Agents**.
+
+---
+
+### Step 2: Select Your Agent
+
+Click on the agent you want to configure from the list.
+
+---
+
+### Step 3: Open Custom Functions Tab
+
+Click on the **Custom Functions** tab in the agent configuration.
+
+---
+
+### Step 4: Add New Function
+
+Click the **Add Function** button to open the function selection menu.
 
 <Frame>
   <img
@@ -36,37 +82,65 @@ In your bot settings, navigate to the custom functions section and add a new "Tr
   />
 </Frame>
 
-### 2. Configure Basic Settings
+---
+
+### Step 5: Select Transfer Call
+
+Click on **Transfer Call** from the available functions. A configuration popup will appear.
+
+---
+
+### Step 6: Configure Basic Settings
 
 <Frame>
   <img
-    src="/images/agents/custom-functions/transfer-call/edit-transfer-call.png"
+    src="/images/agents/custom-functions/transfer-call/simple/edit-transfer-call.png"
     alt="Editing transfer call configuration"
     style={{height: '400px'}}
   />
 </Frame>
 
-**Name**
-- Define the function name using snake_case (e.g., `transfer_call`)
-- This name will be used by the AI to trigger the transfer
+Fill in the required fields:
 
-**Mode**
+#### Function Name
+Define the function name using snake_case (e.g., `transfer_call`). This name will be used by the AI to trigger the transfer.
+
+#### Mode
 Choose between two modes:
 - **Static**: Configure transfer settings directly in the dashboard
 - **Webhook**: Use dynamic routing via webhook to determine transfer destination at runtime
 
-#### Static Mode Configuration
+#### Transfer To
 
-When using Static mode:
+When using **Static mode**, select your transfer destination type:
 
-**Transfer To**
-Select your transfer destination type:
-- **Static Number**: Specify a fixed phone number (E.164 format)
-- **Dynamic Routing**: Use a prompt to handle dynamic call transfer routing
+<Tabs>
+  <Tab title="Static Number">
+    **Static Number**: Specify a fixed phone number to transfer calls to.
+    
+    Enter a phone number in E.164 format (e.g., +1234567890). All transfers will go to this number.
+  </Tab>
+  
+  <Tab title="Dynamic Routing">
+    **Dynamic Routing**: Use a prompt with logic to route calls to different numbers based on context.
+    
+    **How it works:**
+    - Define routing logic in the prompt field
+    - Include multiple phone numbers with conditions
+    - AI will determine the correct destination based on the conversation
+    
+    **Example:**
+    ```
+    If the user wants support, transfer to +1234567890
+    If the user wants sales, transfer to +1234567891
+    Otherwise, transfer to +1234567892
+    ```
+  </Tab>
+</Tabs>
 
 #### Webhook Mode Configuration
 
-When using Webhook mode, you can dynamically determine the transfer destination at runtime using your webhook endpoint.
+When using **Webhook mode**, you can dynamically determine the transfer destination at runtime using your webhook endpoint.
 
 **Transfer Number**
 - Enter a phone number in E.164 format (e.g., +1234567890)
@@ -104,7 +178,138 @@ For detailed webhook specifications, see the [Pre-Tool Webhook documentation](/p
 **Graceful Degradation**: If your webhook fails or times out (3 seconds), the fallback transfer number you configured will be used.
 </Info>
 
-### 3. Configure Transfer Type
+---
+
+### Step 7: Save the Function
+
+Click **Save** to add the Transfer Call function to your agent.
+
+<Note>
+  Once saved, your AI agent will be able to use this function during conversations when the conditions you described are met.
+</Note>
+
+---
+
+## Add Transfer Call to Workflow Agents
+
+Follow these steps to add the Transfer Call function to your workflow agent:
+
+### Step 1: Navigate to Workflow Agents
+
+From your dashboard sidebar, click on **Workflow Agents**.
+
+---
+
+### Step 2: Select Your Workflow
+
+Click on the workflow you want to configure from the list.
+
+---
+
+### Step 3: Add Transfer Node
+
+In the workflow editor, click the **Add Node** button (usually a "+" icon) where you want to add the transfer step.
+
+<Frame>
+  <img
+    src="/images/agents/custom-functions/transfer-call/workflows/add-transfer-node.png"
+    alt="Add Transfer Node in Workflow Editor"
+  />
+</Frame>
+
+---
+
+### Step 4: Select Transfer Node
+
+From the node types, click on **Transfer** to add a transfer node to your workflow.
+
+---
+
+### Step 5: Configure the Transfer Node
+
+Click on the newly added transfer node to open its configuration panel.
+
+<Frame>
+  <img
+    src="/images/agents/custom-functions/transfer-call/workflows/edit-transfer-node.png"
+    alt="Configure Transfer Node"
+  />
+</Frame>
+
+Fill in the required fields:
+
+#### Function Name
+Give your transfer step a descriptive name (e.g., "Transfer to Sales", "Route to Support", "Escalate to Manager").
+
+#### Mode
+Choose between two modes:
+- **Static**: Configure transfer settings directly in the workflow
+- **Webhook**: Use dynamic routing via webhook to determine transfer destination at runtime
+
+#### Destination Number
+
+When using **Static mode**, enter the phone number to transfer calls to:
+
+- Enter a phone number in E.164 format (e.g., +1234567890)
+- All transfers from this workflow node will go to this number
+
+#### Webhook Mode Configuration
+
+When using **Webhook mode**, you can dynamically determine the transfer destination at runtime using your webhook endpoint.
+
+**Transfer Number**
+- Enter a phone number in E.164 format (e.g., +1234567890)
+- This number can be used as a fallback or default destination
+
+**Call a webhook before running this tool**
+<Info>Use this to validate or enrich data before the transfer happens.</Info>
+
+Toggle this option to call a webhook before executing the transfer. This allows you to:
+- Dynamically determine the transfer destination based on real-time data
+- Validate the transfer conditions
+- Enrich the call data with additional context from external systems (CRM, availability APIs, etc.)
+
+**Webhook URL Options**
+
+You can choose between two webhook URL sources:
+
+1. **Use the pre-call webhook URL**: Reuse the webhook URL configured in your agent settings
+   <Warning>If no pre-call webhook URL is configured in agent settings, this option cannot be used. Configure it first in your bot's main settings.</Warning>
+
+2. **Custom webhook URL**: Provide a specific webhook URL for this transfer function
+   - Example: `https://your-domain.com/webhook/pre-tool`
+   - This URL will receive the transfer request data and can return dynamic variables including the transfer destination
+
+**How Webhook Mode Works:**
+
+When the transfer node is executed:
+1. OpenMic sends a POST request to your webhook with call details
+2. Your webhook returns dynamic variables, including the `transfer_number`
+3. The call is transferred to the number specified in your webhook response
+
+For detailed webhook specifications, see the [Pre-Tool Webhook documentation](/pre-tool-webhook).
+
+<Info>
+**Graceful Degradation**: If your webhook fails or times out (3 seconds), the fallback transfer number you configured will be used.
+</Info>
+
+---
+
+### Step 6: Save the Workflow
+
+Click the **Save** button in the top right corner of the workflow editor to apply your changes.
+
+<Note>
+  The transfer will be executed when the workflow execution reaches this node during the call or process flow.
+</Note>
+
+---
+
+## Configure Transfer Type and Behavior
+
+The following transfer configuration options apply to both Simple Agents and Workflow Agents:
+
+### Transfer Type
 
 <Warning>
 Warm and Cold transfer types are only available for **Static mode** as of now. Webhook mode support for these transfer type configurations will be available soon.
@@ -129,7 +334,9 @@ Choose between two transfer types:
   </Tab>
 </Tabs>
 
-### 4. Configure Transfer Behavior Settings
+---
+
+### Transfer Behavior Settings
 
 <Info>
 These settings are only available when using **Static mode** with warm transfer enabled.
@@ -188,57 +395,65 @@ Choose between:
 
 Example: "Say both are connected"
 
-## Best Practices
+---
 
-### Update Your Agent Prompt
+## Configuration Best Practices
 
-Enhance the agent's understanding by incorporating transfer conditions into your bot's main prompt:
+<AccordionGroup>
+  <Accordion title="Update Your Agent Prompt (Simple Agents)" icon="message-bot">
+    For Simple Agents, enhance the agent's understanding by incorporating transfer conditions into your bot's main prompt:
 
-```
-If the user is angry, frustrated, or requests to speak with a human, 
-use the transfer_call tool to transfer the conversation to a human agent.
-```
+    ```
+    If the user is angry, frustrated, or requests to speak with a human, 
+    use the transfer_call tool to transfer the conversation to a human agent.
+    ```
+    
+    This helps the AI understand when to automatically trigger the transfer function based on conversation context.
+  </Accordion>
 
-### When to Use Webhook Mode
+  <Accordion title="Choose the Right Transfer Mode" icon="route">
+    **When to Use Static Mode vs Webhook Mode:**
 
-Webhook mode is ideal for advanced routing scenarios:
+    **Static Mode is best for:**
+    - Fixed transfer destinations that don't change
+    - Simple routing rules you can configure in the dashboard
+    - Quick setup without backend development
+    - Using built-in warm/cold transfer features with human detection and whisper messages
+    - Configuring transfer behavior directly in the OpenMic UI
 
-**Static Mode is best for:**
-- Fixed transfer destinations that don't change
-- Simple routing rules you can configure in the dashboard
-- Quick setup without backend development
-- Using built-in warm/cold transfer features with human detection and whisper messages
-- Configuring transfer behavior directly in the OpenMic UI
+    **Webhook Mode is best for:**
+    - Dynamic routing based on real-time data (e.g., agent availability, time of day, customer priority)
+    - Integration with external systems (CRM, scheduling tools, queue management)
+    - Complex routing logic that requires backend processing
+    - A/B testing different transfer strategies
+    - Load balancing across multiple agents or departments
+    - Custom transfer logic implemented in your backend (you handle warm/cold transfer behavior in your code)
+  </Accordion>
 
-**Webhook Mode is best for:**
-- Dynamic routing based on real-time data (e.g., agent availability, time of day, customer priority)
-- Integration with external systems (CRM, scheduling tools, queue management)
-- Complex routing logic that requires backend processing
-- A/B testing different transfer strategies
-- Load balancing across multiple agents or departments
-- Custom transfer logic implemented in your backend (you handle warm/cold transfer behavior in your code)
+  <Accordion title="Define Clear Transfer Conditions" icon="list-check">
+    Be specific about when transfers should occur:
+    - User explicitly requests human assistance
+    - User expresses frustration or dissatisfaction
+    - Query is outside the AI's capabilities
+    - High-value or sensitive situations requiring human judgment
+  </Accordion>
 
-### Define Clear Transfer Conditions
+  <Accordion title="Use Warm Transfer for Better Experience" icon="hand-holding-hand">
+    Warm transfers provide context to the receiving agent, resulting in:
+    - Better customer experience (no need to repeat information)
+    - More efficient handling by human agents
+    - Higher first-call resolution rates
+  </Accordion>
 
-Be specific about when transfers should occur:
-- User explicitly requests human assistance
-- User expresses frustration or dissatisfaction
-- Query is outside the AI's capabilities
-- High-value or sensitive situations requiring human judgment
+  <Accordion title="Configure Appropriate Timeouts" icon="clock">
+    Set detection timeouts based on your team's typical response patterns:
+    - **Fast-paced teams**: 15-20 seconds
+    - **Standard operations**: 30 seconds (default)
+    - **High-volume periods**: 45-60 seconds
+  </Accordion>
+</AccordionGroup>
 
-### Use Warm Transfer for Better Experience
-
-Warm transfers provide context to the receiving agent, resulting in:
-- Better customer experience (no need to repeat information)
-- More efficient handling by human agents
-- Higher first-call resolution rates
-
-### Configure Appropriate Timeouts
-
-Set detection timeouts based on your team's typical response patterns:
-- **Fast-paced teams**: 15-20 seconds
-- **Standard operations**: 30 seconds (default)
-- **High-volume periods**: 45-60 seconds
+---
 
 ## Example Use Cases
 
@@ -286,6 +501,42 @@ Set detection timeouts based on your team's typical response patterns:
     - This ensures customers are only transferred when an agent is ready to help
   </Accordion>
 </AccordionGroup>
+
+---
+
+## Difference: Simple Agents vs Workflow Agents
+
+<CardGroup cols={2}>
+  <Card title="Simple Agents" icon="robot">
+    **When to Use:**
+    - Dynamic, conversation-based transfers
+    - AI decides when to transfer based on conversation flow
+    - Multiple transfer functions for different scenarios
+    - Context-aware routing based on customer sentiment
+    
+    **How It Works:**
+    - Agent uses AI to determine when conditions are met
+    - Triggered by conversation context and customer requests
+    - More flexible and adaptive
+    - Requires clear function descriptions
+  </Card>
+  
+  <Card title="Workflow Agents" icon="diagram-project">
+    **When to Use:**
+    - Predetermined process with specific transfer points
+    - Transfer at specific steps in the workflow
+    - Automated, predictable routing
+    - Sequential call flows
+    
+    **How It Works:**
+    - Transfer executed when workflow reaches the node
+    - Part of a structured, sequential process
+    - More controlled and predictable
+    - Can use workflow variables for routing decisions
+  </Card>
+</CardGroup>
+
+---
 
 ## Troubleshooting
 
@@ -354,3 +605,20 @@ Set detection timeouts based on your team's typical response patterns:
     - Test with different call scenarios to ensure routing logic covers all cases
   </Accordion>
 </AccordionGroup>
+
+---
+
+## Need Help?
+
+If you encounter issues or have questions about the Transfer Call function:
+
+- Test the function with your own phone number first
+- Review your call logs and workflow execution history
+- Verify the phone number format is correct (E.164 format)
+- Check that your transfer function description is clear (for Simple Agents)
+- Ensure your workflow is saved and published (for Workflow Agents)
+- For webhook issues, check your webhook logs and response format
+
+<Info>
+  For technical support or questions about call transfer configurations, contact our support team.
+</Info>
