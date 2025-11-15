@@ -4,7 +4,7 @@ subtitle: Use dynamic variables to personalize your calls
 description: Use dynamic variables to personalize your calls
 ---
 
-import { ArcadeEmbed }  from '/snippets/ArcadeEmbed.jsx';
+import { ArcadeEmbed } from "/snippets/ArcadeEmbed.jsx";
 
 ## Overview
 
@@ -48,7 +48,10 @@ Dynamic variables can be used in:
   <Step title="Test your dynamic variables">
     Before deploying, test your dynamic variables using the web interface
 
-<ArcadeEmbed url="https://demo.arcade.software/kZVyBek8IzbBBQSzz6iw?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="Set Default Values for Dynamic Variables in OpenMic Bot"/>
+<ArcadeEmbed
+	url="https://demo.arcade.software/kZVyBek8IzbBBQSzz6iw?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+	title="Set Default Values for Dynamic Variables in OpenMic Bot"
+/>
 
   </Step>
 
@@ -153,6 +156,25 @@ OpenMic supports comprehensive timezone variables with the following format: `{{
 	variables (now, date, time, month, day, year) but adjusted for the specific
 	timezone.
 </Note>
+
+### Session / call metadata
+
+| Variable               | Description                                                 | Example Values          |
+| ---------------------- | ----------------------------------------------------------- | ----------------------- |
+| `{{session_type}}`     | Session type                                                | "voice" or "chat"       |
+| `{{call_type}}`        | Call type (phone_call, web_call, or raw callType string)    | "phone_call"            |
+| `{{direction}}`        | Call direction (only set for phone calls)                   | "inbound" or "outbound" |
+| `{{user_number}}`      | User phone number (caller for inbound, callee for outbound) | "+1234567890"           |
+| `{{agent_number}}`     | Agent/trunk phone number                                    | "+1234567890"           |
+| `{{call_id}}`          | Current session/call id (sessionId)                         | "session_12345"         |
+| `{{session_duration}}` | Human-readable duration since session start                 | "45 seconds"            |
+
+### Calendar variables
+
+| Variable                        | Description                                                         | Example                       |
+| ------------------------------- | ------------------------------------------------------------------- | ----------------------------- |
+| `{{current_calendar}}`          | 14-day calendar in America/Los_Angeles                              | Calendar data in PST timezone |
+| `{{current_calendar.<suffix>}}` | 14-day calendar keyed by the existing timezone suffixes in your map | `{{current_calendar.pst}}`    |
 
 ## Handling Missing Variables
 
