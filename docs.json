@@ -1,174 +1,170 @@
 {
-	"$schema": "https://mintlify.com/docs.json",
-	"theme": "mint",
-	"name": "OpenMic",
-	"openapi": "OpenMic.json",
-	"logo": {
-		"dark": "/images/openmic-dark-logo.svg",
-		"light": "/images/openmic-light-logo.svg"
-	},
-	"favicon": "/favicon.svg",
-	"colors": {
-		"primary": "#7C3AED",
-		"light": "#A78BFA",
-		"dark": "#5B21B6"
-	},
-	"contextual": {
-		"options": [
-			"copy",
-			"view",
-			"chatgpt",
-			"claude",
-			"perplexity",
-			"cursor"
-		]
-	},
-	"integrations": {
-		"mixpanel": {
-			"projectToken": "6ccb514cfdb55d58633aa1ced0b19bcf"
-		}
-	},
-	"navigation": {
-		"tabs": [
-			{
-				"tab": "Documentation",
-				"groups": [
-					{
-						"group": "Get Started",
-						"pages": [
-							"introduction"
-						]
-					},
-					{
-						"group": "Agents",
-						"pages": [
-							{
-								"group": "Room Settings",
-								"pages": [
-									"agents/room-settings/background-sound",
-									"agents/room-settings/voicemail-detection"
-								]
-							},
-							{
-								"group": "Custom Functions",
-								"pages": [
-									"agents/custom-functions/transfer-call",
-									"agents/custom-functions/send-sms",
-									"agents/custom-functions/send-email"
-								]
-							},
-							"dynamic-variables",
-							"knowledge-base"
-						]
-					},
-					{
-						"group": "Webhooks",
-						"pages": [
-							"pre-call-webhook",
-							"pre-tool-webhook",
-							"post-call-webhook"
-						]
-					},
-					{
-						"group": "Integrations",
-						"pages": [
-							"integrations/ghl-integration"
-						]
-					},
-					{
-						"group": "Campaign",
-						"pages": [
-							"campaign/how-to-schedule-outbound-calls"
-						]
-					},
-					{
-						"group": "Resources",
-						"pages": ["faq"]
-					}
-				]
-			},
-			{
-				"tab": "API Reference",
-				"groups": [
-					{
-						"group": "Calls",
-						"pages": [
-							"api-reference/calls/create-call",
-							"api-reference/calls/list-calls",
-							"api-reference/calls/get-call"
-						]
-					},
-					{
-						"group": "Bots",
-						"pages": [
-							"api-reference/bots/list-bots",
-							"api-reference/bots/create-bot",
-							"api-reference/bots/get-bot",
-							"api-reference/bots/update-bot",
-							"api-reference/bots/delete-bot"
-						]
-					},
-					{
-						"group": "Phone Numbers",
-						"pages": [
-							"api-reference/phone-numbers/list-numbers",
-							"api-reference/phone-numbers/get-number",
-							"api-reference/phone-numbers/link-bot",
-							"api-reference/phone-numbers/unlink-bot"
-						]
-					}
-				]
-			},
-			{
-				"tab": "Changelog",
-				"pages": [
-					"changelog"
-				]
-			}
-		],
-		"global": {
-			"anchors": [
-				{
-					"anchor": "Documentation",
-					"href": "https://docs.openmic.ai",
-					"icon": "book-open-cover"
-				},
-				{
-					"anchor": "Community",
-					"href": "https://join.slack.com/t/openmicai/shared_invite/zt-2ha8kt9pt-jaElinNxF4VgN5gyCC6spg",
-					"icon": "slack"
-				},
-				{
-					"anchor": "Blog",
-					"href": "https://openmic.ai/blog",
-					"icon": "newspaper"
-				},
-				{
-					"anchor": "Pricing",
-					"href": "https://www.openmic.ai/pricing",
-					"icon": "dollar-sign"
-				}
-			]
-		}
-	},
-	"navbar": {
-		"links": [
-			{
-				"label": "Support",
-				"href": "mailto:founders@openmic.ai"
-			}
-		],
-		"primary": {
-			"type": "button",
-			"label": "Dashboard",
-			"href": "https://chat.openmic.ai/login"
-		}
-	},
-	"footer": {
-		"socials": {
-			"x": "https://twitter.com/openmic",
-			"github": "https://github.com/OpenMic",
-			"linkedin": "https://www.linkedin.com/showcase/openmicai/"
-		}
-	}
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "OpenMic",
+  "openapi": "OpenMic.json",
+  "logo": {
+    "dark": "/images/openmic-dark-logo.svg",
+    "light": "/images/openmic-light-logo.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#7C3AED",
+    "light": "#A78BFA",
+    "dark": "#5B21B6"
+  },
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "cursor"]
+  },
+  "integrations": {
+    "mixpanel": {
+      "projectToken": "6ccb514cfdb55d58633aa1ced0b19bcf"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction"]
+          },
+          {
+            "group": "Agents",
+            "pages": [
+              {
+                "group": "Room Settings",
+                "pages": [
+                  "agents/room-settings/background-sound",
+                  "agents/room-settings/voicemail-detection"
+                ]
+              },
+              {
+                "group": "Custom Functions",
+                "pages": [
+                  "agents/custom-functions/transfer-call",
+                  "agents/custom-functions/send-sms",
+                  "agents/custom-functions/send-email",
+                  "agents/custom-functions/check-calendar-availability",
+                  "agents/custom-functions/call-booking"
+                ]
+              },
+              "dynamic-variables",
+              "knowledge-base"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "pre-call-webhook",
+              "pre-tool-webhook",
+              "post-call-webhook"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": ["integrations/ghl-integration"]
+          },
+          {
+            "group": "Campaign",
+            "pages": ["campaign/how-to-schedule-outbound-calls"]
+          },
+          {
+            "group": "Resources",
+            "pages": ["faq"]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Calls",
+            "pages": [
+              "api-reference/calls/create-call",
+              "api-reference/calls/list-calls",
+              "api-reference/calls/get-call"
+            ]
+          },
+          {
+            "group": "Bots",
+            "pages": [
+              "api-reference/bots/list-bots",
+              "api-reference/bots/create-bot",
+              "api-reference/bots/get-bot",
+              "api-reference/bots/update-bot",
+              "api-reference/bots/delete-bot"
+            ]
+          },
+          {
+            "group": "Phone Numbers",
+            "pages": [
+              "api-reference/phone-numbers/list-numbers",
+              "api-reference/phone-numbers/get-number",
+              "api-reference/phone-numbers/link-bot",
+              "api-reference/phone-numbers/unlink-bot"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Tutorials",
+        "groups": [
+          {
+            "group": "Features",
+            "pages": ["tutorials/features/warm-call-transfer"]
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "pages": ["changelog"]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "href": "https://docs.openmic.ai",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Community",
+          "href": "https://join.slack.com/t/openmicai/shared_invite/zt-2ha8kt9pt-jaElinNxF4VgN5gyCC6spg",
+          "icon": "slack"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://openmic.ai/blog",
+          "icon": "newspaper"
+        },
+        {
+          "anchor": "Pricing",
+          "href": "https://www.openmic.ai/pricing",
+          "icon": "dollar-sign"
+        }
+      ]
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:founders@openmic.ai"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://chat.openmic.ai/login"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://twitter.com/openmic",
+      "github": "https://github.com/OpenMic",
+      "linkedin": "https://www.linkedin.com/showcase/openmicai/"
+    }
+  }
 }
