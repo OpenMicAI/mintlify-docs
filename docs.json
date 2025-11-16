@@ -113,7 +113,10 @@
         "groups": [
           {
             "group": "Features",
-            "pages": ["tutorials/features/warm-call-transfer"]
+            "pages": [
+              "tutorials/features/warm-call-transfer",
+              "tutorials/features/call-booking"
+            ]
           }
         ]
       },
