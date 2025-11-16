@@ -55,11 +55,14 @@ All post-call webhooks use the event type `"end-of-call-report"` regardless of c
 	"sessionId": "cmdx5w8oc0005q671s3cbg063",
 	"toPhoneNumber": "+916297653534",
 	"fromPhoneNumber": "+16167948654",
+	"callDuration": "0:00:45.723362",
 	"callType": "phonecall",
 	"disconnectionReason": "user_ended_call",
 	"direction": "outbound",
 	"createdAt": "2025-08-04T13:44:26.604Z",
 	"endedAt": "2025-08-04T13:45:03.325Z",
+	"callPickup": "yes",
+  "sessionType": "voice",
 	"transcript": [
 		["assistant", "Hello I am Jay."],
 		["user", "Yeah. Hi."],
@@ -75,6 +78,10 @@ All post-call webhooks use the event type `"end-of-call-report"` regardless of c
 	],
 	"summary": "Jay greeted Soumyadip and offered to reserve a pack of raisins at Shri Balaji Traders. The conversation focused on confirming the reservation, with options for pickup or online order.",
 	"isSuccessful": false,
+	"successEvaluation": true,
+	"extractedData": {
+    "product": "Raisins",
+  },
 	"dynamicVariables": {
 		"customerName": "Soumyadip Moni"
 	}
