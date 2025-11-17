@@ -1,0 +1,848 @@
+---
+title: Cal.com Booking
+subtitle: Enable your AI agents to book appointments automatically using Cal.com during customer interactions.
+description: Learn how to add Cal.com appointment booking to your AI agents and workflows to automatically schedule meetings and calls.
+slug: agents/custom-functions/call-booking
+---
+
+import { ArcadeEmbed } from '/snippets/ArcadeEmbed.jsx';
+
+<Info>
+  **Automated Scheduling**: The Call Booking function allows your AI agents to book appointments directly in your Cal.com calendar during conversations, streamlining the scheduling process from inquiry to confirmation.
+</Info>
+
+## Interactive Demo
+
+See how to set up the Call Booking function for both simple agents and workflow agents:
+
+<Tabs>
+  <Tab title="Simple Agent Demo">
+    <ArcadeEmbed
+      url="https://demo.arcade.software/m3w06Y913xeDnELya8bp?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+      title="Add a Cal.com Booking Function to an AI Receptionist Bot"
+    />
+  </Tab>
+  
+  <Tab title="Workflow Agent Demo">
+    <ArcadeEmbed
+      url="https://demo.arcade.software/9BcGG9MHKuXe9konRXiV?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+      title="Integrate Cal.com Booking into an Automated Call Workflow"
+    />
+  </Tab>
+</Tabs>
+
+---
+
+## Overview
+
+The Call Booking function integrates your Cal.com calendars with your AI agents, enabling them to book appointments automatically during conversations. This powerful feature completes the scheduling process by not just checking availability, but actually creating confirmed bookings.
+
+**Key Benefits:**
+- Book appointments automatically during conversations
+- Eliminate back-and-forth scheduling coordination
+- Reduce no-shows with instant calendar confirmations
+- Seamlessly integrate with your existing Cal.com setup
+
+**Integration:** This function uses [Cal.com](https://cal.com), a popular open-source scheduling platform.
+
+<Note>
+  **Prerequisites**: You need a Cal.com account to use this function. Sign up at [cal.com](https://cal.com) if you haven't already.
+</Note>
+
+---
+
+## Setup Instructions
+
+<Tabs>
+  <Tab title="Simple Agents">
+    ## Add Call Booking to Simple Agents
+
+    Follow these steps to add the Call Booking function to your AI voice agent:
+
+    ### Step 1: Navigate to Simple Agents
+
+    From your dashboard sidebar, click on **Simple Agents**.
+
+    ---
+
+    ### Step 2: Select Your Agent
+
+    Click on the agent you want to configure from the list.
+
+    ---
+
+    ### Step 3: Open Custom Functions Tab
+
+    Click on the **Custom Functions** tab in the agent configuration.
+
+    ---
+
+    ### Step 4: Add New Function
+
+    Click the **Add Function** button to open the function selection menu.
+
+    ---
+
+    ### Step 5: Select Call Booking
+
+    Click on **Call Booking** from the available functions. A configuration popup will appear with two setup modes.
+
+    <Frame>
+      <img
+        src="/images/agents/custom-functions/call-booking/simple/choose-call-book-fn.png"
+        alt="Choose Call Booking Function"
+      />
+    </Frame>
+
+    ---
+
+    ## Configuration Modes for Simple Agents
+
+    Cal.com offers two ways to connect your calendar: **Static Mode** (no API key required) and **Webhook Mode** (requires API key for more control). Choose the mode that best fits your needs.
+
+    <Tabs>
+      <Tab title="Static Mode">
+        ## Static Mode Configuration
+        
+        Static mode fetches publicly available event types using your Cal.com username or organization slug. This is the easiest way to get started and doesn't require an API key.
+        
+        ### Step 1: Enter Cal.com Username or Organization Slug
+        
+        <Frame>
+          <img
+            src="/images/agents/custom-functions/call-booking/simple/static/step-1.png"
+            alt="Enter Username or Organization Slug"
+            style={{ height: "400px" }}
+          />
+        </Frame>
+        
+        Enter your Cal.com **username** or **organization slug**:
+        
+        - **Username**: Your personal Cal.com username (e.g., `jane` if your Cal.com URL is `cal.com/jane`)
+          - Find it in your Cal.com profile settings
+        - **Organization Slug**: Your organization's Cal.com slug (e.g., `acme` if your team URLs are like `acme.cal.com/jane` or `schedule.acme.com/jane`)
+          - Find it in your organization settings
+        
+        ---
+        
+        ### Step 2: Fetch Event Types
+
+        <Frame>
+            <img
+                src="/images/agents/custom-functions/call-booking/simple/static/step-2.png"
+                alt="Fetch Event Types"
+                style={{ height: "400px" }}
+            />
+        </Frame>
+        
+        Click the **Fetch Event Types** button to retrieve all publicly available event types from your Cal.com account.
+        
+        After fetching, you'll see a dropdown list of all your available event types (e.g., "30 Minute Meeting", "Discovery Call", "Consultation").
+        
+        **Choose an Event Type** from the dropdown that you want your AI agent to book appointments for.
+        
+        Click **Next** to continue.
+        
+        ---
+        
+        ### Step 3: Configure Function Options
+        
+        <Frame>
+          <img
+            src="/images/agents/custom-functions/call-booking/simple/static/step-3.png"
+            alt="Configure Function Options"
+            style={{ height: "400px" }}
+          />
+        </Frame>
+        
+        Configure the following options:
+        
+        #### Function Name
+        Give your function a descriptive name in snake_case (e.g., `book_consultation`, `schedule_meeting`, `book_appointment`).
+        
+        #### Description
+        Describe when this function should be used. This helps the AI understand when to book appointments.
+        
+        **Examples:**
+        - "Use this when the customer wants to book a consultation appointment"
+        - "Book this when the customer confirms they want to schedule a meeting"
+        - "Use this to create an appointment booking in the calendar"
+        
+        #### Timezone (Optional)
+        Specify the timezone for booking appointments (e.g., `America/New_York` or `Europe/London`). If not provided, Cal.com will use its default timezone (UTC).
+        
+        ---
+        
+        ### Step 4: Create Function
+        
+        Click **Create Function** to save your configuration. The function is now ready to use!
+        
+        ---
+        
+        ### Step 5: Test the Function
+        
+        Test your newly created function:
+        
+        1. Start a call or conversation with your AI agent
+        2. Ask your agent to book an appointment, for example:
+           - "I'd like to book an appointment for Tuesday at 2 PM"
+           - "Can you schedule me for next Monday at 10 AM?"
+           - "Book me for the 3 PM slot on Thursday"
+        
+        Your agent will use the function to create a booking in your Cal.com calendar and confirm the appointment with the customer.
+        
+        <Note>
+          **Static mode uses public event types**, so ensure the event type you selected is set to "Public" in your Cal.com settings.
+        </Note>
+        
+      </Tab>
+      
+      <Tab title="Webhook Mode">
+        ## Webhook Mode Configuration
+        
+        Webhook mode provides more control and security by using your Cal.com API key. This allows you to access private event types and configure advanced settings.
+        
+        ### Step 1: Enter Cal.com API Key and Event Type ID
+        
+        <Frame>
+          <img
+            src="/images/agents/custom-functions/call-booking/simple/webhook/step-1.png"
+            alt="Enter API Key and Event Type ID"
+            style={{ height: "400px" }}
+          />
+        </Frame>
+        
+        You'll need two pieces of information from your Cal.com account:
+        
+        #### Cal.com API Key
+        
+        Generate an API key from your Cal.com account:
+        
+        1. Log in to [Cal.com](https://app.cal.com)
+        2. Navigate to **Settings** → **Security** → **API Keys**
+        3. Click **New API Key**
+        4. Give it a name (e.g., "OpenMic Integration")
+        5. Copy the generated API key
+        6. Paste it in the **API Key** field
+        
+        <Warning>
+          **Keep your API key secure**: Never share your API key publicly. It provides access to your Cal.com account and calendar data.
+        </Warning>
+        
+        #### Cal.com Event Type ID
+        
+        Find your Event Type ID:
+        
+        1. Go to your Cal.com dashboard
+        2. Click on **Event Types**
+        3. Open the event type you want to use
+        4. Look at the URL in your browser's address bar
+        5. The Event Type ID is the number between the slashes
+           - Example: `app.cal.com/event-types/123456` → Event Type ID is `123456`
+        
+        For more details, see [Cal.com's guide on finding Event Type IDs](https://cal.com/help/event-types/eventtype-id).
+        
+        #### Configure Additional Fields
+        
+        <Frame>
+          <img
+            src="/images/agents/custom-functions/call-booking/simple/webhook/step-1+.png"
+            alt="Configure Additional Fields"
+            style={{ height: "400px" }}
+          />
+        </Frame>
+        
+        After entering your API key and Event Type ID, you'll see additional webhook configuration options:
+        
+        **Call a webhook before running this tool** (Optional)
+        - Toggle this on to validate or enrich data before booking appointments
+        - **Use the pre-call webhook URL**: Use the webhook URL configured in your agent settings
+        - **Custom webhook URL**: Or provide a custom webhook URL for this specific function (e.g., `https://your-domain.com/webhook/pre-tool`)
+        
+        Click **Next** to proceed to the function configuration.
+        
+        ---
+        
+        ### Step 2: Configure Function Options
+        
+        <Frame>
+          <img
+            src="/images/agents/custom-functions/call-booking/simple/webhook/step-2.png"
+            alt="Configure Function Options"
+            style={{ height: "400px" }}
+          />
+        </Frame>
+        
+        Configure the following options:
+        
+        #### Function Name
+        Give your function a descriptive name in snake_case (e.g., `book_private_meeting`, `schedule_team_call`, `book_consultation`).
+        
+        #### Description
+        Describe when this function should be used. This helps the AI understand when to book appointments.
+        
+        **Examples:**
+        - "Use this when the customer confirms they want to book a consultation"
+        - "Book this when someone wants to schedule a private meeting"
+        - "Use this to create confirmed appointment bookings"
+        
+        ---
+        
+        ### Step 3: Create Function
+        
+        Click **Create Function** to save your configuration. The function is now ready to use!
+        
+        ---
+        
+        ### Step 4: Test the Function
+        
+        Test your newly created function:
+        
+        1. Start a call or conversation with your AI agent
+        2. Ask your agent to book an appointment, for example:
+           - "I'd like to book an appointment for Tuesday at 2 PM"
+           - "Can you schedule me for next Monday at 10 AM?"
+           - "Book me for the 3 PM slot on Thursday"
+        
+        Your agent will use the function to create a booking in your Cal.com calendar and confirm the appointment with the customer.
+        
+        <Note>
+          **Webhook mode works with both public and private event types**, giving you more flexibility in your scheduling setup.
+        </Note>
+        
+      </Tab>
+    </Tabs>
+
+    ---
+
+    ## Agent Prompt Example
+
+    To help your AI agent use the booking function effectively, add clear instructions to your agent's system prompt:
+
+    ```
+    When customers want to book an appointment and have chosen a specific time slot, 
+    use the book_appointment function to create the booking in the calendar.
+
+    Always confirm the following details before booking:
+    - Preferred date and time
+    - Customer's name
+    - Customer's email address
+    - Any special requirements or notes
+
+    After successfully booking, provide the customer with:
+    - Confirmation of the booked date and time
+    - Timezone information
+    - Any preparation instructions or next steps
+
+    Example conversation flow:
+    
+    Customer: "I'd like to book the Tuesday 2 PM slot"
+    Agent: "Perfect! Let me book that for you on Tuesday at 2 PM. May I have your 
+    name and email address to confirm the appointment?"
+    
+    Customer: "It's John Smith, john@example.com"
+    Agent: [Uses booking function] "Great! I've confirmed your appointment for 
+    Tuesday, March 14th at 2:00 PM Eastern Time. You'll receive a confirmation 
+    email at john@example.com with all the details."
+    ```
+
+  </Tab>
+  
+  <Tab title="Workflow Agents">
+    ## Add Call Booking to Workflow Agents
+
+    Workflow agents allow you to create sophisticated multi-step processes. Follow these steps to add Call Booking to your workflow:
+
+    ### Step 1: Navigate to Workflow Agents
+
+    From your dashboard sidebar, click on **Workflow Agents**.
+
+    ---
+
+    ### Step 2: Select Your Workflow
+
+    Click on the workflow you want to configure from the list.
+
+    ---
+
+    ### Step 3: Open the Workflow Editor
+
+    <Frame>
+      <img
+        src="/images/agents/custom-functions/call-booking/workflows/editor.png"
+        alt="Workflow Editor"
+      />
+    </Frame>
+
+    In the workflow editor, click the **+ Add Node** button to add a new node to your workflow.
+
+    ---
+
+    ### Step 4: Choose Cal.com Booking
+
+    <Frame>
+      <img
+        src="/images/agents/custom-functions/call-booking/workflows/pre-click-on-node.png"
+        alt="Choose Cal.com Booking"
+      />
+    </Frame>
+
+    Select **Cal.com Booking** from the available node types. The node will be added to your workflow canvas.
+
+    ---
+
+    ### Step 5: Configure the Booking Node
+
+    Click on the newly added Cal.com Booking node to open the configuration panel. A configuration popup will appear with two setup modes.
+
+    ---
+
+    ## Configuration Modes for Workflow Agents
+
+    The configuration process for workflow agents is the same as for simple agents. Choose between Static Mode and Webhook Mode based on your needs.
+
+    <Tabs>
+      <Tab title="Static Mode">
+        ## Static Mode Configuration
+        
+        Static mode fetches publicly available event types using your Cal.com username or organization slug. This is the easiest way to get started and doesn't require an API key.
+        
+        ### Step 1: Enter Cal.com Username or Organization Slug
+        
+        Enter your Cal.com **username** or **organization slug**:
+        
+        - **Username**: Your personal Cal.com username (e.g., `jane` if your Cal.com URL is `cal.com/jane`)
+          - Find it in your Cal.com profile settings
+        - **Organization Slug**: Your organization's Cal.com slug (e.g., `acme` if your team URLs are like `acme.cal.com/jane` or `schedule.acme.com/jane`)
+          - Find it in your organization settings
+        
+        ---
+        
+        ### Step 2: Fetch Event Types
+        
+        <Frame>
+          <img
+            src="/images/agents/custom-functions/call-booking/workflows/static/choosed-event.png"
+            alt="Choose Event Type"
+          />
+        </Frame>
+        
+        Click the **Fetch Event Types** button to retrieve all publicly available event types from your Cal.com account.
+        
+        After fetching, you'll see a dropdown list of all your available event types (e.g., "30 Minute Meeting", "Discovery Call", "Consultation").
+        
+        **Choose an Event Type** from the dropdown that you want to book appointments for in this workflow step.
+        
+        ---
+        
+        <Note>
+          **Static mode uses public event types**, so ensure the event type you selected is set to "Public" in your Cal.com settings.
+        </Note>
+        
+      </Tab>
+      
+      <Tab title="Webhook Mode">
+        ## Webhook Mode Configuration
+        
+        Webhook mode provides more control and security by using your Cal.com API key. This allows you to access private event types and configure advanced settings.
+        
+        ### Step 1: Enter Cal.com API Key and Event Type ID
+        
+        <Frame>
+          <img
+            src="/images/agents/custom-functions/call-booking/workflows/webhook/post-click-on-node.png"
+            alt="Enter API Key and Event Type ID"
+          />
+        </Frame>
+        
+        You'll need two pieces of information from your Cal.com account:
+        
+        #### Cal.com API Key
+        
+        Generate an API key from your Cal.com account:
+        
+        1. Log in to [Cal.com](https://app.cal.com)
+        2. Navigate to **Settings** → **Security** → **API Keys**
+        3. Click **New API Key**
+        4. Give it a name (e.g., "OpenMic Workflow Integration")
+        5. Copy the generated API key
+        6. Paste it in the **API Key** field
+        
+        <Warning>
+          **Keep your API key secure**: Never share your API key publicly. It provides access to your Cal.com account and calendar data.
+        </Warning>
+        
+        #### Cal.com Event Type ID
+        
+        Find your Event Type ID:
+        
+        1. Go to your Cal.com dashboard
+        2. Click on **Event Types**
+        3. Open the event type you want to use
+        4. Look at the URL in your browser's address bar
+        5. The Event Type ID is the number between the slashes
+           - Example: `app.cal.com/event-types/123456` → Event Type ID is `123456`
+        
+        For more details, see [Cal.com's guide on finding Event Type IDs](https://cal.com/help/event-types/eventtype-id).
+        
+        #### Configure Additional Fields
+        
+        <Frame>
+          <img
+            src="/images/agents/custom-functions/call-booking/workflows/webhook/post-click-on-node+.png"
+            alt="Configure Additional Fields"
+          />
+        </Frame>
+        
+        After entering your API key and Event Type ID, you'll see additional webhook configuration options:
+        
+        **Call a webhook before running this tool** (Optional)
+        - Toggle this on to validate or enrich data before booking appointments
+        - **Use the pre-call webhook URL**: Use the webhook URL configured in your workflow settings
+        - **Custom webhook URL**: Or provide a custom webhook URL for this specific function (e.g., `https://your-domain.com/webhook/pre-booking`)
+        
+        ---
+        <Note>
+          **Webhook mode works with both public and private event types**, giving you more flexibility in your workflow scheduling setup.
+        </Note>
+        
+      </Tab>
+    </Tabs>
+
+    ---
+
+    ### Connect the Node in Your Workflow
+
+    After configuring the node (see configuration options below), connect it to other nodes in your workflow by dragging connections between nodes. This determines when the booking function will be triggered in your workflow sequence.
+
+    ---
+
+    ### Save Your Workflow
+
+    Once you've configured and connected the Cal.com Booking node, click the **Save** button to save your workflow changes.
+
+    ---
+
+  </Tab>
+</Tabs>
+
+---
+
+## Pro Tip: Combine with Check Calendar Availability
+
+<Tip>
+  **Best Practice**: For the best user experience, combine the Call Booking function with the [Check Calendar Availability](/agents/custom-functions/check-calendar-availability) function. 
+  
+  This allows your agent to:
+  1. First check available time slots when customers ask "When are you available?"
+  2. Then book the appointment once the customer chooses a preferred time
+  
+  This two-step approach reduces booking conflicts and provides a smoother scheduling experience.
+</Tip>
+
+---
+
+## Configuration Best Practices
+
+<AccordionGroup>
+  <Accordion title="Collect Required Information First" icon="clipboard-list">
+    - Ensure you have customer name and email before booking
+    - Confirm the exact date and time
+    - Verify timezone if dealing with customers in different regions
+    - Ask about any special requirements
+  </Accordion>
+
+  <Accordion title="Write Clear Function Descriptions" icon="file-text">
+    - Be specific about when to trigger (e.g., "when customer confirms booking")
+    - Mention the type of appointment or meeting
+    - Include any prerequisites for booking
+  </Accordion>
+
+  <Accordion title="Test Your Function Thoroughly" icon="vial">
+    - Test with your own email first
+    - Try booking different time slots
+    - Verify confirmation emails are sent
+    - Check that bookings appear in your Cal.com calendar
+  </Accordion>
+
+  <Accordion title="Handle Timezones Carefully" icon="globe">
+    - Always specify timezone in the configuration
+    - Train your agent to confirm timezone with customers
+    - Mention timezone when confirming bookings
+  </Accordion>
+
+  <Accordion title="Error Handling" icon="triangle-exclamation">
+    - Train your agent to handle booking conflicts gracefully
+    - Provide alternative times if preferred slot is unavailable
+    - Have a fallback process for failed bookings
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Use Cases and Examples
+
+<AccordionGroup>
+  <Accordion title="Sales Consultation Booking" icon="handshake">
+    **Scenario:** Sales agent books consultation calls automatically
+    
+    **Configuration:**
+    - Mode: Static or Webhook
+    - Event Type: "30 Minute Sales Consultation"
+    - Description: "Use this when prospects confirm they want to book a consultation"
+    
+    **Agent Interaction:**
+    ```
+    Customer: "I'd like to schedule a consultation for Tuesday at 2 PM."
+    Agent: "Excellent choice! Let me get some details to book that for you. 
+    May I have your full name and email address?"
+    Customer: "Sarah Johnson, sarah.j@company.com"
+    Agent: [Uses booking function] "Perfect! I've booked your consultation for 
+    Tuesday, March 14th at 2:00 PM EST. You'll receive a confirmation email at 
+    sarah.j@company.com with a calendar invite and meeting link. Looking forward 
+    to speaking with you!"
+    ```
+  </Accordion>
+
+  <Accordion title="Medical Appointment Booking" icon="stethoscope">
+    **Scenario:** Healthcare practice books patient appointments
+    
+    **Configuration:**
+    - Mode: Webhook (for private scheduling)
+    - Event Type: "Doctor Appointment"
+    - Description: "Use this when patients confirm they want to book an appointment"
+    
+    **Agent Interaction:**
+    ```
+    Patient: "I'd like to book the Monday 9 AM slot with Dr. Smith."
+    Agent: "I'd be happy to book that appointment for you. May I please have 
+    your full name, date of birth, and email address?"
+    Patient: "Michael Brown, January 15, 1980, michael.brown@email.com"
+    Agent: [Uses booking function] "Thank you, Michael. I've confirmed your 
+    appointment with Dr. Smith for Monday, March 13th at 9:00 AM. You'll receive 
+    a confirmation email with pre-appointment instructions. Please arrive 10 minutes 
+    early to complete any necessary paperwork."
+    ```
+  </Accordion>
+
+  <Accordion title="Service Appointment Booking" icon="wrench">
+    **Scenario:** Service business books on-site visits
+    
+    **Configuration:**
+    - Mode: Static
+    - Event Type: "On-site Service Call"
+    - Description: "Use when customers confirm they want to book a service appointment"
+    
+    **Agent Interaction:**
+    ```
+    Customer: "Yes, I'll take the Thursday 1 PM slot for the HVAC inspection."
+    Agent: "Great! Let me book that for you. I'll need your name, address, and 
+    email address please."
+    Customer: "Tom Wilson, 123 Main St, Anytown, tom.w@email.com"
+    Agent: [Uses booking function] "Perfect! I've scheduled your HVAC inspection 
+    for Thursday, March 16th at 1:00 PM at 123 Main St. Our technician will arrive 
+    within a 30-minute window. You'll receive a confirmation email at tom.w@email.com 
+    and a reminder text 24 hours before the appointment."
+    ```
+  </Accordion>
+
+  <Accordion title="Interview Scheduling" icon="users">
+    **Scenario:** Recruiting team books candidate interviews
+    
+    **Configuration:**
+    - Mode: Webhook
+    - Event Type: "Candidate Interview - 45 min"
+    - Description: "Use when candidates confirm they want to schedule an interview"
+    
+    **Agent Interaction:**
+    ```
+    Candidate: "Wednesday at 2 PM works perfect for me."
+    Agent: "Wonderful! Let me get that scheduled for you. Please confirm your 
+    full name and the best email address to send the interview details to."
+    Candidate: "Emily Chen, emily.chen@email.com"
+    Agent: [Uses booking function] "Excellent! I've scheduled your interview for 
+    Wednesday, March 15th at 2:00 PM PST. You'll receive a confirmation email at 
+    emily.chen@email.com with the video call link and information about the 
+    interview format. We're looking forward to meeting you!"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Difference: Static vs Webhook Mode
+
+<CardGroup cols={2}>
+  <Card title="Static Mode" icon="globe">
+    **Advantages:**
+    - No API key required
+    - Quick and easy setup
+    - Perfect for public event types
+    - Minimal configuration needed
+    
+    **Best For:**
+    - Simple booking needs
+    - Public-facing scheduling
+    - Getting started quickly
+    - Single-user calendars
+  </Card>
+  
+  <Card title="Webhook Mode" icon="key">
+    **Advantages:**
+    - Access to private event types
+    - More configuration options
+    - Enhanced security
+    - Advanced features (custom fields, webhooks)
+    
+    **Best For:**
+    - Private/internal scheduling
+    - Advanced configuration needs
+    - Team calendars
+    - Enterprise use cases
+  </Card>
+</CardGroup>
+
+---
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Do I need a Cal.com account?">
+    Yes, you need a Cal.com account to use this function. Cal.com offers both free and paid plans. You can sign up at [cal.com](https://cal.com).
+  </Accordion>
+
+  <Accordion title="What's the difference between Static and Webhook mode?">
+    **Static mode** fetches publicly available event types using your username/organization slug and requires no API key. **Webhook mode** uses your Cal.com API key for access to private event types and more advanced configuration options.
+  </Accordion>
+
+  <Accordion title="How do I find my Event Type ID?">
+    1. Go to Cal.com and open your Event Types
+    2. Click on the event type you want to use
+    3. Look at the URL in your browser's address bar
+    4. The Event Type ID is the number between the slashes (e.g., `app.cal.com/event-types/123456`)
+    
+    For more details, see [Cal.com's official guide](https://cal.com/help/event-types/eventtype-id).
+  </Accordion>
+
+  <Accordion title="Can I book multiple event types?">
+    Yes! Create multiple Call Booking functions, one for each event type. Give each function a clear name and description so your AI agent knows which one to use for different scenarios.
+  </Accordion>
+
+  <Accordion title="What information is required to book an appointment?">
+    The basic requirements are:
+    - Customer name
+    - Customer email address
+    - Desired date and time
+    
+    Additional information may be required depending on your Cal.com event type configuration (phone number, custom questions, etc.).
+  </Accordion>
+
+  <Accordion title="Will customers receive confirmation emails?">
+    Yes! When an appointment is booked through this function, Cal.com automatically sends confirmation emails to the customer with calendar invites and meeting details.
+  </Accordion>
+
+  <Accordion title="Can I cancel or reschedule bookings?">
+    Bookings created through this function are standard Cal.com appointments. Customers can cancel or reschedule using the links in their confirmation emails, or you can manage them directly in your Cal.com dashboard.
+  </Accordion>
+
+  <Accordion title="How do I handle booking conflicts?">
+    Train your agent to check availability first using the **Check Calendar Availability** function before booking. If a booking fails due to a conflict, your agent should offer alternative times to the customer.
+  </Accordion>
+
+  <Accordion title="Can I edit the function after creating it?">
+    Yes, you can edit the function configuration at any time. Go to the Custom Functions tab in your agent settings and edit the function as needed.
+  </Accordion>
+
+  <Accordion title="Does this work with team event types?">
+    Yes! Both Static and Webhook modes support team event types. Just make sure to use the correct organization slug (Static mode) or Event Type ID (Webhook mode) for your team event.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Unable to fetch event types (Static Mode)">
+    **Possible causes:**
+    - Incorrect username or organization slug
+    - Event types are set to private in Cal.com
+    - Network connectivity issues
+    
+    **Solutions:**
+    - Verify your Cal.com username/organization slug is correct
+    - Ensure your event types are set to "Public" in Cal.com settings
+    - Check your internet connection
+    - Try refreshing the page and fetching again
+  </Accordion>
+
+  <Accordion title="API authentication failed (Webhook Mode)">
+    **Possible causes:**
+    - Invalid API key
+    - API key was revoked or expired
+    - Incorrect Event Type ID
+    
+    **Solutions:**
+    - Double-check your API key is copied correctly
+    - Generate a new API key in Cal.com settings
+    - Verify the Event Type ID is correct (check the URL in Cal.com)
+    - Ensure the API key has the necessary permissions
+  </Accordion>
+
+  <Accordion title="Booking fails during conversation">
+    **Possible causes:**
+    - Time slot no longer available
+    - Missing required information (name, email)
+    - Timezone mismatch
+    - Event type settings issue
+    
+    **Solutions:**
+    - Check availability before booking
+    - Ensure all required fields are collected
+    - Verify timezone settings in both function and Cal.com
+    - Review event type configuration in Cal.com
+  </Accordion>
+
+  <Accordion title="Customer not receiving confirmation emails">
+    **Possible causes:**
+    - Email address entered incorrectly
+    - Cal.com email notifications disabled
+    - Emails going to spam folder
+    
+    **Solutions:**
+    - Verify email address is correct
+    - Check Cal.com notification settings
+    - Ask customer to check spam/junk folder
+    - Add Cal.com to safe senders list
+  </Accordion>
+
+  <Accordion title="Function not triggering during conversations">
+    **Possible causes:**
+    - Function description is unclear
+    - Agent prompt doesn't instruct AI to use the function
+    - Missing customer confirmation
+    
+    **Solutions:**
+    - Update the function description to be more specific
+    - Add clear instructions to your agent's system prompt
+    - Train agent to get explicit booking confirmation from customer
+    - Review the function execution logs
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Need Help?
+
+If you encounter issues or have questions about the Call Booking function:
+
+- Test with your own email first to verify setup
+- Review your function description and agent prompt
+- Check your Cal.com event type settings and availability
+- Verify API key permissions (webhook mode)
+- Review function execution logs in your dashboard
+- Ensure all required customer information is collected
+
+<Info>
+  For technical support or questions about Cal.com integration, contact our support team.
+</Info>
