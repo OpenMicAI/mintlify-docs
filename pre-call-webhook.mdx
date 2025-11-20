@@ -111,6 +111,7 @@ Your webhook must return a `200` status code with a JSON response containing dyn
 ```json
 {
 	"call": {
+		"customer_id": "cus_001",
 		"dynamic_variables": {
 			"customer_name": "John Doe",
 			"account_balance": "1,250.50",
@@ -128,12 +129,17 @@ Your webhook must return a `200` status code with a JSON response containing dyn
 | Field                    | Type   | Required | Description                                          |
 | ------------------------ | ------ | -------- | ---------------------------------------------------- |
 | `call`                   | object | Yes      | Container for call-related data                      |
+| `call.customer_id`       | string | No       | Unique identifier for the customer associated with the call |
 | `call.dynamic_variables` | object | Yes      | Key-value pairs of variables to inject into the call |
 
 <Tip>
 	**Variable Usage**: Dynamic variables can be referenced in your agent
-	prompts using template syntax like `{{ customer_name }}`.
+	prompts using template syntax like `{{ customer_name }}`, `{{ email }}`, etc.
 </Tip>
+
+<Note>
+	**Customer ID Tracking**: When you provide a `customer_id` in the webhook response, you can later use the [List Calls API](/api-reference/calls/list-calls#parameter-customer-id) to filter and retrieve all calls associated with that customer ID using the `customer_id` query parameter.
+</Note>
 
 ---
 
@@ -212,6 +218,7 @@ app.post('webhook/pre-call', async (req, res) => {
     // Return dynamic variables in correct format
     res.json({
       call: {
+        customer_id: customerData.customer_id || "cus_001",
         dynamic_variables: customerData
       }
     });
