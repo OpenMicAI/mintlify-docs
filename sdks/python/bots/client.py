@@ -297,6 +297,7 @@ class BotsClient:
         *,
         name: str,
         prompt: str,
+        auto_first_message: typing.Optional[bool] = OMIT,
         first_message: typing.Optional[str] = OMIT,
         knowledge_base_id: typing.Optional[int] = OMIT,
         voice_provider: typing.Optional[CreateBotRequestVoiceProvider] = OMIT,
@@ -325,6 +326,9 @@ class BotsClient:
 
         prompt : str
             System prompt for the bot
+
+        auto_first_message : typing.Optional[bool]
+            Whether to automatically send the first message when the call starts
 
         first_message : typing.Optional[str]
             Initial message the bot will send
@@ -393,6 +397,7 @@ class BotsClient:
             uid,
             name=name,
             prompt=prompt,
+            auto_first_message=auto_first_message,
             first_message=first_message,
             knowledge_base_id=knowledge_base_id,
             voice_provider=voice_provider,
@@ -726,6 +731,7 @@ class AsyncBotsClient:
         self,
         uid: str,
         *,
+        auto_first_message: typing.Optional[bool] = OMIT,
         name: str,
         prompt: str,
         first_message: typing.Optional[str] = OMIT,
@@ -753,6 +759,9 @@ class AsyncBotsClient:
 
         name : str
             Name of the bot (max 255 characters)
+
+        auto_first_message : typing.Optional[bool]
+            Whether to automatically send the first message when the call starts
 
         prompt : str
             System prompt for the bot
@@ -830,6 +839,7 @@ class AsyncBotsClient:
         """
         _response = await self._raw_client.update_bot(
             uid,
+            auto_first_message=auto_first_message,
             name=name,
             prompt=prompt,
             first_message=first_message,
