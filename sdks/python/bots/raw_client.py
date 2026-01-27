@@ -136,6 +136,7 @@ class RawBotsClient:
         *,
         name: str,
         prompt: str,
+        auto_first_message: typing.Optional[bool] = OMIT,
         first_message: typing.Optional[str] = OMIT,
         knowledge_base_id: typing.Optional[int] = OMIT,
         voice_provider: typing.Optional[CreateBotRequestVoiceProvider] = OMIT,
@@ -212,6 +213,7 @@ class RawBotsClient:
             json={
                 "name": name,
                 "prompt": prompt,
+                "auto_first_message": auto_first_message,
                 "first_message": first_message,
                 "knowledge_base_id": knowledge_base_id,
                 "voice_provider": voice_provider,
@@ -459,6 +461,7 @@ class RawBotsClient:
         *,
         name: str,
         prompt: str,
+        auto_first_message: typing.Optional[bool] = OMIT,
         first_message: typing.Optional[str] = OMIT,
         knowledge_base_id: typing.Optional[int] = OMIT,
         voice_provider: typing.Optional[CreateBotRequestVoiceProvider] = OMIT,
@@ -538,6 +541,7 @@ class RawBotsClient:
             json={
                 "name": name,
                 "prompt": prompt,
+                "auto_first_message": auto_first_message,
                 "first_message": first_message,
                 "knowledge_base_id": knowledge_base_id,
                 "voice_provider": voice_provider,
@@ -1056,6 +1060,7 @@ class AsyncRawBotsClient:
         *,
         name: str,
         prompt: str,
+        auto_first_message: typing.Optional[bool] = OMIT,
         first_message: typing.Optional[str] = OMIT,
         knowledge_base_id: typing.Optional[int] = OMIT,
         voice_provider: typing.Optional[CreateBotRequestVoiceProvider] = OMIT,
@@ -1084,6 +1089,9 @@ class AsyncRawBotsClient:
 
         prompt : str
             System prompt for the bot
+
+        auto_first_message : typing.Optional[bool]
+            Whether to automatically send the first message when the call starts
 
         first_message : typing.Optional[str]
             Initial message the bot will send
@@ -1135,6 +1143,7 @@ class AsyncRawBotsClient:
             json={
                 "name": name,
                 "prompt": prompt,
+                "auto_first_message": auto_first_message,
                 "first_message": first_message,
                 "knowledge_base_id": knowledge_base_id,
                 "voice_provider": voice_provider,

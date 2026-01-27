@@ -1832,6 +1832,7 @@
         "summary": "List Voices",
         "description": "Retrieve a paginated list of available text-to-speech voices. Use query parameters to filter by gender, provider, language, or accent, and to search by name or description.",
         "tags": ["Voices"],
+        "security": [{ "BearerAuth": [] }],
         "operationId": "listVoicesExt",
         "parameters": [
           {
@@ -1915,6 +1916,7 @@
         "summary": "Get Voice",
         "description": "Retrieve details of a specific voice by its ID.",
         "tags": ["Voices"],
+        "security": [{ "BearerAuth": [] }],
         "operationId": "getVoiceExt",
         "parameters": [
           {

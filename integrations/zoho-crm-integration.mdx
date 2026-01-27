@@ -1,0 +1,113 @@
+---
+title: Zoho CRM Integration
+subtitle: Connect OpenMic agents to Zoho CRM for leads, working hours, and meeting booking.
+description: Connect your OpenMic assistant to Zoho CRM to manage leads and create meetings without leaving the call.
+slug: integrations/zoho-crm
+---
+
+The **Zoho CRM** integration lets your OpenMic agents manage leads and book meetings directly from live conversations. After connecting Zoho CRM, you can add custom functions to your agents to check working hours, look up or create leads, and create meetings with optional double-booking.
+
+---
+
+## Prerequisites
+
+Before you connect Zoho CRM, make sure you have:
+
+1. **An active Zoho CRM account** with API access.
+2. **An OpenMic account** with at least one agent created.
+3. Access to the **OpenMic Dashboard** to manage integrations and custom functions.
+
+---
+
+## Step 1: Connect Zoho CRM
+
+1. In the [OpenMic Dashboard](https://app.openmic.ai), go to **Integrations**.
+2. Find the **Zoho CRM** card.
+3. Click **Connect** and complete the Zoho CRM authorization flow.
+4. When successful, the card will show **Connected**.
+
+<Frame caption="Connect Zoho CRM Integration">
+  <img
+    src="/images/agents/integrations/zohoCrm/zohocrm-connect.png"
+    alt="Connect Zoho CRM integration"
+  />
+</Frame>
+
+---
+
+## Step 2: Add Zoho CRM Functions to an Agent
+
+1. Go to **Dashboard → Simple Agents**.
+2. Select the agent you want to configure.
+3. Open the **Custom Functions** tab and click **Add Function**.
+4. Add the Zoho CRM functions you need:
+   - **Check Working Hours** – configure your timezone and working hour windows; all scheduling follows these hours.
+   - **Zoho CRM Lead Get** – look up existing leads by phone or email.
+   - **Zoho CRM Lead Create** – create a new lead when one is not found.
+   - **Zoho CRM Event Get** – retrieve existing events/meetings for a lead.
+   - **Zoho CRM Event Create** – create a new event/meeting for a lead.
+5. Click **Create Function** to save each selection.
+
+<Tip>
+  Add all five functions for a complete workflow: check working hours, find/create a lead, check existing events, and then create a meeting.
+</Tip>
+
+<Frame caption="Add Zoho CRM Functions">
+  <img
+    src="/images/agents/integrations/zohoCrm/zohocrm-add -fcuntions.png"
+    alt="Adding Zoho CRM custom functions"
+  />
+</Frame>
+
+---
+
+## Event Duration and Double Booking
+
+When configuring **Zoho CRM Event Create** (and **Event Get** for conflict checks):
+
+- **Meeting Duration**: choose from **15 minutes, 30 minutes, 45 minutes, 1 hour, 1.5 hours, 2 hours, 3 hours, 4 hours**. Pick the duration that matches your booking flow.
+- **Don't Allow Double Booking**: checkbox is **off by default**. Enable it to prevent overlapping meeting events in Zoho CRM.
+
+If you leave double booking disabled, your agent can fill any working-hour slot (e.g., 9am–4pm). Enable it if you want to prevent double booking or overlapping meeting events.
+
+<Frame caption="Zoho CRM Event Create and Event Get Options">
+  <img
+    src="/images/agents/integrations/zohoCrm/zohocrm-even-get-create-options.png"
+    alt="Zoho CRM event duration and double booking options"
+  />
+</Frame>
+
+---
+
+## Suggested System Prompt
+
+Provide your assistant with clear instructions on how to use the Zoho CRM functions. You can start with this template:
+
+```text
+You are a helpful scheduling assistant that uses Zoho CRM.
+
+Flow:
+1) Collect the caller's name, phone, and email.
+2) Use `zoho_lead_get` to check if they exist; if not, create them with `zoho_lead_create`.
+3) Follow configured working hours; do not propose times outside those windows.
+4) Ask for preferred times and duration. Use `zoho_event_get` to check for conflicts when needed.
+5) If available, book with `create_zohocrm_event` using the chosen duration. If there is a conflict, propose alternatives within working hours.
+6) Confirm date, time, and details before ending the call.
+
+Key rules:
+- Always try to find an existing lead before creating a new one.
+- Stay inside configured working hours.
+```
+
+---
+
+## Example Booking Workflow
+
+1. **Check Working Hours** – assistant reads configured timezone and daily windows to know which slots can be offered.
+2. **Lead Lookup** – uses **Zoho CRM Lead Get** to find the caller.
+3. **Lead Creation** – if none found, uses **Zoho CRM Lead Create** to add the caller.
+4. **Conflict Check** – uses **Zoho CRM Event Get** to review existing events/meetings. Double booking is off by default, but if you want to prevent double booking or overlapping meeting events, enable it.
+5. **Create Event/Meeting** – uses **Zoho CRM Event Create** to book the meeting with the selected duration.
+
+This workflow helps your agents manage leads and schedule meetings efficiently while keeping your Zoho CRM records up to date.
+
