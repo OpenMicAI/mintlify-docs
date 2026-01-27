@@ -105,6 +105,43 @@
               "api-reference/phone-numbers/link-bot",
               "api-reference/phone-numbers/unlink-bot"
             ]
+          },
+          {
+            "group": "Contact Lists",
+            "pages": [
+              "api-reference/contact-lists/list-contact-lists",
+              "api-reference/contact-lists/create-contact-list",
+              "api-reference/contact-lists/get-contact-list",
+              "api-reference/contact-lists/update-contact-list",
+              "api-reference/contact-lists/delete-contact-list"
+            ]
+          },
+          {
+            "group": "Contacts",
+            "pages": [
+              "api-reference/contacts/list-contacts",
+              "api-reference/contacts/create-contact",
+              "api-reference/contacts/create-contacts-bulk",
+              "api-reference/contacts/update-contact",
+              "api-reference/contacts/delete-contacts"
+            ]
+          },
+          {
+            "group": "Campaigns",
+            "pages": [
+              "api-reference/campaigns/list-campaigns",
+              "api-reference/campaigns/create-campaign",
+              "api-reference/campaigns/get-campaign",
+              "api-reference/campaigns/update-campaign",
+              "api-reference/campaigns/delete-campaign"
+            ]
+          },
+          {
+            "group": "Voices",
+            "pages": [
+              "api-reference/voices/list-voices",
+              "api-reference/voices/get-voice"
+            ]
           }
         ]
       },

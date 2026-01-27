@@ -1,2016 +1,3046 @@
 {
-	"openapi": "3.1.0",
-	"info": {
-		"title": "OpenMic v1 External API",
-		"description": "API specification for OpenMic v1 External API, providing endpoints for bot management, call handling, and phone number operations.",
-		"version": "1.0.0"
-	},
-	"tags": [
-		{
-			"name": "Calls",
-			"description": "Endpoints related to phone call creation and management."
-		},
-		{
-			"name": "Bots",
-			"description": "Endpoints related to bot management and configuration."
-		},
-		{
-			"name": "Phone Numbers",
-			"description": "Endpoints related to phone number management and bot linking."
-		}
-	],
-	"paths": {
-		"/v1/bots": {
-			"post": {
-				"summary": "Create Bot",
-				"description": "Create a new bot with specified configuration.",
-				"tags": ["Bots"],
-				"security": [{ "BearerAuth": [] }],
-				"requestBody": {
-					"description": "Bot configuration details",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/CreateBotRequest"
-							},
-							"example": {
-								"name": "Customer Support Bot",
-								"prompt": "You are a helpful customer support assistant. Be polite, professional, and always try to resolve customer issues.",
-								"first_message": "Hello! I'm here to help you with any questions or concerns you may have. How can I assist you today?",
-								"knowledge_base_id": 123,
-								"voice_provider": "OpenAI",
-								"voice": "alloy",
-								"voice_model": "tts-1",
-								"voice_speed": 1.0,
-								"llm_model_name": "gpt-4",
-								"llm_model_temperature": 0.7,
-								"stt_provider": "Deepgram",
-								"stt_model": "nova-2",
-								"call_settings": {
-									"max_call_duration": 10,
-									"silence_timeout": 15,
-									"silence_timeout_max_retries": 3,
-									"silence_timeout_message": "I didn't hear anything. Are you still there?",
-									"call_recording_enabled": true,
-									"voicemail_detection_enabled": true,
-									"voicemail_action": "leave_message",
-									"voicemail_message_type": "static",
-									"voicemail_message": "Hey, sorry we couldn't reach you directly. Please give us a callback if you can.",
-									"hipaa_compliance_enabled": false,
-									"pci_compliance_enabled": false
-								},
-								"advanced_settings": {
-									"agent_personality": "friendly",
-									"humanize_conversation": true,
-									"background_noise_reduction": true,
-									"allow_interruptions": true,
-									"min_interruption_duration": 0.5,
-									"agent_response_length": "normal",
-									"short_pause": 0.3,
-									"long_pause": 1.0
-								},
-								"post_call_settings": {
-									"summary_prompt": "Provide a brief summary of the customer interaction and any action items.",
-									"success_evaluation_prompt": "Rate the success of this call on a scale of 1-10 based on customer satisfaction.",
-									"success_evaluation_rubric_type": "NUMERIC_SCALE"
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"201": {
-						"description": "Bot created successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/BotResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - validation error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Invalid request format, please check API reference."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			},
-			"get": {
-				"summary": "List Bots",
-				"description": "Retrieve all bots with optional filtering and pagination.",
-				"tags": ["Bots"],
-				"security": [{ "BearerAuth": [] }],
-				"parameters": [
-					{
-						"name": "limit",
-						"in": "query",
-						"description": "Maximum number of bots to return (1-100)",
-						"schema": {
-							"type": "integer",
-							"minimum": 1,
-							"maximum": 100
-						}
-					},
-					{
-						"name": "offset",
-						"in": "query",
-						"description": "Number of bots to skip",
-						"schema": { "type": "integer", "minimum": 0 }
-					},
-					{
-						"name": "name",
-						"in": "query",
-						"description": "Filter by bot name (partial match)",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "created_after",
-						"in": "query",
-						"description": "Filter bots created after this date (ISO 8601 format)",
-						"schema": { "type": "string", "format": "date-time" }
-					},
-					{
-						"name": "created_before",
-						"in": "query",
-						"description": "Filter bots created before this date (ISO 8601 format)",
-						"schema": { "type": "string", "format": "date-time" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "List of bots retrieved successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ListBotsResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - invalid parameters",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Invalid query parameters provided."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/bots/{uid}": {
-			"get": {
-				"summary": "Get Bot",
-				"description": "Retrieve details of a specific bot by its UID.",
-				"tags": ["Bots"],
-				"security": [{ "BearerAuth": [] }],
-				"parameters": [
-					{
-						"name": "uid",
-						"in": "path",
-						"description": "The unique identifier of the bot",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Bot details retrieved successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/BotResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - missing organization information",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Missing organization information in request."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Bot not found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Bot with the specified UID was not found."
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			},
-			"patch": {
-				"summary": "Update Bot",
-				"description": "Update an existing bot's configuration.",
-				"tags": ["Bots"],
-				"security": [{ "BearerAuth": [] }],
-				"parameters": [
-					{
-						"name": "uid",
-						"in": "path",
-						"description": "The unique identifier of the bot",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"requestBody": {
-					"description": "Updated bot configuration",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/UpdateBotRequest"
-							},
-							"example": {
-								"name": "Updated Customer Support Bot",
-								"prompt": "You are an advanced customer support assistant with expertise in technical issues.",
-								"voice_speed": 1.1,
-								"llm_model_temperature": 0.8,
-								"call_settings": {
-									"max_call_duration": 15,
-									"silence_timeout": 20,
-									"voicemail_detection_enabled": true,
-									"voicemail_action": "leave_message",
-									"voicemail_message_type": "prompt",
-									"voicemail_message": "Generate a voicemail explaining why I called based on the customer's recent support ticket."
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Bot updated successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/BotResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - validation error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Bot not found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"summary": "Delete Bot",
-				"description": "Delete a bot by its UID.",
-				"tags": ["Bots"],
-				"security": [{ "BearerAuth": [] }],
-				"parameters": [
-					{
-						"name": "uid",
-						"in": "path",
-						"description": "The unique identifier of the bot",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"204": {
-						"description": "Bot deleted successfully"
-					},
-					"400": {
-						"description": "Bad request - missing organization information",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Bot not found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
-					},
-					"409": {
-						"description": "Conflict - bot is currently in use",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/create-phone-call": {
-			"post": {
-				"summary": "Create Phone Call",
-				"description": "Create a new outbound phone call.",
-				"tags": ["Calls"],
-				"security": [{ "BearerAuth": [] }],
-				"requestBody": {
-					"description": "Call creation details",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/CreateCallRequest"
-							},
-							"example": {
-								"from_number": "+1234567890",
-								"to_number": "+0987654321",
-								"override_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-								"customer_id": "customer_001",
-								"dynamic_variables": { "name": "John" },
-								"callback_url": "https://example.com/callback"
-							}
-						}
-					}
-				},
-				"responses": {
-					"201": {
-						"description": "Call created successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/CallResponse"
-								},
-								"example": {
-									"call_type": "phonecall",
-									"from_number": "+1234567890",
-									"to_number": "+0987654321",
-									"direction": "outbound",
-									"call_id": "cmbbvrg8wzi487w02m2bc7dji",
-									"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-									"call_status": "registered",
-									"customer_id": "customer_001",
-									"dynamic_variables": {
-										"name": "John"
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - validation error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Invalid request format, please check API reference."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Resource not found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Bot with the specified override_agent_id was not found."
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/call/{id}": {
-			"get": {
-				"summary": "Get Call",
-				"description": "Retrieve details of a specific call by its ID.",
-				"tags": ["Calls"],
-				"security": [{ "BearerAuth": [] }],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"description": "The unique identifier of the call",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Call details retrieved successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/CallResponse"
-								},
-								"example": {
-									"call_type": "phonecall",
-									"from_number": "+1234567890",
-									"to_number": "+0987654321",
-									"direction": "outbound",
-									"call_id": "cmbbvrg8wzi487w02m2bc7dji",
-									"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-									"call_status": "ended",
-									"customer_id": "customer_001",
-									"start_timestamp": 1678886400000,
-									"end_timestamp": 1678886700000,
-									"duration_ms": 300000,
-									"transcript": [
-										[
-											"assistant",
-											"Hello! How can I help you today?"
-										],
-										[
-											"user",
-											"I'd like to schedule an appointment."
-										],
-										[
-											"assistant",
-											"I'd be happy to help you schedule an appointment. What type of service are you looking for?"
-										]
-									],
-									"recording_url": "https://recordings.openmic.ai/call_98765.mp3",
-									"latency": {
-										"e2e_min_latency": 0.5,
-										"e2e_median_latency": 1.2,
-										"e2e_p90_latency": 2.1,
-										"llm_min_latency": 0.3,
-										"llm_median_latency": 0.8,
-										"llm_p90_latency": 1.5,
-										"tts_min_latency": 0.2,
-										"tts_median_latency": 0.4,
-										"tts_p90_latency": 0.6
-									},
-									"call_analysis": {
-										"summary": "Customer called to schedule an appointment and was successfully assisted.",
-										"is_successful": true,
-										"success_evaluation": "excellent",
-										"extracted_data": null
-									},
-									"call_cost": {
-										"total_cost": 0.0822,
-										"llm_cost": 0.0052548,
-										"tts_cost": 0.0242269,
-										"stt_cost": 0.0527183
-									},
-									"dynamic_variables": {
-										"name": "John"
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - missing organization information",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Missing organization information in request."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Call not found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Call with the specified ID was not found."
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/calls": {
-			"get": {
-				"summary": "List Calls",
-				"description": "Retrieve all calls with optional filtering and pagination.",
-				"tags": ["Calls"],
-				"security": [{ "BearerAuth": [] }],
-				"parameters": [
-					{
-						"name": "limit",
-						"in": "query",
-						"description": "Maximum number of calls to return (1-100)",
-						"schema": {
-							"type": "integer",
-							"minimum": 1,
-							"maximum": 100
-						}
-					},
-					{
-						"name": "offset",
-						"in": "query",
-						"description": "Number of calls to skip",
-						"schema": { "type": "integer", "minimum": 0 }
-					},
-					{
-						"name": "customer_id",
-						"in": "query",
-						"description": "Filter by customer ID",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "from_number",
-						"in": "query",
-						"description": "Filter by originating phone number",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "to_number",
-						"in": "query",
-						"description": "Filter by destination phone number",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "bot_id",
-						"in": "query",
-						"description": "Filter by bot ID",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "from_date",
-						"in": "query",
-						"description": "Filter calls from this date (ISO 8601 format)",
-						"schema": { "type": "string", "format": "date-time" }
-					},
-					{
-						"name": "to_date",
-						"in": "query",
-						"description": "Filter calls to this date (ISO 8601 format)",
-						"schema": { "type": "string", "format": "date-time" }
-					},
-					{
-						"name": "call_status",
-						"in": "query",
-						"description": "Filter by call status",
-						"schema": {
-							"type": "string",
-							"enum": ["registered", "ongoing", "ended", "error"]
-						}
-					},
-					{
-						"name": "call_type",
-						"in": "query",
-						"description": "Filter by call type",
-						"schema": {
-							"type": "string",
-							"enum": ["phonecall", "webcall"]
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "List of calls retrieved successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ListCallsResponse"
-								},
-								"example": {
-									"calls": [
-										{
-											"call_type": "phonecall",
-											"from_number": "+1234567890",
-											"to_number": "+0987654321",
-											"direction": "outbound",
-											"call_id": "cmbbvrg8wzi487w02m2bc7dji",
-											"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-											"call_status": "ended",
-											"customer_id": "customer_001",
-											"start_timestamp": 1678886400000,
-											"end_timestamp": 1678886700000,
-											"duration_ms": 300000,
-											"transcript": [
-												[
-													"assistant",
-													"Hello! How can I help you today?"
-												],
-												[
-													"user",
-													"I'd like to schedule an appointment."
-												]
-											],
-											"recording_url": "https://recordings.openmic.ai/call_98765.mp3",
-											"latency": {
-												"e2e_min_latency": 0.5,
-												"e2e_median_latency": 1.2,
-												"e2e_p90_latency": 2.1,
-												"llm_min_latency": 0.3,
-												"llm_median_latency": 0.8,
-												"llm_p90_latency": 1.5,
-												"tts_min_latency": 0.2,
-												"tts_median_latency": 0.4,
-												"tts_p90_latency": 0.6
-											},
-											"call_analysis": {
-												"summary": "Customer called to schedule an appointment and was successfully assisted.",
-												"is_successful": true,
-												"success_evaluation": "excellent",
-												"extracted_data": null
-											},
-											"call_cost": {
-												"total_cost": 0.0822,
-												"llm_cost": 0.0052548,
-												"tts_cost": 0.0242269,
-												"stt_cost": 0.0527183
-											},
-											"dynamic_variables": {
-												"name": "John"
-											}
-										}
-									],
-									"pagination": {
-										"limit": 1,
-										"offset": 0,
-										"total": 1,
-										"has_more": false
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - invalid parameters",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Invalid query parameters provided."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/phone-numbers": {
-			"get": {
-				"summary": "List Phone Numbers",
-				"description": "Retrieve all phone numbers with optional filtering and pagination.",
-				"tags": ["Phone Numbers"],
-				"security": [{ "BearerAuth": [] }],
-				"parameters": [
-					{
-						"name": "limit",
-						"in": "query",
-						"description": "Maximum number of phone numbers to return (1-100)",
-						"schema": {
-							"type": "integer",
-							"minimum": 1,
-							"maximum": 100
-						}
-					},
-					{
-						"name": "offset",
-						"in": "query",
-						"description": "Number of phone numbers to skip",
-						"schema": { "type": "integer", "minimum": 0 }
-					},
-					{
-						"name": "phone_number",
-						"in": "query",
-						"description": "Filter by phone number (partial match)",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "name",
-						"in": "query",
-						"description": "Filter by name (partial match)",
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "List of phone numbers retrieved successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ListPhoneNumbersResponse"
-								},
-								"example": {
-									"phone_numbers": [
-										{
-											"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
-											"phone_number": "+15551112222",
-											"name": "Main Support Line",
-											"inbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-											"outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-											"created_at": "2023-01-01T12:00:00Z",
-											"updated_at": "2023-01-02T15:30:00Z"
-										}
-									],
-									"pagination": {
-										"limit": 1,
-										"offset": 0,
-										"total": 1,
-										"has_more": false
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - invalid parameters",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Invalid query parameters provided."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/phone-numbers/{uid}": {
-			"get": {
-				"summary": "Get Phone Number",
-				"description": "Retrieve details of a specific phone number by its UID.",
-				"tags": ["Phone Numbers"],
-				"security": [{ "BearerAuth": [] }],
-				"parameters": [
-					{
-						"name": "uid",
-						"in": "path",
-						"description": "The unique identifier of the phone number",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Phone number details retrieved successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/PhoneNumberResponse"
-								},
-								"example": {
-									"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
-									"phone_number": "+15551112222",
-									"name": "Main Support Line",
-									"inbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-									"outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-									"created_at": "2023-01-01T12:00:00Z",
-									"updated_at": "2023-01-02T15:30:00Z"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - missing organization information",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Missing organization information in request."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Phone number not found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Phone number with the specified UID was not found."
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/phone-numbers/link-agent": {
-			"post": {
-				"summary": "Link Bot to Phone Number",
-				"description": "Link a bot (agent) to a phone number for inbound/outbound calls.",
-				"tags": ["Phone Numbers"],
-				"security": [{ "BearerAuth": [] }],
-				"requestBody": {
-					"description": "Bot linking details",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/LinkBotToPhoneNumberRequest"
-							},
-							"example": {
-								"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
-								"agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-								"direction": "both"
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Bot linked to phone number successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/LinkBotToPhoneNumberResponse"
-								},
-								"example": {
-									"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
-									"phone_number": "+15551112222",
-									"inbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-									"outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-									"message": "Bot linked successfully for inbound and outbound calls."
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - validation error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Invalid direction specified. Must be one of 'inbound', 'outbound', 'both'."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Phone number or bot not found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "The specified phone number or bot was not found."
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/v1/phone-numbers/unlink-agent": {
-			"post": {
-				"summary": "Unlink Bot from Phone Number",
-				"description": "Unlink a bot (agent) from a phone number.",
-				"tags": ["Phone Numbers"],
-				"security": [{ "BearerAuth": [] }],
-				"requestBody": {
-					"description": "Bot unlinking details",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"phone_number_id": {
-										"type": "string",
-										"description": "The unique identifier of the phone number"
-									},
-									"direction": {
-										"type": "string",
-										"enum": ["inbound", "outbound", "both"],
-										"description": "Direction to unlink (inbound, outbound, or both)"
-									}
-								},
-								"required": ["phone_number_id", "direction"]
-							},
-							"example": {
-								"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
-								"direction": "inbound"
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Bot unlinked from phone number successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/LinkBotToPhoneNumberResponse"
-								},
-								"example": {
-									"phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
-									"phone_number": "+15551112222",
-									"inbound_agent_id": null,
-									"outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
-									"message": "Bot unlinked successfully for inbound calls."
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad request - validation error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Invalid request body."
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized - missing or invalid API key",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Unauthorized",
-									"message": "Invalid or expired API key"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Phone number not found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "Phone number with the specified UID was not found."
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Error"
-								},
-								"example": {
-									"error": "An unexpected error occurred. Please try again later."
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"components": {
-		"schemas": {
-			"CreateBotRequest": {
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string",
-						"description": "Name of the bot (max 255 characters)",
-						"maxLength": 255
-					},
-					"prompt": {
-						"type": "string",
-						"description": "System prompt for the bot"
-					},
-					"first_message": {
-						"type": "string",
-						"description": "Initial message the bot will send"
-					},
-					"knowledge_base_id": {
-						"type": "integer",
-						"description": "ID of the knowledge base to use"
-					},
-					"voice_provider": {
-						"type": "string",
-						"enum": ["OpenAI", "ElevenLabs", "Deepgram"],
-						"description": "Voice synthesis provider"
-					},
-					"voice": {
-						"type": "string",
-						"description": "Voice ID or name"
-					},
-					"voice_model": {
-						"type": "string",
-						"description": "Voice model to use"
-					},
-					"voice_speed": {
-						"type": "number",
-						"description": "Speech speed multiplier"
-					},
-					"llm_model_name": {
-						"type": "string",
-						"description": "Large language model to use"
-					},
-					"llm_model_temperature": {
-						"type": "number",
-						"description": "Temperature setting for the LLM"
-					},
-					"stt_provider": {
-						"type": "string",
-						"enum": ["Deepgram"],
-						"description": "Speech-to-text provider"
-					},
-					"stt_model": {
-						"type": "string",
-						"description": "Speech-to-text model"
-					},
-					"call_settings": {
-						"$ref": "#/components/schemas/CallSettings"
-					},
-					"advanced_settings": {
-						"$ref": "#/components/schemas/AdvancedSettings"
-					},
-					"post_call_settings": {
-						"$ref": "#/components/schemas/PostCallSettings"
-					}
-				},
-				"required": ["name", "prompt"]
-			},
-			"UpdateBotRequest": {
-				"allOf": [
-					{ "$ref": "#/components/schemas/CreateBotRequest" },
-					{
-						"type": "object",
-						"description": "All fields are optional for updates"
-					}
-				]
-			},
-			"CallSettings": {
-				"type": "object",
-				"properties": {
-					"max_call_duration": {
-						"type": "integer",
-						"minimum": 2,
-						"maximum": 30,
-						"description": "Maximum call duration in minutes (2-30)"
-					},
-					"silence_timeout": {
-						"type": "integer",
-						"minimum": 5,
-						"maximum": 45,
-						"description": "Silence timeout in seconds (5-45)"
-					},
-					"silence_timeout_max_retries": {
-						"type": "integer",
-						"minimum": 1,
-						"maximum": 5,
-						"description": "Maximum retries for silence timeout (1-5)"
-					},
-					"silence_timeout_message": {
-						"type": "string",
-						"description": "Message to play when silence timeout occurs"
-					},
-					"call_recording_enabled": {
-						"type": "boolean",
-						"description": "Whether to record calls"
-					},
-					"voicemail_detection_enabled": {
-						"type": "boolean",
-						"description": "Whether to detect voicemail"
-					},
-					"voicemail_action": {
-						"type": "string",
-						"enum": ["leave_message", "hangup"],
-						"description": "Action to take when voicemail is detected. 'leave_message' will deliver a custom voicemail message, 'hangup' will end the call immediately."
-					},
-					"voicemail_message_type": {
-						"type": "string",
-						"enum": ["static", "prompt"],
-						"description": "Type of voicemail message. 'static' uses a fixed pre-written message, 'prompt' uses AI-generated messages based on conversation context."
-					},
-					"voicemail_message": {
-						"type": "string",
-						"description": "The voicemail message content. Required when voicemail_action is 'leave_message'. For 'static' type, this is the exact message to be delivered. For 'prompt' type, this provides instructions to the AI."
-					},
-					"hipaa_compliance_enabled": {
-						"type": "boolean",
-						"description": "Whether HIPAA compliance is enabled"
-					},
-					"pci_compliance_enabled": {
-						"type": "boolean",
-						"description": "Whether PCI compliance is enabled"
-					}
-				}
-			},
-			"AdvancedSettings": {
-				"type": "object",
-				"properties": {
-					"agent_personality": {
-						"type": "string",
-						"enum": [
-							"casual",
-							"humorous",
-							"direct",
-							"formal",
-							"persuasive",
-							"friendly"
-						],
-						"description": "Personality type for the agent"
-					},
-					"humanize_conversation": {
-						"type": "boolean",
-						"description": "Whether to humanize the conversation"
-					},
-					"background_noise_reduction": {
-						"type": "boolean",
-						"description": "Whether to reduce background noise"
-					},
-					"allow_interruptions": {
-						"type": "boolean",
-						"description": "Whether to allow user interruptions"
-					},
-					"min_interruption_duration": {
-						"type": "number",
-						"minimum": 0.2,
-						"maximum": 5,
-						"multipleOf": 0.1,
-						"description": "Minimum interruption duration in seconds (0.2-5, step 0.1)"
-					},
-					"background_sound": {
-						"type": "string",
-						"description": "Background sound to play"
-					},
-					"agent_response_length": {
-						"type": "string",
-						"enum": ["normal", "short", "concise", "long"],
-						"description": "Preferred response length"
-					},
-					"short_pause": {
-						"type": "number",
-						"minimum": 0.2,
-						"maximum": 2,
-						"multipleOf": 0.1,
-						"description": "Short pause duration in seconds (0.2-2, step 0.1)"
-					},
-					"long_pause": {
-						"type": "number",
-						"minimum": 0.5,
-						"maximum": 6,
-						"multipleOf": 0.1,
-						"description": "Long pause duration in seconds (0.5-6, step 0.1)"
-					},
-					"filter_phrases": {
-						"type": "string",
-						"description": "Phrases to filter from speech"
-					}
-				}
-			},
-			"PostCallSettings": {
-				"type": "object",
-				"properties": {
-					"summary_prompt": {
-						"type": "string",
-						"description": "Prompt for generating call summary"
-					},
-					"success_evaluation_prompt": {
-						"type": "string",
-						"description": "Prompt for evaluating call success"
-					},
-					"success_evaluation_rubric_type": {
-						"type": "string",
-						"enum": [
-							"NUMERIC_SCALE",
-							"DESCRIPTIVE_SCALE",
-							"PERCENTAGE_SCALE",
-							"LIKERT_SCALE",
-							"PASS_FAIL",
-							"SENTIMENT"
-						],
-						"description": "Type of success evaluation rubric"
-					},
-					"structured_extraction_prompt": {
-						"type": "string",
-						"description": "Prompt for structured data extraction"
-					},
-					"structured_extraction_json_schema": {
-						"type": "object",
-						"description": "JSON schema for structured extraction"
-					}
-				}
-			},
-			"BotResponse": {
-				"type": "object",
-				"properties": {
-					"uid": {
-						"type": "string",
-						"description": "Unique identifier of the bot"
-					},
-					"name": {
-						"type": "string",
-						"description": "Name of the bot"
-					},
-					"prompt": {
-						"type": "string",
-						"description": "System prompt for the bot"
-					},
-					"first_message": {
-						"type": "string",
-						"description": "Initial message the bot will send"
-					},
-					"knowledge_base_id": {
-						"type": "integer",
-						"description": "ID of the knowledge base"
-					},
-					"voice_provider": {
-						"type": "string",
-						"enum": ["OpenAI", "ElevenLabs", "Deepgram"],
-						"description": "Voice synthesis provider"
-					},
-					"voice": {
-						"type": "string",
-						"description": "Voice ID or name"
-					},
-					"voice_model": {
-						"type": "string",
-						"description": "Voice model being used"
-					},
-					"voice_speed": {
-						"type": "number",
-						"description": "Speech speed multiplier"
-					},
-					"llm_model_name": {
-						"type": "string",
-						"description": "Large language model being used"
-					},
-					"llm_model_temperature": {
-						"type": "number",
-						"description": "Temperature setting for the LLM"
-					},
-					"stt_provider": {
-						"type": "string",
-						"enum": ["Deepgram"],
-						"description": "Speech-to-text provider"
-					},
-					"stt_model": {
-						"type": "string",
-						"description": "Speech-to-text model"
-					},
-					"call_settings": {
-						"$ref": "#/components/schemas/CallSettings"
-					},
-					"advanced_settings": {
-						"$ref": "#/components/schemas/AdvancedSettings"
-					},
-					"post_call_settings": {
-						"$ref": "#/components/schemas/PostCallSettings"
-					},
-					"created_at": {
-						"type": "string",
-						"format": "date-time",
-						"description": "Bot creation timestamp"
-					},
-					"updated_at": {
-						"type": "string",
-						"format": "date-time",
-						"description": "Bot last update timestamp"
-					}
-				},
-				"required": [
-					"uid",
-					"name",
-					"prompt",
-					"created_at",
-					"updated_at"
-				]
-			},
-			"ListBotsResponse": {
-				"type": "object",
-				"properties": {
-					"bots": {
-						"type": "array",
-						"items": { "$ref": "#/components/schemas/BotResponse" }
-					},
-					"pagination": {
-						"$ref": "#/components/schemas/Pagination"
-					}
-				},
-				"required": ["bots", "pagination"]
-			},
-			"CreateCallRequest": {
-				"type": "object",
-				"properties": {
-					"from_number": {
-						"type": "string",
-						"pattern": "^\\+[1-9]\\d{1,14}$",
-						"example": "+1234567890",
-						"description": "The number you own in E.164 format. Must be a number purchased from OpenMic."
-					},
-					"to_number": {
-						"type": "string",
-						"pattern": "^\\+[1-9]\\d{1,14}$",
-						"example": "+0987654321",
-						"description": "The number you want to call in E.164 format."
-					},
-					"override_agent_id": {
-						"type": "string",
-						"example": "bvrg8wzi487w02m2bc7dh0ev",
-						"description": "The bot UID to override the default agent."
-					},
-					"customer_id": {
-						"type": "string",
-						"example": "customer_001",
-						"description": "Customer identifier for tracking"
-					},
-					"dynamic_variables": {
-						"type": "object",
-						"example": { "name": "John" },
-						"description": "Send dynamic variables in key value pairs to replace in the prompt."
-					},
-					"callback_url": {
-						"type": "string",
-						"example": "https://example.com/callback",
-						"description": "Callback URL to receive call events."
-					}
-				},
-				"required": ["from_number", "to_number"]
-			},
-			"CallResponse": {
-				"type": "object",
-				"properties": {
-					"call_type": {
-						"type": "string",
-						"enum": ["phonecall", "webcall"],
-						"description": "Type of call"
-					},
-					"from_number": {
-						"type": "string",
-						"description": "Originating phone number"
-					},
-					"to_number": {
-						"type": "string",
-						"description": "Destination phone number"
-					},
-					"direction": {
-						"type": "string",
-						"enum": ["inbound", "outbound"],
-						"description": "Call direction"
-					},
-					"call_id": {
-						"type": "string",
-						"description": "Unique call identifier"
-					},
-					"agent_id": {
-						"type": "string",
-						"description": "Bot/agent identifier"
-					},
-					"call_status": {
-						"type": "string",
-						"enum": ["registered", "ongoing", "ended", "error"],
-						"description": "Current call status"
-					},
-					"customer_id": {
-						"type": "string",
-						"description": "Customer identifier"
-					},
-					"telephony_identifier": {
-						"type": "object",
-						"description": "Telephony system identifiers"
-					},
-					"start_timestamp": {
-						"type": "integer",
-						"description": "Call start time (Unix timestamp in milliseconds)"
-					},
-					"end_timestamp": {
-						"type": "integer",
-						"description": "Call end time (Unix timestamp in milliseconds)"
-					},
-					"duration_ms": {
-						"type": "integer",
-						"description": "Call duration in milliseconds"
-					},
-					"transcript": {
-						"type": "array",
-						"items": {
-							"type": "array",
-							"items": {
-								"type": "string"
-							},
-							"minItems": 2,
-							"maxItems": 2,
-							"description": "Transcript entry with [speaker, message] format"
-						},
-						"description": "Call transcript as array of [speaker, message] pairs"
-					},
-					"recording_url": {
-						"type": "string",
-						"description": "URL to call recording"
-					},
-					"latency": {
-						"type": "object",
-						"properties": {
-							"e2e_min_latency": {
-								"type": "number",
-								"description": "Minimum end-to-end latency in seconds"
-							},
-							"e2e_median_latency": {
-								"type": "number",
-								"description": "Median end-to-end latency in seconds"
-							},
-							"e2e_p90_latency": {
-								"type": "number",
-								"description": "90th percentile end-to-end latency in seconds"
-							},
-							"llm_min_latency": {
-								"type": "number",
-								"description": "Minimum LLM processing latency in seconds"
-							},
-							"llm_median_latency": {
-								"type": "number",
-								"description": "Median LLM processing latency in seconds"
-							},
-							"llm_p90_latency": {
-								"type": "number",
-								"description": "90th percentile LLM processing latency in seconds"
-							},
-							"tts_min_latency": {
-								"type": "number",
-								"description": "Minimum text-to-speech latency in seconds"
-							},
-							"tts_median_latency": {
-								"type": "number",
-								"description": "Median text-to-speech latency in seconds"
-							},
-							"tts_p90_latency": {
-								"type": "number",
-								"description": "90th percentile text-to-speech latency in seconds"
-							}
-						},
-						"description": "Latency metrics for different components"
-					},
-					"call_analysis": {
-						"type": "object",
-						"properties": {
-							"summary": {
-								"type": "string",
-								"description": "AI-generated summary of the call"
-							},
-							"is_successful": {
-								"type": "boolean",
-								"description": "Whether the call was deemed successful"
-							},
-							"success_evaluation": {
-								"type": "string",
-								"description": "Success evaluation result (e.g., 'good', 'excellent', 'poor')"
-							},
-							"extracted_data": {
-								"type": "object",
-								"nullable": true,
-								"description": "Structured data extracted from the call based on post-call settings"
-							}
-						},
-						"description": "Post-call analysis results including summary and success metrics"
-					},
-					"call_cost": {
-						"type": "object",
-						"properties": {
-							"total_cost": {
-								"type": "number",
-								"description": "Total cost of the call in USD"
-							},
-							"llm_cost": {
-								"type": "number",
-								"description": "Cost attributed to LLM usage in USD"
-							},
-							"tts_cost": {
-								"type": "number",
-								"description": "Cost attributed to text-to-speech in USD"
-							},
-							"stt_cost": {
-								"type": "number",
-								"description": "Cost attributed to speech-to-text in USD"
-							}
-						},
-						"description": "Detailed cost breakdown for the call"
-					},
-					"dynamic_variables": {
-						"type": "object",
-						"example": { "name": "John" },
-						"description": "Send dynamic variables in key value pairs to replace in the prompt."
-					}
-				},
-				"required": [
-					"call_type",
-					"from_number",
-					"to_number",
-					"direction",
-					"call_id",
-					"agent_id",
-					"call_status"
-				]
-			},
-			"ListCallsResponse": {
-				"type": "object",
-				"properties": {
-					"calls": {
-						"type": "array",
-						"items": { "$ref": "#/components/schemas/CallResponse" }
-					},
-					"pagination": {
-						"$ref": "#/components/schemas/Pagination"
-					}
-				},
-				"required": ["calls", "pagination"]
-			},
-			"PhoneNumberResponse": {
-				"type": "object",
-				"properties": {
-					"phone_number_id": {
-						"type": "string",
-						"description": "Unique identifier of the phone number"
-					},
-					"phone_number": {
-						"type": "string",
-						"description": "Phone number in E.164 format"
-					},
-					"name": {
-						"type": "string",
-						"description": "Friendly name for the phone number"
-					},
-					"inbound_agent_id": {
-						"type": "string",
-						"description": "Bot UID for inbound calls"
-					},
-					"outbound_agent_id": {
-						"type": "string",
-						"description": "Bot UID for outbound calls"
-					},
-					"created_at": {
-						"type": "string",
-						"format": "date-time",
-						"description": "Phone number creation timestamp"
-					},
-					"updated_at": {
-						"type": "string",
-						"format": "date-time",
-						"description": "Phone number last update timestamp"
-					}
-				},
-				"required": [
-					"phone_number_id",
-					"phone_number",
-					"created_at",
-					"updated_at"
-				]
-			},
-			"ListPhoneNumbersResponse": {
-				"type": "object",
-				"properties": {
-					"phone_numbers": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/PhoneNumberResponse"
-						}
-					},
-					"pagination": {
-						"$ref": "#/components/schemas/Pagination"
-					}
-				},
-				"required": ["phone_numbers", "pagination"]
-			},
-			"LinkBotToPhoneNumberRequest": {
-				"type": "object",
-				"properties": {
-					"phone_number_id": {
-						"type": "string",
-						"description": "Unique identifier of the phone number"
-					},
-					"agent_id": {
-						"type": "string",
-						"description": "Bot UID to link"
-					},
-					"direction": {
-						"type": "string",
-						"enum": ["inbound", "outbound", "both"],
-						"description": "Direction for the bot assignment"
-					}
-				},
-				"required": ["phone_number_id", "agent_id", "direction"]
-			},
-			"LinkBotToPhoneNumberResponse": {
-				"type": "object",
-				"properties": {
-					"phone_number_id": {
-						"type": "string",
-						"description": "Unique identifier of the phone number"
-					},
-					"phone_number": {
-						"type": "string",
-						"description": "Phone number in E.164 format"
-					},
-					"inbound_agent_id": {
-						"type": "string",
-						"description": "Bot UID for inbound calls"
-					},
-					"outbound_agent_id": {
-						"type": "string",
-						"description": "Bot UID for outbound calls"
-					},
-					"message": {
-						"type": "string",
-						"description": "Success message"
-					}
-				},
-				"required": ["phone_number_id", "phone_number", "message"]
-			},
-			"Pagination": {
-				"type": "object",
-				"properties": {
-					"limit": {
-						"type": "integer",
-						"description": "Number of items per page"
-					},
-					"offset": {
-						"type": "integer",
-						"description": "Number of items skipped"
-					},
-					"total": {
-						"type": "integer",
-						"description": "Total number of items"
-					},
-					"has_more": {
-						"type": "boolean",
-						"description": "Whether there are more items"
-					}
-				},
-				"required": ["limit", "offset", "total", "has_more"]
-			},
-			"Error": {
-				"type": "object",
-				"properties": {
-					"error": {
-						"type": "string",
-						"description": "Error message"
-					},
-					"message": {
-						"type": "string",
-						"description": "Additional error message (for certain error types)"
-					}
-				},
-				"required": ["error"]
-			}
-		},
-		"securitySchemes": {
-			"BearerAuth": {
-				"type": "http",
-				"scheme": "bearer",
-				"description": "Bearer token authentication using API key. Find it at: `https://chat.openmic.ai/api-key`"
-			}
-		}
-	},
-	"servers": [
-		{
-			"url": "https://api.openmic.ai",
-			"description": "Production Environment"
-		}
-	]
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenMic v1 External API",
+    "description": "API specification for OpenMic v1 External API, providing endpoints for bot management, call handling, and phone number operations.",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Calls",
+      "description": "Endpoints related to phone call creation and management."
+    },
+    {
+      "name": "Bots",
+      "description": "Endpoints related to bot management and configuration."
+    },
+    {
+      "name": "Phone Numbers",
+      "description": "Endpoints related to phone number management and bot linking."
+    },
+    {
+      "name": "Knowledge Bases"
+    },
+    {
+      "name": "FAQs"
+    },
+    {
+      "name": "Campaigns"
+    },
+    {
+      "name": "Tools"
+    },
+    {
+      "name": "Contact Lists"
+    },
+    {
+      "name": "Contacts"
+    },
+    {
+      "name": "Voices",
+      "description": "Endpoints for browsing available text-to-speech voices. Voices are read-only and can be filtered by gender, provider, language, and accent."
+    }
+  ],
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
+  "paths": {
+    "/v1/bots": {
+      "post": {
+        "summary": "Create Bot",
+        "description": "Create a new bot with specified configuration.",
+        "tags": ["Bots"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "description": "Bot configuration details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBotRequest"
+              },
+              "example": {
+                "name": "Customer Support Bot",
+                "prompt": "You are a helpful customer support assistant. Be polite, professional, and always try to resolve customer issues.",
+                "first_message": "Hello! I'm here to help you with any questions or concerns you may have. How can I assist you today?",
+                "knowledge_base_id": 123,
+                "voice_provider": "OpenAI",
+                "voice": "alloy",
+                "voice_model": "tts-1",
+                "voice_speed": 1.0,
+                "llm_model_name": "gpt-4",
+                "llm_model_temperature": 0.7,
+                "stt_provider": "Deepgram",
+                "stt_model": "nova-2",
+                "call_settings": {
+                  "max_call_duration": 10,
+                  "silence_timeout": 15,
+                  "silence_timeout_max_retries": 3,
+                  "silence_timeout_message": "I didn't hear anything. Are you still there?",
+                  "call_recording_enabled": true,
+                  "voicemail_detection_enabled": true,
+                  "voicemail_action": "leave_message",
+                  "voicemail_message_type": "static",
+                  "voicemail_message": "Hey, sorry we couldn't reach you directly. Please give us a callback if you can.",
+                  "hipaa_compliance_enabled": false,
+                  "pci_compliance_enabled": false
+                },
+                "advanced_settings": {
+                  "agent_personality": "friendly",
+                  "humanize_conversation": true,
+                  "background_noise_reduction": true,
+                  "allow_interruptions": true,
+                  "min_interruption_duration": 0.5,
+                  "agent_response_length": "normal",
+                  "short_pause": 0.3,
+                  "long_pause": 1.0
+                },
+                "post_call_settings": {
+                  "summary_prompt": "Provide a brief summary of the customer interaction and any action items.",
+                  "success_evaluation_prompt": "Rate the success of this call on a scale of 1-10 based on customer satisfaction.",
+                  "success_evaluation_rubric_type": "NUMERIC_SCALE"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bot created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid request format, please check API reference."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List Bots",
+        "description": "Retrieve all bots with optional filtering and pagination.",
+        "tags": ["Bots"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of bots to return (1-100)",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of bots to skip",
+            "schema": { "type": "integer", "minimum": 0 }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter by bot name (partial match)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "created_after",
+            "in": "query",
+            "description": "Filter bots created after this date (ISO 8601 format)",
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "created_before",
+            "in": "query",
+            "description": "Filter bots created before this date (ISO 8601 format)",
+            "schema": { "type": "string", "format": "date-time" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of bots retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListBotsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid query parameters provided."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bots/{uid}": {
+      "get": {
+        "summary": "Get Bot",
+        "description": "Retrieve details of a specific bot by its UID.",
+        "tags": ["Bots"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "description": "The unique identifier of the bot",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bot details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing organization information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Missing organization information in request."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bot not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Bot with the specified UID was not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Bot",
+        "description": "Update an existing bot's configuration.",
+        "tags": ["Bots"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "description": "The unique identifier of the bot",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated bot configuration",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBotRequest"
+              },
+              "example": {
+                "name": "Updated Customer Support Bot",
+                "prompt": "You are an advanced customer support assistant with expertise in technical issues.",
+                "voice_speed": 1.1,
+                "llm_model_temperature": 0.8,
+                "call_settings": {
+                  "max_call_duration": 15,
+                  "silence_timeout": 20,
+                  "voicemail_detection_enabled": true,
+                  "voicemail_action": "leave_message",
+                  "voicemail_message_type": "prompt",
+                  "voicemail_message": "Generate a voicemail explaining why I called based on the customer's recent support ticket."
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bot updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bot not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Bot",
+        "description": "Delete a bot by its UID.",
+        "tags": ["Bots"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "description": "The unique identifier of the bot",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Bot deleted successfully"
+          },
+          "400": {
+            "description": "Bad request - missing organization information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bot not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - bot is currently in use",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/create-phone-call": {
+      "post": {
+        "summary": "Create Phone Call",
+        "description": "Create a new outbound phone call.",
+        "tags": ["Calls"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "description": "Call creation details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCallRequest"
+              },
+              "example": {
+                "from_number": "+1234567890",
+                "to_number": "+0987654321",
+                "override_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                "customer_id": "customer_001",
+                "dynamic_variables": { "name": "John" },
+                "callback_url": "https://example.com/callback"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Call created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallResponse"
+                },
+                "example": {
+                  "call_type": "phonecall",
+                  "from_number": "+1234567890",
+                  "to_number": "+0987654321",
+                  "direction": "outbound",
+                  "call_id": "cmbbvrg8wzi487w02m2bc7dji",
+                  "agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                  "call_status": "registered",
+                  "customer_id": "customer_001",
+                  "dynamic_variables": {
+                    "name": "John"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid request format, please check API reference."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Bot with the specified override_agent_id was not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/call/{id}": {
+      "get": {
+        "summary": "Get Call",
+        "description": "Retrieve details of a specific call by its ID.",
+        "tags": ["Calls"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The unique identifier of the call",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Call details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallResponse"
+                },
+                "example": {
+                  "call_type": "phonecall",
+                  "from_number": "+1234567890",
+                  "to_number": "+0987654321",
+                  "direction": "outbound",
+                  "call_id": "cmbbvrg8wzi487w02m2bc7dji",
+                  "agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                  "call_status": "ended",
+                  "customer_id": "customer_001",
+                  "start_timestamp": 1678886400000,
+                  "end_timestamp": 1678886700000,
+                  "duration_ms": 300000,
+                  "transcript": [
+                    ["assistant", "Hello! How can I help you today?"],
+                    ["user", "I'd like to schedule an appointment."],
+                    [
+                      "assistant",
+                      "I'd be happy to help you schedule an appointment. What type of service are you looking for?"
+                    ]
+                  ],
+                  "recording_url": "https://recordings.openmic.ai/call_98765.mp3",
+                  "latency": {
+                    "e2e_min_latency": 0.5,
+                    "e2e_median_latency": 1.2,
+                    "e2e_p90_latency": 2.1,
+                    "llm_min_latency": 0.3,
+                    "llm_median_latency": 0.8,
+                    "llm_p90_latency": 1.5,
+                    "tts_min_latency": 0.2,
+                    "tts_median_latency": 0.4,
+                    "tts_p90_latency": 0.6
+                  },
+                  "call_analysis": {
+                    "summary": "Customer called to schedule an appointment and was successfully assisted.",
+                    "is_successful": true,
+                    "success_evaluation": "excellent",
+                    "extracted_data": null
+                  },
+                  "call_cost": {
+                    "total_cost": 0.0822,
+                    "llm_cost": 0.0052548,
+                    "tts_cost": 0.0242269,
+                    "stt_cost": 0.0527183
+                  },
+                  "dynamic_variables": {
+                    "name": "John"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing organization information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Missing organization information in request."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Call not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Call with the specified ID was not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/calls": {
+      "get": {
+        "summary": "List Calls",
+        "description": "Retrieve all calls with optional filtering and pagination.",
+        "tags": ["Calls"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of calls to return (1-100)",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of calls to skip",
+            "schema": { "type": "integer", "minimum": 0 }
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "description": "Filter by customer ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "from_number",
+            "in": "query",
+            "description": "Filter by originating phone number",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "to_number",
+            "in": "query",
+            "description": "Filter by destination phone number",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "bot_id",
+            "in": "query",
+            "description": "Filter by bot ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "description": "Filter calls from this date (ISO 8601 format)",
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "description": "Filter calls to this date (ISO 8601 format)",
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "call_status",
+            "in": "query",
+            "description": "Filter by call status",
+            "schema": {
+              "type": "string",
+              "enum": ["registered", "ongoing", "ended", "error"]
+            }
+          },
+          {
+            "name": "call_type",
+            "in": "query",
+            "description": "Filter by call type",
+            "schema": {
+              "type": "string",
+              "enum": ["phonecall", "webcall"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of calls retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCallsResponse"
+                },
+                "example": {
+                  "calls": [
+                    {
+                      "call_type": "phonecall",
+                      "from_number": "+1234567890",
+                      "to_number": "+0987654321",
+                      "direction": "outbound",
+                      "call_id": "cmbbvrg8wzi487w02m2bc7dji",
+                      "agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                      "call_status": "ended",
+                      "customer_id": "customer_001",
+                      "start_timestamp": 1678886400000,
+                      "end_timestamp": 1678886700000,
+                      "duration_ms": 300000,
+                      "transcript": [
+                        ["assistant", "Hello! How can I help you today?"],
+                        ["user", "I'd like to schedule an appointment."]
+                      ],
+                      "recording_url": "https://recordings.openmic.ai/call_98765.mp3",
+                      "latency": {
+                        "e2e_min_latency": 0.5,
+                        "e2e_median_latency": 1.2,
+                        "e2e_p90_latency": 2.1,
+                        "llm_min_latency": 0.3,
+                        "llm_median_latency": 0.8,
+                        "llm_p90_latency": 1.5,
+                        "tts_min_latency": 0.2,
+                        "tts_median_latency": 0.4,
+                        "tts_p90_latency": 0.6
+                      },
+                      "call_analysis": {
+                        "summary": "Customer called to schedule an appointment and was successfully assisted.",
+                        "is_successful": true,
+                        "success_evaluation": "excellent",
+                        "extracted_data": null
+                      },
+                      "call_cost": {
+                        "total_cost": 0.0822,
+                        "llm_cost": 0.0052548,
+                        "tts_cost": 0.0242269,
+                        "stt_cost": 0.0527183
+                      },
+                      "dynamic_variables": {
+                        "name": "John"
+                      }
+                    }
+                  ],
+                  "pagination": {
+                    "limit": 1,
+                    "offset": 0,
+                    "total": 1,
+                    "has_more": false
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid query parameters provided."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/phone-numbers": {
+      "get": {
+        "summary": "List Phone Numbers",
+        "description": "Retrieve all phone numbers with optional filtering and pagination.",
+        "tags": ["Phone Numbers"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of phone numbers to return (1-100)",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of phone numbers to skip",
+            "schema": { "type": "integer", "minimum": 0 }
+          },
+          {
+            "name": "phone_number",
+            "in": "query",
+            "description": "Filter by phone number (partial match)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter by name (partial match)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of phone numbers retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListPhoneNumbersResponse"
+                },
+                "example": {
+                  "phone_numbers": [
+                    {
+                      "phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+                      "phone_number": "+15551112222",
+                      "name": "Main Support Line",
+                      "inbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                      "outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                      "created_at": "2023-01-01T12:00:00Z",
+                      "updated_at": "2023-01-02T15:30:00Z"
+                    }
+                  ],
+                  "pagination": {
+                    "limit": 1,
+                    "offset": 0,
+                    "total": 1,
+                    "has_more": false
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid query parameters provided."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/phone-numbers/{uid}": {
+      "get": {
+        "summary": "Get Phone Number",
+        "description": "Retrieve details of a specific phone number by its UID.",
+        "tags": ["Phone Numbers"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "description": "The unique identifier of the phone number",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phone number details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneNumberResponse"
+                },
+                "example": {
+                  "phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+                  "phone_number": "+15551112222",
+                  "name": "Main Support Line",
+                  "inbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                  "outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                  "created_at": "2023-01-01T12:00:00Z",
+                  "updated_at": "2023-01-02T15:30:00Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing organization information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Missing organization information in request."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Phone number not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Phone number with the specified UID was not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/phone-numbers/link-agent": {
+      "post": {
+        "summary": "Link Bot to Phone Number",
+        "description": "Link a bot (agent) to a phone number for inbound/outbound calls.",
+        "tags": ["Phone Numbers"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "description": "Bot linking details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkBotToPhoneNumberRequest"
+              },
+              "example": {
+                "phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+                "agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                "direction": "both"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bot linked to phone number successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkBotToPhoneNumberResponse"
+                },
+                "example": {
+                  "phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+                  "phone_number": "+15551112222",
+                  "inbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                  "outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                  "message": "Bot linked successfully for inbound and outbound calls."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid direction specified. Must be one of 'inbound', 'outbound', 'both'."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Phone number or bot not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "The specified phone number or bot was not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/phone-numbers/unlink-agent": {
+      "post": {
+        "summary": "Unlink Bot from Phone Number",
+        "description": "Unlink a bot (agent) from a phone number.",
+        "tags": ["Phone Numbers"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "description": "Bot unlinking details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the phone number"
+                  },
+                  "direction": {
+                    "type": "string",
+                    "enum": ["inbound", "outbound", "both"],
+                    "description": "Direction to unlink (inbound, outbound, or both)"
+                  }
+                },
+                "required": ["phone_number_id", "direction"]
+              },
+              "example": {
+                "phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+                "direction": "inbound"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bot unlinked from phone number successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkBotToPhoneNumberResponse"
+                },
+                "example": {
+                  "phone_number_id": "ybhb8wzi487w02m2bc7dh0ev",
+                  "phone_number": "+15551112222",
+                  "inbound_agent_id": null,
+                  "outbound_agent_id": "bvrg8wzi487w02m2bc7dh0ev",
+                  "message": "Bot unlinked successfully for inbound calls."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid request body."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized",
+                  "message": "Invalid or expired API key"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Phone number not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Phone number with the specified UID was not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "An unexpected error occurred. Please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contact-lists": {
+      "post": {
+        "tags": ["Contact Lists"],
+        "summary": "Create a contact list",
+        "operationId": "createContactList",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContactListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact list created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ContactListResponse" }
+              }
+            }
+          },
+          "400": { "description": "Validation error" }
+        }
+      },
+      "get": {
+        "tags": ["Contact Lists"],
+        "summary": "List contact lists",
+        "operationId": "listContactLists",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 0, "default": 0 }
+          },
+          {
+            "name": "created_after",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "created_before",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of contact lists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListContactListsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contact-lists/{contact_list_id}": {
+      "get": {
+        "tags": ["Contact Lists"],
+        "summary": "Get a contact list",
+        "operationId": "getContactList",
+        "parameters": [
+          {
+            "name": "contact_list_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact list details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ContactListResponse" }
+              }
+            }
+          },
+          "404": { "description": "Contact list not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Contact Lists"],
+        "summary": "Update a contact list",
+        "operationId": "updateContactList",
+        "parameters": [
+          {
+            "name": "contact_list_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContactListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated contact list",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ContactListResponse" }
+              }
+            }
+          },
+          "404": { "description": "Contact list not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Contact Lists"],
+        "summary": "Delete a contact list",
+        "operationId": "deleteContactList",
+        "parameters": [
+          {
+            "name": "contact_list_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Contact list deleted" },
+          "404": { "description": "Contact list not found" }
+        }
+      }
+    },
+    "/api/v1/contact-lists/{contact_list_id}/contacts": {
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Add a single contact to a contact list",
+        "operationId": "addContact",
+        "parameters": [
+          {
+            "name": "contact_list_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateContactRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ContactResponse" }
+              }
+            }
+          },
+          "400": { "description": "Validation error" },
+          "404": { "description": "Contact list not found" }
+        }
+      },
+      "get": {
+        "tags": ["Contacts"],
+        "summary": "List contacts in a contact list",
+        "operationId": "listContacts",
+        "parameters": [
+          {
+            "name": "contact_list_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 0, "default": 0 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListContactsResponse"
+                }
+              }
+            }
+          },
+          "404": { "description": "Contact list not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Contacts"],
+        "summary": "Delete contacts from a contact list",
+        "operationId": "deleteContacts",
+        "description": "Remove one or more contacts by providing their IDs in the request body.",
+        "parameters": [
+          {
+            "name": "contact_list_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["contact_ids"],
+                "properties": {
+                  "contact_ids": {
+                    "type": "array",
+                    "items": { "type": "integer" },
+                    "description": "Array of contact IDs to delete."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Contacts deleted" },
+          "404": { "description": "Some contacts not found or access denied" }
+        }
+      }
+    },
+    "/api/v1/contact-lists/{contact_list_id}/contacts/bulk": {
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Bulk add contacts to a contact list",
+        "operationId": "addContactsBulk",
+        "description": "Add up to 1000 contacts in a single request.",
+        "parameters": [
+          {
+            "name": "contact_list_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContactsBulkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contacts created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "description": "Number of contacts created."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Validation error" },
+          "404": { "description": "Contact list not found" }
+        }
+      }
+    },
+    "/api/v1/contact-lists/{contact_list_id}/contacts/{contact_id}": {
+      "patch": {
+        "tags": ["Contacts"],
+        "summary": "Update a contact",
+        "operationId": "updateContact",
+        "parameters": [
+          {
+            "name": "contact_list_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "contact_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateContactRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated contact",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ContactResponse" }
+              }
+            }
+          },
+          "404": { "description": "Contact not found" }
+        }
+      }
+    },
+    "/api/v1/campaigns": {
+      "post": {
+        "tags": ["Campaigns"],
+        "summary": "Create a campaign",
+        "operationId": "createCampaignExt",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCampaignRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Campaign created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CampaignResponse" }
+              }
+            }
+          },
+          "400": { "description": "Validation error" },
+          "404": { "description": "Bot or contact list not found" }
+        }
+      },
+      "get": {
+        "tags": ["Campaigns"],
+        "summary": "List campaigns",
+        "operationId": "listCampaignsExt",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 0, "default": 0 }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["inbound", "outbound"] },
+            "description": "Filter by campaign type."
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "schema": { "type": "boolean" },
+            "description": "Filter by active status."
+          },
+          {
+            "name": "created_after",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "created_before",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of campaigns",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCampaignsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/campaigns/{campaign_id}": {
+      "get": {
+        "tags": ["Campaigns"],
+        "summary": "Get a campaign",
+        "operationId": "getCampaignExt",
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CampaignResponse" }
+              }
+            }
+          },
+          "404": { "description": "Campaign not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Campaigns"],
+        "summary": "Update a campaign",
+        "operationId": "updateCampaignExt",
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateCampaignRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated campaign",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CampaignResponse" }
+              }
+            }
+          },
+          "404": { "description": "Campaign not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Campaigns"],
+        "summary": "Delete a campaign",
+        "operationId": "deleteCampaignExt",
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Campaign deleted" },
+          "404": { "description": "Campaign not found" }
+        }
+      }
+    },
+    "/v1/voices": {
+      "get": {
+        "summary": "List Voices",
+        "description": "Retrieve a paginated list of available text-to-speech voices. Use query parameters to filter by gender, provider, language, or accent, and to search by name or description.",
+        "tags": ["Voices"],
+        "operationId": "listVoicesExt",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "description": "Maximum number of voices to return (1-100)."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 0, "default": 0 },
+            "description": "Number of voices to skip for pagination."
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Search voices by name or description (case-insensitive)."
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by gender (e.g. 'male', 'female')."
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by TTS provider (e.g. 'elevenlabs', 'deepgram')."
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by language code (e.g. 'en', 'es')."
+          },
+          {
+            "name": "accent",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by accent (case-insensitive partial match)."
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["name", "created_at"] },
+            "description": "Field to sort results by."
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "description": "Sort direction."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of voices with available filter values.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ListVoicesResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/voices/{voice_id}": {
+      "get": {
+        "summary": "Get Voice",
+        "description": "Retrieve details of a specific voice by its ID.",
+        "tags": ["Voices"],
+        "operationId": "getVoiceExt",
+        "parameters": [
+          {
+            "name": "voice_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "The numeric ID of the voice."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Voice details.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VoiceResponse" }
+              }
+            }
+          },
+          "400": { "description": "Invalid voice_id" },
+          "404": { "description": "Voice not found" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateBotRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the bot (max 255 characters)",
+            "maxLength": 255
+          },
+          "prompt": {
+            "type": "string",
+            "description": "System prompt for the bot"
+          },
+          "first_message": {
+            "type": "string",
+            "description": "Initial message the bot will send"
+          },
+          "knowledge_base_id": {
+            "type": "integer",
+            "description": "ID of the knowledge base to use"
+          },
+          "voice_provider": {
+            "type": "string",
+            "enum": ["OpenAI", "ElevenLabs", "Deepgram"],
+            "description": "Voice synthesis provider"
+          },
+          "voice": {
+            "type": "string",
+            "description": "Voice ID or name"
+          },
+          "voice_model": {
+            "type": "string",
+            "description": "Voice model to use"
+          },
+          "voice_speed": {
+            "type": "number",
+            "description": "Speech speed multiplier"
+          },
+          "llm_model_name": {
+            "type": "string",
+            "description": "Large language model to use"
+          },
+          "llm_model_temperature": {
+            "type": "number",
+            "description": "Temperature setting for the LLM"
+          },
+          "stt_provider": {
+            "type": "string",
+            "enum": ["Deepgram"],
+            "description": "Speech-to-text provider"
+          },
+          "stt_model": {
+            "type": "string",
+            "description": "Speech-to-text model"
+          },
+          "call_settings": {
+            "$ref": "#/components/schemas/CallSettings"
+          },
+          "advanced_settings": {
+            "$ref": "#/components/schemas/AdvancedSettings"
+          },
+          "post_call_settings": {
+            "$ref": "#/components/schemas/PostCallSettings"
+          }
+        },
+        "required": ["name", "prompt"]
+      },
+      "UpdateBotRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/CreateBotRequest" },
+          {
+            "type": "object",
+            "description": "All fields are optional for updates"
+          }
+        ]
+      },
+      "CallSettings": {
+        "type": "object",
+        "properties": {
+          "max_call_duration": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 30,
+            "description": "Maximum call duration in minutes (2-30)"
+          },
+          "silence_timeout": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 45,
+            "description": "Silence timeout in seconds (5-45)"
+          },
+          "silence_timeout_max_retries": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Maximum retries for silence timeout (1-5)"
+          },
+          "silence_timeout_message": {
+            "type": "string",
+            "description": "Message to play when silence timeout occurs"
+          },
+          "call_recording_enabled": {
+            "type": "boolean",
+            "description": "Whether to record calls"
+          },
+          "voicemail_detection_enabled": {
+            "type": "boolean",
+            "description": "Whether to detect voicemail"
+          },
+          "voicemail_action": {
+            "type": "string",
+            "enum": ["leave_message", "hangup"],
+            "description": "Action to take when voicemail is detected. 'leave_message' will deliver a custom voicemail message, 'hangup' will end the call immediately."
+          },
+          "voicemail_message_type": {
+            "type": "string",
+            "enum": ["static", "prompt"],
+            "description": "Type of voicemail message. 'static' uses a fixed pre-written message, 'prompt' uses AI-generated messages based on conversation context."
+          },
+          "voicemail_message": {
+            "type": "string",
+            "description": "The voicemail message content. Required when voicemail_action is 'leave_message'. For 'static' type, this is the exact message to be delivered. For 'prompt' type, this provides instructions to the AI."
+          },
+          "hipaa_compliance_enabled": {
+            "type": "boolean",
+            "description": "Whether HIPAA compliance is enabled"
+          },
+          "pci_compliance_enabled": {
+            "type": "boolean",
+            "description": "Whether PCI compliance is enabled"
+          }
+        }
+      },
+      "AdvancedSettings": {
+        "type": "object",
+        "properties": {
+          "agent_personality": {
+            "type": "string",
+            "enum": [
+              "casual",
+              "humorous",
+              "direct",
+              "formal",
+              "persuasive",
+              "friendly"
+            ],
+            "description": "Personality type for the agent"
+          },
+          "humanize_conversation": {
+            "type": "boolean",
+            "description": "Whether to humanize the conversation"
+          },
+          "background_noise_reduction": {
+            "type": "boolean",
+            "description": "Whether to reduce background noise"
+          },
+          "allow_interruptions": {
+            "type": "boolean",
+            "description": "Whether to allow user interruptions"
+          },
+          "min_interruption_duration": {
+            "type": "number",
+            "minimum": 0.2,
+            "maximum": 5,
+            "multipleOf": 0.1,
+            "description": "Minimum interruption duration in seconds (0.2-5, step 0.1)"
+          },
+          "background_sound": {
+            "type": "string",
+            "description": "Background sound to play"
+          },
+          "agent_response_length": {
+            "type": "string",
+            "enum": ["normal", "short", "concise", "long"],
+            "description": "Preferred response length"
+          },
+          "short_pause": {
+            "type": "number",
+            "minimum": 0.2,
+            "maximum": 2,
+            "multipleOf": 0.1,
+            "description": "Short pause duration in seconds (0.2-2, step 0.1)"
+          },
+          "long_pause": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 6,
+            "multipleOf": 0.1,
+            "description": "Long pause duration in seconds (0.5-6, step 0.1)"
+          },
+          "filter_phrases": {
+            "type": "string",
+            "description": "Phrases to filter from speech"
+          }
+        }
+      },
+      "PostCallSettings": {
+        "type": "object",
+        "properties": {
+          "summary_prompt": {
+            "type": "string",
+            "description": "Prompt for generating call summary"
+          },
+          "success_evaluation_prompt": {
+            "type": "string",
+            "description": "Prompt for evaluating call success"
+          },
+          "success_evaluation_rubric_type": {
+            "type": "string",
+            "enum": [
+              "NUMERIC_SCALE",
+              "DESCRIPTIVE_SCALE",
+              "PERCENTAGE_SCALE",
+              "LIKERT_SCALE",
+              "PASS_FAIL",
+              "SENTIMENT"
+            ],
+            "description": "Type of success evaluation rubric"
+          },
+          "structured_extraction_prompt": {
+            "type": "string",
+            "description": "Prompt for structured data extraction"
+          },
+          "structured_extraction_json_schema": {
+            "type": "object",
+            "description": "JSON schema for structured extraction"
+          }
+        }
+      },
+      "BotResponse": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "string",
+            "description": "Unique identifier of the bot"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the bot"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "System prompt for the bot"
+          },
+          "first_message": {
+            "type": "string",
+            "description": "Initial message the bot will send"
+          },
+          "knowledge_base_id": {
+            "type": "integer",
+            "description": "ID of the knowledge base"
+          },
+          "voice_provider": {
+            "type": "string",
+            "enum": ["OpenAI", "ElevenLabs", "Deepgram"],
+            "description": "Voice synthesis provider"
+          },
+          "voice": {
+            "type": "string",
+            "description": "Voice ID or name"
+          },
+          "voice_model": {
+            "type": "string",
+            "description": "Voice model being used"
+          },
+          "voice_speed": {
+            "type": "number",
+            "description": "Speech speed multiplier"
+          },
+          "llm_model_name": {
+            "type": "string",
+            "description": "Large language model being used"
+          },
+          "llm_model_temperature": {
+            "type": "number",
+            "description": "Temperature setting for the LLM"
+          },
+          "stt_provider": {
+            "type": "string",
+            "enum": ["Deepgram"],
+            "description": "Speech-to-text provider"
+          },
+          "stt_model": {
+            "type": "string",
+            "description": "Speech-to-text model"
+          },
+          "call_settings": {
+            "$ref": "#/components/schemas/CallSettings"
+          },
+          "advanced_settings": {
+            "$ref": "#/components/schemas/AdvancedSettings"
+          },
+          "post_call_settings": {
+            "$ref": "#/components/schemas/PostCallSettings"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Bot creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Bot last update timestamp"
+          }
+        },
+        "required": ["uid", "name", "prompt", "created_at", "updated_at"]
+      },
+      "ListBotsResponse": {
+        "type": "object",
+        "properties": {
+          "bots": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BotResponse" }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "required": ["bots", "pagination"]
+      },
+      "CreateCallRequest": {
+        "type": "object",
+        "properties": {
+          "from_number": {
+            "type": "string",
+            "pattern": "^\\+[1-9]\\d{1,14}$",
+            "example": "+1234567890",
+            "description": "The number you own in E.164 format. Must be a number purchased from OpenMic."
+          },
+          "to_number": {
+            "type": "string",
+            "pattern": "^\\+[1-9]\\d{1,14}$",
+            "example": "+0987654321",
+            "description": "The number you want to call in E.164 format."
+          },
+          "override_agent_id": {
+            "type": "string",
+            "example": "bvrg8wzi487w02m2bc7dh0ev",
+            "description": "The bot UID to override the default agent."
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "customer_001",
+            "description": "Customer identifier for tracking"
+          },
+          "dynamic_variables": {
+            "type": "object",
+            "example": { "name": "John" },
+            "description": "Send dynamic variables in key value pairs to replace in the prompt."
+          },
+          "callback_url": {
+            "type": "string",
+            "example": "https://example.com/callback",
+            "description": "Callback URL to receive call events."
+          }
+        },
+        "required": ["from_number", "to_number"]
+      },
+      "CallResponse": {
+        "type": "object",
+        "properties": {
+          "call_type": {
+            "type": "string",
+            "enum": ["phonecall", "webcall"],
+            "description": "Type of call"
+          },
+          "from_number": {
+            "type": "string",
+            "description": "Originating phone number"
+          },
+          "to_number": {
+            "type": "string",
+            "description": "Destination phone number"
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["inbound", "outbound"],
+            "description": "Call direction"
+          },
+          "call_id": {
+            "type": "string",
+            "description": "Unique call identifier"
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "Bot/agent identifier"
+          },
+          "call_status": {
+            "type": "string",
+            "enum": ["registered", "ongoing", "ended", "error"],
+            "description": "Current call status"
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "Customer identifier"
+          },
+          "telephony_identifier": {
+            "type": "object",
+            "description": "Telephony system identifiers"
+          },
+          "start_timestamp": {
+            "type": "integer",
+            "description": "Call start time (Unix timestamp in milliseconds)"
+          },
+          "end_timestamp": {
+            "type": "integer",
+            "description": "Call end time (Unix timestamp in milliseconds)"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "description": "Call duration in milliseconds"
+          },
+          "transcript": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "description": "Transcript entry with [speaker, message] format"
+            },
+            "description": "Call transcript as array of [speaker, message] pairs"
+          },
+          "recording_url": {
+            "type": "string",
+            "description": "URL to call recording"
+          },
+          "latency": {
+            "type": "object",
+            "properties": {
+              "e2e_min_latency": {
+                "type": "number",
+                "description": "Minimum end-to-end latency in seconds"
+              },
+              "e2e_median_latency": {
+                "type": "number",
+                "description": "Median end-to-end latency in seconds"
+              },
+              "e2e_p90_latency": {
+                "type": "number",
+                "description": "90th percentile end-to-end latency in seconds"
+              },
+              "llm_min_latency": {
+                "type": "number",
+                "description": "Minimum LLM processing latency in seconds"
+              },
+              "llm_median_latency": {
+                "type": "number",
+                "description": "Median LLM processing latency in seconds"
+              },
+              "llm_p90_latency": {
+                "type": "number",
+                "description": "90th percentile LLM processing latency in seconds"
+              },
+              "tts_min_latency": {
+                "type": "number",
+                "description": "Minimum text-to-speech latency in seconds"
+              },
+              "tts_median_latency": {
+                "type": "number",
+                "description": "Median text-to-speech latency in seconds"
+              },
+              "tts_p90_latency": {
+                "type": "number",
+                "description": "90th percentile text-to-speech latency in seconds"
+              }
+            },
+            "description": "Latency metrics for different components"
+          },
+          "call_analysis": {
+            "type": "object",
+            "properties": {
+              "summary": {
+                "type": "string",
+                "description": "AI-generated summary of the call"
+              },
+              "is_successful": {
+                "type": "boolean",
+                "description": "Whether the call was deemed successful"
+              },
+              "success_evaluation": {
+                "type": "string",
+                "description": "Success evaluation result (e.g., 'good', 'excellent', 'poor')"
+              },
+              "extracted_data": {
+                "type": "object",
+                "nullable": true,
+                "description": "Structured data extracted from the call based on post-call settings"
+              }
+            },
+            "description": "Post-call analysis results including summary and success metrics"
+          },
+          "call_cost": {
+            "type": "object",
+            "properties": {
+              "total_cost": {
+                "type": "number",
+                "description": "Total cost of the call in USD"
+              },
+              "llm_cost": {
+                "type": "number",
+                "description": "Cost attributed to LLM usage in USD"
+              },
+              "tts_cost": {
+                "type": "number",
+                "description": "Cost attributed to text-to-speech in USD"
+              },
+              "stt_cost": {
+                "type": "number",
+                "description": "Cost attributed to speech-to-text in USD"
+              }
+            },
+            "description": "Detailed cost breakdown for the call"
+          },
+          "dynamic_variables": {
+            "type": "object",
+            "example": { "name": "John" },
+            "description": "Send dynamic variables in key value pairs to replace in the prompt."
+          }
+        },
+        "required": [
+          "call_type",
+          "from_number",
+          "to_number",
+          "direction",
+          "call_id",
+          "agent_id",
+          "call_status"
+        ]
+      },
+      "ListCallsResponse": {
+        "type": "object",
+        "properties": {
+          "calls": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CallResponse" }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "required": ["calls", "pagination"]
+      },
+      "PhoneNumberResponse": {
+        "type": "object",
+        "properties": {
+          "phone_number_id": {
+            "type": "string",
+            "description": "Unique identifier of the phone number"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "Phone number in E.164 format"
+          },
+          "name": {
+            "type": "string",
+            "description": "Friendly name for the phone number"
+          },
+          "inbound_agent_id": {
+            "type": "string",
+            "description": "Bot UID for inbound calls"
+          },
+          "outbound_agent_id": {
+            "type": "string",
+            "description": "Bot UID for outbound calls"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Phone number creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Phone number last update timestamp"
+          }
+        },
+        "required": [
+          "phone_number_id",
+          "phone_number",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "ListPhoneNumbersResponse": {
+        "type": "object",
+        "properties": {
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhoneNumberResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "required": ["phone_numbers", "pagination"]
+      },
+      "LinkBotToPhoneNumberRequest": {
+        "type": "object",
+        "properties": {
+          "phone_number_id": {
+            "type": "string",
+            "description": "Unique identifier of the phone number"
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "Bot UID to link"
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["inbound", "outbound", "both"],
+            "description": "Direction for the bot assignment"
+          }
+        },
+        "required": ["phone_number_id", "agent_id", "direction"]
+      },
+      "LinkBotToPhoneNumberResponse": {
+        "type": "object",
+        "properties": {
+          "phone_number_id": {
+            "type": "string",
+            "description": "Unique identifier of the phone number"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "Phone number in E.164 format"
+          },
+          "inbound_agent_id": {
+            "type": "string",
+            "description": "Bot UID for inbound calls"
+          },
+          "outbound_agent_id": {
+            "type": "string",
+            "description": "Bot UID for outbound calls"
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message"
+          }
+        },
+        "required": ["phone_number_id", "phone_number", "message"]
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Number of items per page"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Number of items skipped"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of items"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether there are more items"
+          }
+        },
+        "required": ["limit", "offset", "total", "has_more"]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "message": {
+            "type": "string",
+            "description": "Additional error message (for certain error types)"
+          }
+        },
+        "required": ["error"]
+      },
+      "CreateContactListRequest": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Name of the contact list."
+          }
+        }
+      },
+      "UpdateContactListRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "New name for the contact list."
+          }
+        }
+      },
+      "ContactListResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "description": "Unique identifier." },
+          "name": { "type": "string", "description": "Contact list name." },
+          "contact_count": {
+            "type": "integer",
+            "description": "Number of contacts in the list."
+          },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ListContactListsResponse": {
+        "type": "object",
+        "properties": {
+          "contact_lists": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ContactListResponse" }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": { "type": "integer" },
+              "offset": { "type": "integer" },
+              "total": { "type": "integer" },
+              "has_more": { "type": "boolean" }
+            }
+          }
+        }
+      },
+      "CreateContactRequest": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Contact's full name."
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "Primary phone number (E.164 format recommended, e.g. +14155551234)."
+          },
+          "phone_number_2": {
+            "type": "string",
+            "description": "Secondary phone number."
+          },
+          "phone_number_3": {
+            "type": "string",
+            "description": "Tertiary phone number."
+          },
+          "contact_info": {
+            "type": "object",
+            "description": "Arbitrary JSON metadata for the contact. Use this to store custom fields like email, address, company, or any key-value data your bot or campaign needs (e.g. `{\"email\": \"john@example.com\", \"company\": \"Acme\", \"plan\": \"enterprise\"}`)."
+          }
+        }
+      },
+      "UpdateContactRequest": {
+        "type": "object",
+        "description": "All fields are optional. Only provided fields will be updated.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Contact's full name."
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "Primary phone number."
+          },
+          "phone_number_2": {
+            "type": "string",
+            "description": "Secondary phone number."
+          },
+          "phone_number_3": {
+            "type": "string",
+            "description": "Tertiary phone number."
+          },
+          "contact_info": {
+            "type": "object",
+            "description": "Arbitrary JSON metadata. Pass null to clear."
+          }
+        }
+      },
+      "CreateContactsBulkRequest": {
+        "type": "object",
+        "required": ["contacts"],
+        "properties": {
+          "contacts": {
+            "type": "array",
+            "maxItems": 1000,
+            "description": "Array of contacts to add. Maximum 1000 per request.",
+            "items": { "$ref": "#/components/schemas/CreateContactRequest" }
+          }
+        }
+      },
+      "ContactResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "description": "Unique identifier." },
+          "name": { "type": "string", "description": "Contact's name." },
+          "phone_number": {
+            "type": "string",
+            "description": "Primary phone number."
+          },
+          "phone_number_2": {
+            "type": "string",
+            "description": "Secondary phone number."
+          },
+          "phone_number_3": {
+            "type": "string",
+            "description": "Tertiary phone number."
+          },
+          "contact_info": {
+            "type": "object",
+            "description": "Custom metadata JSON."
+          },
+          "contact_list_id": {
+            "type": "integer",
+            "description": "ID of the parent contact list."
+          },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ListContactsResponse": {
+        "type": "object",
+        "properties": {
+          "contacts": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ContactResponse" }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": { "type": "integer" },
+              "offset": { "type": "integer" },
+              "total": { "type": "integer" },
+              "has_more": { "type": "boolean" }
+            }
+          }
+        }
+      },
+      "CreateCampaignRequest": {
+        "type": "object",
+        "required": ["name", "type", "bot_uid", "time_start", "time_end"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Campaign name."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["inbound", "outbound"],
+            "description": "Campaign type. **inbound**: receives calls on a phone number. **outbound**: dials contacts from a contact list."
+          },
+          "bot_uid": {
+            "type": "string",
+            "description": "UID of the bot that handles calls for this campaign."
+          },
+          "phone_number_id": {
+            "type": "integer",
+            "description": "ID of the phone number to use. Required for inbound campaigns."
+          },
+          "contact_list_id": {
+            "type": "integer",
+            "description": "ID of the contact list to dial. Required for outbound campaigns."
+          },
+          "daily_budget_usd": {
+            "type": "number",
+            "description": "Maximum daily spend in USD for outbound campaigns."
+          },
+          "time_start": {
+            "type": "string",
+            "description": "Start time for the campaign calling window (e.g. \"09:00\")."
+          },
+          "time_end": {
+            "type": "string",
+            "description": "End time for the campaign calling window (e.g. \"17:00\")."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone for the calling window (e.g. \"America/New_York\"). Defaults to UTC if not specified."
+          }
+        }
+      },
+      "UpdateCampaignRequest": {
+        "type": "object",
+        "description": "All fields are optional. Only provided fields will be updated.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Campaign name."
+          },
+          "daily_budget_usd": {
+            "type": "number",
+            "description": "Maximum daily spend in USD."
+          },
+          "time_start": {
+            "type": "string",
+            "description": "Start time for the calling window."
+          },
+          "time_end": {
+            "type": "string",
+            "description": "End time for the calling window."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone for the calling window."
+          },
+          "contact_list_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of the contact list. Pass null to disconnect."
+          },
+          "phone_number_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of the phone number. Pass null to disconnect."
+          }
+        }
+      },
+      "CampaignResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "description": "Unique identifier." },
+          "name": { "type": "string", "description": "Campaign name." },
+          "type": {
+            "type": "string",
+            "description": "Campaign type (inbound or outbound)."
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether the campaign is currently active."
+          },
+          "bot_id": { "type": "integer", "description": "Internal bot ID." },
+          "bot_uid": {
+            "type": "string",
+            "description": "Bot UID for API reference."
+          },
+          "phone_number_id": {
+            "type": "integer",
+            "description": "Associated phone number ID."
+          },
+          "contact_list_id": {
+            "type": "integer",
+            "description": "Associated contact list ID."
+          },
+          "daily_budget_usd": {
+            "type": "number",
+            "description": "Daily budget in USD."
+          },
+          "time_start": {
+            "type": "string",
+            "description": "Calling window start time."
+          },
+          "time_end": {
+            "type": "string",
+            "description": "Calling window end time."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Calling window timezone."
+          },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "VoiceResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique numeric ID of the voice."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the voice."
+          },
+          "voice_id": {
+            "type": "string",
+            "description": "Provider-specific voice identifier used when configuring a bot."
+          },
+          "sample_url": {
+            "type": "string",
+            "description": "URL to an audio sample of the voice."
+          },
+          "provider": {
+            "type": "string",
+            "description": "TTS provider (e.g. 'elevenlabs', 'deepgram')."
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender of the voice (e.g. 'male', 'female')."
+          },
+          "language": {
+            "type": "string",
+            "description": "Primary language code."
+          },
+          "languages": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "All supported language codes."
+          },
+          "accent": {
+            "type": "string",
+            "description": "Accent or regional variant, if applicable."
+          },
+          "age": {
+            "type": "string",
+            "description": "Approximate age group (e.g. 'young', 'middle-aged')."
+          },
+          "ethnicity": {
+            "type": "string",
+            "description": "Ethnicity descriptor, if available."
+          },
+          "characteristics": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Descriptive tags (e.g. 'warm', 'professional', 'energetic')."
+          },
+          "description": {
+            "type": "string",
+            "description": "Free-text description of the voice."
+          },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ListVoicesResponse": {
+        "type": "object",
+        "properties": {
+          "voices": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VoiceResponse" }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": { "type": "integer" },
+              "offset": { "type": "integer" },
+              "total": { "type": "integer" },
+              "has_more": { "type": "boolean" }
+            }
+          },
+          "filters": {
+            "type": "object",
+            "description": "Lists of distinct values available for each filter field, useful for building filter UIs.",
+            "properties": {
+              "available_genders": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "available_providers": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "available_languages": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "available_accents": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "ListCampaignsResponse": {
+        "type": "object",
+        "properties": {
+          "campaigns": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CampaignResponse" }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": { "type": "integer" },
+              "offset": { "type": "integer" },
+              "total": { "type": "integer" },
+              "has_more": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.openmic.ai",
+      "description": "Production Environment"
+    }
+  ]
 }
