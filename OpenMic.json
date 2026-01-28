@@ -52,7 +52,6 @@
         "summary": "Create Bot",
         "description": "Create a new bot with specified configuration.",
         "tags": ["Bots"],
-        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "description": "Bot configuration details",
           "required": true,
@@ -163,7 +162,6 @@
         "summary": "List Bots",
         "description": "Retrieve all bots with optional filtering and pagination.",
         "tags": ["Bots"],
-        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "name": "limit",
@@ -259,7 +257,6 @@
         "summary": "Get Bot",
         "description": "Retrieve details of a specific bot by its UID.",
         "tags": ["Bots"],
-        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "name": "uid",
@@ -339,7 +336,6 @@
         "summary": "Update Bot",
         "description": "Update an existing bot's configuration.",
         "tags": ["Bots"],
-        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "name": "uid",
@@ -431,7 +427,6 @@
         "summary": "Delete Bot",
         "description": "Delete a bot by its UID.",
         "tags": ["Bots"],
-        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "name": "uid",
@@ -498,12 +493,215 @@
         }
       }
     },
+    "/v1/bots/{bot_uid}/tools": {
+      "post": {
+        "summary": "Create Tool",
+        "description": "Create a new tool for a bot. Tools extend bot capabilities with actions like API calls, call transfers, SMS sending, etc.",
+        "tags": ["Tools"],
+        "operationId": "createToolExt",
+        "parameters": [
+          {
+            "name": "bot_uid",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "The unique identifier of the bot."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateToolRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tool created successfully.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request (missing fields, validation error)"
+          },
+          "404": { "description": "Bot not found" }
+        }
+      },
+      "get": {
+        "summary": "List Tools",
+        "description": "Retrieve a paginated list of tools for a bot.",
+        "tags": ["Tools"],
+        "operationId": "listToolsExt",
+        "parameters": [
+          {
+            "name": "bot_uid",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "The unique identifier of the bot."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "description": "Max tools to return (1-100)."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 0, "default": 0 },
+            "description": "Number of tools to skip."
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": { "$ref": "#/components/schemas/ToolType" },
+            "description": "Filter by tool type."
+          },
+          {
+            "name": "created_after",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "Filter tools created after this date."
+          },
+          {
+            "name": "created_before",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "Filter tools created before this date."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of tools.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ListToolsResponse" }
+              }
+            }
+          },
+          "404": { "description": "Bot not found" }
+        }
+      }
+    },
+    "/v1/bots/{bot_uid}/tools/{tool_id}": {
+      "get": {
+        "summary": "Get Tool",
+        "description": "Retrieve details of a specific tool.",
+        "tags": ["Tools"],
+        "operationId": "getToolExt",
+        "parameters": [
+          {
+            "name": "bot_uid",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "The unique identifier of the bot."
+          },
+          {
+            "name": "tool_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "The numeric ID of the tool."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tool details.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+              }
+            }
+          },
+          "400": { "description": "Invalid tool_id" },
+          "404": { "description": "Tool or bot not found" }
+        }
+      },
+      "patch": {
+        "summary": "Update Tool",
+        "description": "Update an existing tool. Only provided fields are updated.",
+        "tags": ["Tools"],
+        "operationId": "updateToolExt",
+        "parameters": [
+          {
+            "name": "bot_uid",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "The unique identifier of the bot."
+          },
+          {
+            "name": "tool_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "The numeric ID of the tool."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateToolRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated tool.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+              }
+            }
+          },
+          "400": { "description": "Invalid request" },
+          "404": { "description": "Tool or bot not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete Tool",
+        "description": "Delete a tool from a bot.",
+        "tags": ["Tools"],
+        "operationId": "deleteToolExt",
+        "parameters": [
+          {
+            "name": "bot_uid",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "The unique identifier of the bot."
+          },
+          {
+            "name": "tool_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "The numeric ID of the tool."
+          }
+        ],
+        "responses": {
+          "204": { "description": "Tool deleted successfully." },
+          "404": { "description": "Tool or bot not found" }
+        }
+      }
+    },
     "/v1/create-phone-call": {
       "post": {
         "summary": "Create Phone Call",
         "description": "Create a new outbound phone call.",
         "tags": ["Calls"],
-        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "description": "Call creation details",
           "required": true,
@@ -608,7 +806,6 @@
         "summary": "Get Call",
         "description": "Retrieve details of a specific call by its ID.",
         "tags": ["Calls"],
-        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "name": "id",
@@ -738,7 +935,6 @@
         "summary": "List Calls",
         "description": "Retrieve all calls with optional filtering and pagination.",
         "tags": ["Calls"],
-        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "name": "limit",
@@ -924,7 +1120,6 @@
         "summary": "List Phone Numbers",
         "description": "Retrieve all phone numbers with optional filtering and pagination.",
         "tags": ["Phone Numbers"],
-        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "name": "limit",
@@ -1033,7 +1228,6 @@
         "summary": "Get Phone Number",
         "description": "Retrieve details of a specific phone number by its UID.",
         "tags": ["Phone Numbers"],
-        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "name": "uid",
@@ -1124,7 +1318,6 @@
         "summary": "Link Bot to Phone Number",
         "description": "Link a bot (agent) to a phone number for inbound/outbound calls.",
         "tags": ["Phone Numbers"],
-        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "description": "Bot linking details",
           "required": true,
@@ -1220,7 +1413,6 @@
         "summary": "Unlink Bot from Phone Number",
         "description": "Unlink a bot (agent) from a phone number.",
         "tags": ["Phone Numbers"],
-        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "description": "Bot unlinking details",
           "required": true,
@@ -1322,7 +1514,7 @@
         }
       }
     },
-    "/api/v1/contact-lists": {
+    "/v1/contact-lists": {
       "post": {
         "tags": ["Contact Lists"],
         "summary": "Create a contact list",
@@ -1394,7 +1586,7 @@
         }
       }
     },
-    "/api/v1/contact-lists/{contact_list_id}": {
+    "/v1/contact-lists/{contact_list_id}": {
       "get": {
         "tags": ["Contact Lists"],
         "summary": "Get a contact list",
@@ -1471,7 +1663,7 @@
         }
       }
     },
-    "/api/v1/contact-lists/{contact_list_id}/contacts": {
+    "/v1/contact-lists/{contact_list_id}/contacts": {
       "post": {
         "tags": ["Contacts"],
         "summary": "Add a single contact to a contact list",
@@ -1583,7 +1775,7 @@
         }
       }
     },
-    "/api/v1/contact-lists/{contact_list_id}/contacts/bulk": {
+    "/v1/contact-lists/{contact_list_id}/contacts/bulk": {
       "post": {
         "tags": ["Contacts"],
         "summary": "Bulk add contacts to a contact list",
@@ -1629,7 +1821,7 @@
         }
       }
     },
-    "/api/v1/contact-lists/{contact_list_id}/contacts/{contact_id}": {
+    "/v1/contact-lists/{contact_list_id}/contacts/{contact_id}": {
       "patch": {
         "tags": ["Contacts"],
         "summary": "Update a contact",
@@ -1669,7 +1861,7 @@
         }
       }
     },
-    "/api/v1/campaigns": {
+    "/v1/campaigns": {
       "post": {
         "tags": ["Campaigns"],
         "summary": "Create a campaign",
@@ -1752,7 +1944,7 @@
         }
       }
     },
-    "/api/v1/campaigns/{campaign_id}": {
+    "/v1/campaigns/{campaign_id}": {
       "get": {
         "tags": ["Campaigns"],
         "summary": "Get a campaign",
@@ -1832,7 +2024,6 @@
         "summary": "List Voices",
         "description": "Retrieve a paginated list of available text-to-speech voices. Use query parameters to filter by gender, provider, language, or accent, and to search by name or description.",
         "tags": ["Voices"],
-        "security": [{ "BearerAuth": [] }],
         "operationId": "listVoicesExt",
         "parameters": [
           {
@@ -1916,7 +2107,6 @@
         "summary": "Get Voice",
         "description": "Retrieve details of a specific voice by its ID.",
         "tags": ["Voices"],
-        "security": [{ "BearerAuth": [] }],
         "operationId": "getVoiceExt",
         "parameters": [
           {
@@ -1944,6 +2134,300 @@
   },
   "components": {
     "schemas": {
+      "ToolType": {
+        "type": "string",
+        "description": "The type of tool that determines its behavior and required configuration.",
+        "enum": [
+          "api_request",
+          "function",
+          "end_call",
+          "transfer_call",
+          "dtmf",
+          "send_sms",
+          "send_email",
+          "call_booking",
+          "check_calendar_availability",
+          "check_working_hours"
+        ]
+      },
+      "CreateToolRequest": {
+        "type": "object",
+        "required": ["type", "name"],
+        "description": "Create a tool for a bot. Each tool type has different required fields and `static_params` structure. See the `x-tool-examples` section for complete examples of each type.",
+        "properties": {
+          "type": { "$ref": "#/components/schemas/ToolType" },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Tool name (max 255 characters)."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of what the tool does. This is shown to the AI to help it decide when to use the tool."
+          },
+          "url": {
+            "type": "string",
+            "description": "API endpoint URL. **Required for `api_request` type.**"
+          },
+          "method": {
+            "type": "string",
+            "enum": ["get", "post"],
+            "description": "HTTP method for API requests. Defaults to `get`."
+          },
+          "api_timeout": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Request timeout in milliseconds."
+          },
+          "parameters": {
+            "type": "object",
+            "description": "JSON schema defining the tool's input parameters. The AI will extract these from the conversation."
+          },
+          "use_raw_schema": {
+            "type": "boolean",
+            "description": "If true, `parameters` is used as-is without transformation. Set to `true` for `function` type."
+          },
+          "static_params": {
+            "type": "object",
+            "description": "Static configuration that varies by tool type. See examples below for each type's schema."
+          },
+          "speak_during_execution": {
+            "type": "boolean",
+            "default": true,
+            "description": "If true, bot speaks a filler message while tool executes."
+          },
+          "speak_after_execution": {
+            "type": "boolean",
+            "default": true,
+            "description": "If true, bot announces the result after execution."
+          },
+          "async": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, tool runs asynchronously without blocking the conversation."
+          }
+        },
+        "x-tool-examples": [
+          {
+            "title": "api_request - Make HTTP requests to external APIs",
+            "description": "Use this to call external REST APIs. The bot extracts parameters from the conversation and sends them to your endpoint. **Required: `url`**",
+            "value": {
+              "type": "api_request",
+              "name": "get_order_status",
+              "description": "Look up the status of a customer order by order ID",
+              "url": "https://api.example.com/orders/status",
+              "method": "post",
+              "api_timeout": 10000,
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "order_id": {
+                    "type": "string",
+                    "description": "The order ID to look up"
+                  }
+                },
+                "required": ["order_id"]
+              },
+              "speak_during_execution": true,
+              "speak_after_execution": true
+            }
+          },
+          {
+            "title": "function - Custom function with raw JSON schema",
+            "description": "Use this when you need full control over the function schema. **Required: `use_raw_schema: true`, `parameters`**",
+            "value": {
+              "type": "function",
+              "name": "calculate_quote",
+              "description": "Calculate a price quote based on customer requirements",
+              "use_raw_schema": true,
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "service_type": {
+                    "type": "string",
+                    "enum": ["basic", "premium", "enterprise"]
+                  },
+                  "quantity": { "type": "integer", "minimum": 1 }
+                },
+                "required": ["service_type", "quantity"]
+              }
+            }
+          },
+          {
+            "title": "end_call - Terminate the current call",
+            "description": "Ends the call gracefully with an optional goodbye message. **static_params: `{ end_message: string }`**",
+            "value": {
+              "type": "end_call",
+              "name": "end_call",
+              "description": "End the call when the customer says goodbye or the conversation is complete",
+              "static_params": {
+                "end_message": "Thank you for calling. Goodbye!"
+              }
+            }
+          },
+          {
+            "title": "transfer_call - Transfer the call to another number",
+            "description": "Transfers the call to a specified phone number. **static_params: `{ routing_rules, default_transfer_number, transfer_type }`**",
+            "value": {
+              "type": "transfer_call",
+              "name": "transfer_to_sales",
+              "description": "Transfer the call to the sales team when customer wants to make a purchase",
+              "static_params": {
+                "routing_rules": "When customer wants to buy or make a purchase, transfer to +15551234567",
+                "default_transfer_number": "+15551234567",
+                "transfer_type": "cold"
+              },
+              "speak_during_execution": false,
+              "speak_after_execution": false
+            }
+          },
+          {
+            "title": "dtmf - Send DTMF tones (keypad presses)",
+            "description": "Sends touch-tone digits during the call, useful for IVR navigation. **static_params: `{ digits: string }`**",
+            "value": {
+              "type": "dtmf",
+              "name": "press_digits",
+              "description": "Press keypad digits when navigating phone menus",
+              "static_params": {
+                "digits": "1"
+              }
+            }
+          },
+          {
+            "title": "send_sms - Send an SMS message",
+            "description": "Sends a text message to a phone number during the call. **static_params: `{ message: string }`**",
+            "value": {
+              "type": "send_sms",
+              "name": "send_confirmation_sms",
+              "description": "Send appointment confirmation via SMS when customer books",
+              "static_params": {
+                "message": "Your appointment has been confirmed for {{appointment_date}} at {{appointment_time}}. Reply CANCEL to cancel."
+              },
+              "speak_during_execution": true,
+              "speak_after_execution": true
+            }
+          },
+          {
+            "title": "send_email - Send an email",
+            "description": "Sends an email during the call. **static_params: `{ to, subject, body }`**",
+            "value": {
+              "type": "send_email",
+              "name": "send_quote_email",
+              "description": "Email a price quote to the customer",
+              "static_params": {
+                "to": "{{customer_email}}",
+                "subject": "Your Price Quote from Acme Corp",
+                "body": "Thank you for your interest. Your quote for {{service_type}} is ${{quote_amount}}."
+              }
+            }
+          },
+          {
+            "title": "call_booking - Book a calendar appointment",
+            "description": "Creates a booking in an integrated calendar system (e.g., Clio, Zoho). **static_params: `{ calendar_integration, duration_minutes }`**",
+            "value": {
+              "type": "call_booking",
+              "name": "book_appointment",
+              "description": "Book an appointment when customer requests to schedule a meeting",
+              "static_params": {
+                "calendar_integration": "clio",
+                "duration_minutes": 30
+              }
+            }
+          },
+          {
+            "title": "check_calendar_availability - Check available time slots",
+            "description": "Queries the calendar system for available appointment slots. **static_params: `{ calendar_integration, days_ahead }`**",
+            "value": {
+              "type": "check_calendar_availability",
+              "name": "check_availability",
+              "description": "Check available appointment times when customer asks about availability",
+              "static_params": {
+                "calendar_integration": "clio",
+                "days_ahead": 14
+              }
+            }
+          },
+          {
+            "title": "check_working_hours - Check if within business hours",
+            "description": "Determines if the current time is within configured working hours. Useful for routing after-hours calls. **static_params: `{ timezone, working_hours }`**",
+            "value": {
+              "type": "check_working_hours",
+              "name": "check_business_hours",
+              "description": "Check if calling during business hours to route appropriately",
+              "static_params": {
+                "timezone": "America/New_York",
+                "working_hours": {
+                  "monday": { "start": "09:00", "end": "17:00" },
+                  "tuesday": { "start": "09:00", "end": "17:00" },
+                  "wednesday": { "start": "09:00", "end": "17:00" },
+                  "thursday": { "start": "09:00", "end": "17:00" },
+                  "friday": { "start": "09:00", "end": "17:00" },
+                  "saturday": { "start": "closed", "end": "closed" },
+                  "sunday": { "start": "closed", "end": "closed" }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "UpdateToolRequest": {
+        "type": "object",
+        "properties": {
+          "type": { "$ref": "#/components/schemas/ToolType" },
+          "name": { "type": "string", "maxLength": 255 },
+          "description": { "type": "string" },
+          "url": { "type": "string" },
+          "method": { "type": "string", "enum": ["get", "post"] },
+          "api_timeout": { "type": "integer", "minimum": 1 },
+          "parameters": { "type": "object" },
+          "use_raw_schema": { "type": "boolean" },
+          "static_params": { "type": "object" },
+          "speak_during_execution": { "type": "boolean" },
+          "speak_after_execution": { "type": "boolean" },
+          "async": { "type": "boolean" }
+        }
+      },
+      "ToolResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique numeric ID of the tool."
+          },
+          "type": { "$ref": "#/components/schemas/ToolType" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "url": { "type": "string" },
+          "method": { "type": "string" },
+          "api_timeout": { "type": "integer" },
+          "parameters": { "type": "object" },
+          "use_raw_schema": { "type": "boolean" },
+          "static_params": { "type": "object" },
+          "speak_during_execution": { "type": "boolean" },
+          "speak_after_execution": { "type": "boolean" },
+          "async": { "type": "boolean" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ListToolsResponse": {
+        "type": "object",
+        "properties": {
+          "tools": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ToolResponse" }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": { "type": "integer" },
+              "offset": { "type": "integer" },
+              "total": { "type": "integer" },
+              "has_more": { "type": "boolean" }
+            }
+          }
+        }
+      },
       "CreateBotRequest": {
         "type": "object",
         "properties": {
@@ -3036,6 +3520,14 @@
             }
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "API key authentication. Include your API key in the Authorization header as: `Authorization: Bearer <your-api-key>`"
       }
     }
   },
