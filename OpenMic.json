@@ -278,14 +278,14 @@
             }
           },
           "400": {
-            "description": "Bad request - missing organization information",
+            "description": "Bad request - missing or invalid organization/account information",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
-                  "error": "Missing organization information in request."
+                  "error": "Missing or invalid organization information"
                 }
               }
             }
@@ -441,7 +441,7 @@
             "description": "Bot deleted successfully"
           },
           "400": {
-            "description": "Bad request - missing organization information",
+            "description": "Bad request - missing or invalid organization/account information",
             "content": {
               "application/json": {
                 "schema": {
@@ -875,14 +875,14 @@
             }
           },
           "400": {
-            "description": "Bad request - missing organization information",
+            "description": "Bad request - missing or invalid organization/account information",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
-                  "error": "Missing organization information in request."
+                  "error": "Missing or invalid organization information"
                 }
               }
             }
@@ -971,9 +971,9 @@
             "schema": { "type": "string" }
           },
           {
-            "name": "bot_id",
+            "name": "bot_uid",
             "in": "query",
-            "description": "Filter by bot ID",
+            "description": "Filter by bot UID",
             "schema": { "type": "string" }
           },
           {
@@ -1258,14 +1258,14 @@
             }
           },
           "400": {
-            "description": "Bad request - missing organization information",
+            "description": "Bad request - missing or invalid organization/account information",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
-                  "error": "Missing organization information in request."
+                  "error": "Missing or invalid organization information"
                 }
               }
             }
@@ -1908,16 +1908,21 @@
             "schema": { "type": "integer", "minimum": 0, "default": 0 }
           },
           {
-            "name": "type",
+            "name": "status",
             "in": "query",
-            "schema": { "type": "string", "enum": ["inbound", "outbound"] },
-            "description": "Filter by campaign type."
-          },
-          {
-            "name": "active",
-            "in": "query",
-            "schema": { "type": "boolean" },
-            "description": "Filter by active status."
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Scheduled",
+                "Running",
+                "Stopped",
+                "Completed",
+                "Failed",
+                "Expired",
+                "Paused"
+              ]
+            },
+            "description": "Filter by campaign status."
           },
           {
             "name": "created_after",
@@ -2185,7 +2190,7 @@
           },
           "use_raw_schema": {
             "type": "boolean",
-            "description": "If true, `parameters` is used as-is without transformation. Set to `true` for `function` type."
+            "description": "If true, `parameters` is used as-is without transformation. This setting takes precedence over the type-derived default. Set to `true` for `function` type tools."
           },
           "static_params": {
             "type": "object",
@@ -3277,7 +3282,15 @@
       },
       "CreateCampaignRequest": {
         "type": "object",
-        "required": ["name", "type", "bot_uid", "time_start", "time_end"],
+        "required": [
+          "name",
+          "type",
+          "bot_uid",
+          "from_number",
+          "contact_list_id",
+          "time_start",
+          "time_end"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -3286,36 +3299,50 @@
           },
           "type": {
             "type": "string",
-            "enum": ["inbound", "outbound"],
-            "description": "Campaign type. **inbound**: receives calls on a phone number. **outbound**: dials contacts from a contact list."
+            "enum": ["outbound"],
+            "description": "Campaign type. Only **outbound** campaigns are supported (dials contacts from a contact list)."
           },
           "bot_uid": {
             "type": "string",
             "description": "UID of the bot that handles calls for this campaign."
           },
-          "phone_number_id": {
-            "type": "integer",
-            "description": "ID of the phone number to use. Required for inbound campaigns."
+          "from_number": {
+            "type": "string",
+            "description": "Phone number to dial from in E.164 format (e.g. \"+12025551234\")."
           },
           "contact_list_id": {
             "type": "integer",
-            "description": "ID of the contact list to dial. Required for outbound campaigns."
-          },
-          "daily_budget_usd": {
-            "type": "number",
-            "description": "Maximum daily spend in USD for outbound campaigns."
+            "description": "ID of the contact list to dial."
           },
           "time_start": {
             "type": "string",
-            "description": "Start time for the campaign calling window (e.g. \"09:00\")."
+            "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+            "description": "Start time for the daily calling window in HH:MM format (e.g. \"09:00\")."
           },
           "time_end": {
             "type": "string",
-            "description": "End time for the campaign calling window (e.g. \"17:00\")."
+            "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+            "description": "End time for the daily calling window in HH:MM format (e.g. \"17:00\")."
           },
           "timezone": {
             "type": "string",
             "description": "IANA timezone for the calling window (e.g. \"America/New_York\"). Defaults to UTC if not specified."
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+              ]
+            },
+            "description": "Days of week to run the campaign (e.g. [\"Monday\", \"Wednesday\", \"Friday\"]). If not provided, campaign runs as single-day. Valid values: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday."
           }
         }
       },
@@ -3328,17 +3355,19 @@
             "maxLength": 255,
             "description": "Campaign name."
           },
-          "daily_budget_usd": {
-            "type": "number",
-            "description": "Maximum daily spend in USD."
+          "from_number": {
+            "type": "string",
+            "description": "Phone number to dial from in E.164 format."
           },
           "time_start": {
             "type": "string",
-            "description": "Start time for the calling window."
+            "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+            "description": "Start time for the calling window in HH:MM format (e.g. \"09:00\")."
           },
           "time_end": {
             "type": "string",
-            "description": "End time for the calling window."
+            "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+            "description": "End time for the calling window in HH:MM format (e.g. \"17:00\")."
           },
           "timezone": {
             "type": "string",
@@ -3346,13 +3375,23 @@
           },
           "contact_list_id": {
             "type": "integer",
-            "nullable": true,
-            "description": "ID of the contact list. Pass null to disconnect."
+            "description": "ID of the contact list to dial."
           },
-          "phone_number_id": {
-            "type": "integer",
-            "nullable": true,
-            "description": "ID of the phone number. Pass null to disconnect."
+          "days": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+              ]
+            },
+            "description": "Days of week to run the campaign (e.g. [\"Monday\", \"Wednesday\", \"Friday\"]). **Note:** When setting days, time_start and time_end must also be provided (either in the same request or already set on the campaign)."
           }
         }
       },
@@ -3363,40 +3402,74 @@
           "name": { "type": "string", "description": "Campaign name." },
           "type": {
             "type": "string",
-            "description": "Campaign type (inbound or outbound)."
+            "enum": ["outbound"],
+            "description": "Campaign type (always outbound)."
           },
-          "active": {
-            "type": "boolean",
-            "description": "Whether the campaign is currently active."
+          "status": {
+            "type": "string",
+            "enum": [
+              "Scheduled",
+              "Running",
+              "Stopped",
+              "Completed",
+              "Failed",
+              "Expired",
+              "Paused"
+            ],
+            "description": "Current campaign status."
           },
-          "bot_id": { "type": "integer", "description": "Internal bot ID." },
           "bot_uid": {
             "type": "string",
             "description": "Bot UID for API reference."
           },
-          "phone_number_id": {
-            "type": "integer",
-            "description": "Associated phone number ID."
+          "from_number": {
+            "type": "string",
+            "description": "Phone number used to dial from (E.164 format)."
           },
           "contact_list_id": {
             "type": "integer",
             "description": "Associated contact list ID."
           },
-          "daily_budget_usd": {
-            "type": "number",
-            "description": "Daily budget in USD."
-          },
           "time_start": {
             "type": "string",
-            "description": "Calling window start time."
+            "description": "Daily calling window start time in HH:MM format."
           },
           "time_end": {
             "type": "string",
-            "description": "Calling window end time."
+            "description": "Daily calling window end time in HH:MM format."
           },
           "timezone": {
             "type": "string",
-            "description": "Calling window timezone."
+            "description": "Calling window timezone (IANA format)."
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+              ]
+            },
+            "description": "Days of week the campaign runs on (for recurring campaigns)."
+          },
+          "schedule_type": {
+            "type": "string",
+            "enum": ["single", "multi"],
+            "description": "Schedule type: single (one-time) or multi (recurring on specific days)."
+          },
+          "current_index": {
+            "type": "integer",
+            "description": "Number of contacts already called."
+          },
+          "total_contacts": {
+            "type": "integer",
+            "description": "Total number of contacts in the campaign's contact list."
           },
           "created_at": { "type": "string", "format": "date-time" },
           "updated_at": { "type": "string", "format": "date-time" }
