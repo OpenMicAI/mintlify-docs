@@ -1,0 +1,292 @@
+---
+title: 'Transfer Call Static Params'
+subtitle: 'Static params reference for the transfer_call tool type'
+description: 'Complete reference for the static_params object when creating or updating a transfer_call tool via the API, including cold transfers, warm transfers, and webhook mode.'
+slug: api-reference/tools/transfer-call-static-params
+---
+
+When creating a tool with `type: "transfer_call"` via the [Create Tool](/api-reference/tools/create-tool) endpoint, the `static_params` object configures how calls are transferred — including routing, transfer type, and warm transfer behavior.
+
+---
+
+## Recommended Tool-Level Defaults
+
+When creating a `transfer_call` tool, the following tool-level fields should be set alongside your `static_params`:
+
+| Field | Recommended Value | Notes |
+|-------|-------------------|-------|
+| `speak_during_execution` | `false` | AI should not speak during the transfer. The dashboard sets this to `false`. If omitted, the database default is `true`. |
+| `speak_after_execution` | `false` | AI should not speak after the transfer. The dashboard sets this to `false`. If omitted, the database default is `true`. |
+| `async` | `false` | The dashboard sets this to `false`. Defaults to `false` if omitted. |
+
+<Warning>
+  If you omit `speak_during_execution` and `speak_after_execution`, they will default to `true` (the database default), which is **not** the intended behavior for transfer calls. Always set them explicitly to `false`.
+</Warning>
+
+---
+
+## Basic Fields
+
+These fields are at the top level of `static_params`:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `routing_rules` | string | Conditional | Dynamic routing logic that tells the AI where to transfer based on conversation context. Must include phone numbers with country codes. Required if `default_transfer_number` is not set. |
+| `default_transfer_number` | string | Conditional | A fixed phone number in E.164 format (e.g., `+15551234567`) to transfer all calls to. Required if `routing_rules` is not set. |
+| `transfer_type` | `"cold"` \| `"warm"` | Yes | `"cold"`: the call is transferred immediately without a debrief. `"warm"`: the AI provides context to the receiving agent before connecting the caller. |
+
+<Info>
+  You must provide either `routing_rules` or `default_transfer_number` (or both). When both are set, `routing_rules` takes precedence and `default_transfer_number` serves as a fallback.
+</Info>
+
+---
+
+## Warm Transfer Behavior Settings (`transfer_settings`)
+
+When `transfer_type` is `"warm"`, include a `transfer_settings` object inside `static_params` to configure the handoff behavior. All fields within use **snake_case**.
+
+### Hold & Ring
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `extension` | string | — | Extension number to dial after connecting. Only applicable when using a static number. |
+| `on_hold_music` | `"ringtone"` \| `"silence"` \| `"music"` | `"ringtone"` | Audio played to the original caller while they wait during the transfer. |
+| `ring_duration` | number | `30` | How long (in seconds) to ring the transfer destination before giving up. Min: 10, Max: 120. |
+
+### IVR Navigation
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `navigate_ivr` | boolean | `false` | Enable this if the transfer destination has an IVR (automated phone menu) that needs to be navigated. |
+| `navigate_ivr_prompt` | string | — | Instructions for the AI on how to navigate the IVR. Only used when `navigate_ivr` is `true`. Example: `"Navigate to the sales department by pressing 2"`. |
+
+### Human Detection
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `human_detection` | boolean | `false` | When enabled, the AI will only proceed with the debrief if it detects a real human (not a voicemail or automated system). |
+| `detection_timeout` | number | `30` | Maximum seconds the AI waits to determine if the transfer target is a human. Min: 0, Max: 300. Only used when `human_detection` is `true`. |
+| `ai_auto_greet` | boolean | `true` | When enabled, the AI says "Hello" after connecting to encourage a response from the transfer target. Only used when `human_detection` is `true`. |
+
+### Whisper Message
+
+A private message spoken only to the transfer target (receiving agent) before connecting them to the original caller.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `whisper_message` | boolean | `true` | Whether to speak a whisper message to the transfer target. |
+| `whisper_message_type` | `"prompt"` \| `"static"` | — | How the whisper message is generated. Only used when `whisper_message` is `true`. |
+| `whisper_message_prompt` | string | `"Give the User a brief summary like name of the caller, purpose etc"` | AI prompt to generate the whisper message dynamically. Used when `whisper_message_type` is `"prompt"`. |
+| `whisper_message_static` | string | — | A fixed whisper message. Used when `whisper_message_type` is `"static"`. |
+
+### Human Agent Confirmation
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `human_confirmation` | boolean | `true` | When enabled, the AI asks the receiving agent for confirmation before connecting the original caller. If the agent declines, the transfer is cancelled. |
+
+### Check Availability Message
+
+A message spoken to the original caller while the AI checks if the transfer target is available.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `check_availability_message` | boolean | `true` | Whether to speak a message while checking availability. |
+| `check_availability_message_type` | `"prompt"` \| `"static"` | — | How the message is generated. Only used when `check_availability_message` is `true`. |
+| `check_availability_message_prompt` | string | `"Say please hold on, I will check if they are available"` | AI prompt for generating the message. Used when type is `"prompt"`. |
+| `check_availability_message_static` | string | — | A fixed message. Used when type is `"static"`. |
+
+### Transfer Success Message
+
+A message spoken to the original caller when they are about to be connected to the transfer target.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `transfer_success_message` | boolean | `true` | Whether to speak a message when connecting. |
+| `transfer_success_message_type` | `"prompt"` \| `"static"` | — | How the message is generated. Only used when `transfer_success_message` is `true`. |
+| `transfer_success_message_prompt` | string | `"Say like I am transferring you now"` | AI prompt for generating the message. Used when type is `"prompt"`. |
+| `transfer_success_message_static` | string | — | A fixed message. Used when type is `"static"`. |
+
+### Three-Way Message
+
+A message spoken after the transfer is successful, audible to both the original caller and the transfer target.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `three_way_message` | boolean | `false` | Whether to speak a three-way message after connecting both parties. |
+| `three_way_message_type` | `"prompt"` \| `"static"` | — | How the message is generated. Only used when `three_way_message` is `true`. |
+| `three_way_message_prompt` | string | — | AI prompt for generating the message. Example: `"Say you both are now connected. I'll be disconnecting now."` |
+| `three_way_message_static` | string | — | A fixed message. Used when type is `"static"`. |
+
+### Fallback Message
+
+A message spoken to the original caller when the transfer target hangs up or doesn't answer.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `fallback_message` | boolean | `true` | Whether to speak a fallback message. |
+| `fallback_message_type` | `"prompt"` \| `"static"` | — | How the message is generated. Only used when `fallback_message` is `true`. |
+| `fallback_message_prompt` | string | `"Say they are not available, I will take a message if you like"` | AI prompt for generating the message. Used when type is `"prompt"`. |
+| `fallback_message_static` | string | — | A fixed message. Used when type is `"static"`. |
+
+### Session Limits
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `disable_extended_prompt` | boolean | `false` | Prevents the AI from using extended prompting during the warm transfer process. |
+| `max_session_duration_after_transfer` | number | `15` | Maximum duration (in minutes) for the call after the transfer completes. Min: 1, Max: 60. |
+
+---
+
+## Webhook Fields
+
+These fields are at the top level of `static_params` and configure webhook-based dynamic routing as an alternative to static routing.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `transfer_number` | string | — | Phone number in E.164 format used for webhook mode transfers. |
+| `pre_tool_webhook` | boolean | `false` | When enabled, a webhook is called before executing the transfer. The webhook can return dynamic variables including `transfer_number` to override the destination. |
+| `pre_tool_webhook_use_pre_call_url` | boolean | `false` | When `true`, reuses the bot's pre-call webhook URL instead of a custom URL. |
+| `pre_tool_webhook_url` | string | — | Custom webhook URL (must be HTTPS). Used when `pre_tool_webhook` is `true` and `pre_tool_webhook_use_pre_call_url` is `false`. |
+
+---
+
+## Examples
+
+### Cold Transfer to a Static Number
+
+Immediately transfer the call without any debrief.
+
+```json
+{
+  "type": "transfer_call",
+  "name": "transfer_to_support",
+  "description": "Transfer the call to the support team when the customer has a technical issue",
+  "static_params": {
+    "default_transfer_number": "+15551234567",
+    "transfer_type": "cold"
+  },
+  "speak_during_execution": false,
+  "speak_after_execution": false,
+  "async": false
+}
+```
+
+### Cold Transfer with Dynamic Routing
+
+Route calls to different numbers based on conversation context.
+
+```json
+{
+  "type": "transfer_call",
+  "name": "transfer_to_department",
+  "description": "Transfer the call to the appropriate department based on the customer's needs",
+  "static_params": {
+    "routing_rules": "If the customer wants support, transfer to +15551234567. If the customer wants sales, transfer to +15559876543. Otherwise, transfer to +15550001111.",
+    "default_transfer_number": "+15550001111",
+    "transfer_type": "cold"
+  },
+  "speak_during_execution": false,
+  "speak_after_execution": false,
+  "async": false
+}
+```
+
+### Warm Transfer with Debrief
+
+Transfer the call with full warm transfer behavior — whisper message, human detection, and fallback.
+
+```json
+{
+  "type": "transfer_call",
+  "name": "warm_transfer_to_sales",
+  "description": "Transfer the call to the sales team with a debrief when the customer wants to make a purchase",
+  "static_params": {
+    "default_transfer_number": "+15551234567",
+    "transfer_type": "warm",
+    "transfer_settings": {
+      "on_hold_music": "music",
+      "ring_duration": 45,
+      "human_detection": true,
+      "detection_timeout": 30,
+      "ai_auto_greet": true,
+      "whisper_message": true,
+      "whisper_message_type": "prompt",
+      "whisper_message_prompt": "Give the agent a brief summary including the caller's name, what they're interested in purchasing, and any relevant details from the conversation.",
+      "human_confirmation": true,
+      "check_availability_message": true,
+      "check_availability_message_type": "prompt",
+      "check_availability_message_prompt": "Say please hold on, I will check if a sales representative is available.",
+      "transfer_success_message": true,
+      "transfer_success_message_type": "static",
+      "transfer_success_message_static": "I'm connecting you with our sales team now.",
+      "three_way_message": true,
+      "three_way_message_type": "static",
+      "three_way_message_static": "You are both now connected. I'll disconnect now. Thank you!",
+      "fallback_message": true,
+      "fallback_message_type": "prompt",
+      "fallback_message_prompt": "Say that the sales team is not available right now and offer to take a message or schedule a callback.",
+      "max_session_duration_after_transfer": 30
+    }
+  },
+  "speak_during_execution": false,
+  "speak_after_execution": false,
+  "async": false
+}
+```
+
+### Warm Transfer with IVR Navigation
+
+Transfer to a destination that has an automated phone menu.
+
+```json
+{
+  "type": "transfer_call",
+  "name": "transfer_to_partner",
+  "description": "Transfer the call to a partner company's support line",
+  "static_params": {
+    "default_transfer_number": "+15559876543",
+    "transfer_type": "warm",
+    "transfer_settings": {
+      "navigate_ivr": true,
+      "navigate_ivr_prompt": "Navigate to the sales department by pressing 2, then press 1 for English.",
+      "human_detection": true,
+      "detection_timeout": 60,
+      "whisper_message": true,
+      "whisper_message_type": "static",
+      "whisper_message_static": "Incoming transfer from OpenMic AI. Customer needs help with their account."
+    }
+  },
+  "speak_during_execution": false,
+  "speak_after_execution": false,
+  "async": false
+}
+```
+
+### Webhook-Based Dynamic Routing
+
+Use a webhook to determine the transfer destination at runtime.
+
+```json
+{
+  "type": "transfer_call",
+  "name": "dynamic_transfer",
+  "description": "Transfer the call using dynamic routing based on agent availability",
+  "static_params": {
+    "transfer_number": "+15550001111",
+    "pre_tool_webhook": true,
+    "pre_tool_webhook_url": "https://your-domain.com/webhook/route-call"
+  },
+  "speak_during_execution": false,
+  "speak_after_execution": false,
+  "async": false
+}
+```
+
+<Info>
+  When `pre_tool_webhook` is enabled, your webhook receives call details and can return a `transfer_number` in the `dynamic_variables` response object to override the destination. If the webhook fails or times out (3 seconds), the `transfer_number` configured in `static_params` is used as a fallback. See the [Pre-Tool Webhook documentation](/pre-tool-webhook) for the request/response format.
+</Info>
+
+<Note>
+  For the UI-based setup guide, see the [Transfer Call Custom Function](/agents/custom-functions/transfer-call) documentation.
+</Note>
