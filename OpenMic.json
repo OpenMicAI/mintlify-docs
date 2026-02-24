@@ -252,14 +252,14 @@
         }
       }
     },
-    "/v1/bots/{uid}": {
+    "/v1/bots/{bot_uid}": {
       "get": {
         "summary": "Get Bot",
-        "description": "Retrieve details of a specific bot by its UID.",
+        "description": "Retrieve details of a specific bot by its ID.",
         "tags": ["Bots"],
         "parameters": [
           {
-            "name": "uid",
+            "name": "bot_uid",
             "in": "path",
             "description": "The unique identifier of the bot",
             "required": true,
@@ -312,7 +312,7 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
-                  "error": "Bot with the specified UID was not found."
+                  "error": "Bot with the specified ID was not found."
                 }
               }
             }
@@ -338,7 +338,7 @@
         "tags": ["Bots"],
         "parameters": [
           {
-            "name": "uid",
+            "name": "bot_uid",
             "in": "path",
             "description": "The unique identifier of the bot",
             "required": true,
@@ -425,11 +425,11 @@
       },
       "delete": {
         "summary": "Delete Bot",
-        "description": "Delete a bot by its UID.",
+        "description": "Delete a bot by its ID.",
         "tags": ["Bots"],
         "parameters": [
           {
-            "name": "uid",
+            "name": "bot_uid",
             "in": "path",
             "description": "The unique identifier of the bot",
             "required": true,
@@ -2664,7 +2664,7 @@
       "BotResponse": {
         "type": "object",
         "properties": {
-          "uid": {
+          "id": {
             "type": "string",
             "description": "Unique identifier of the bot"
           },
@@ -2738,7 +2738,7 @@
             "description": "Bot last update timestamp"
           }
         },
-        "required": ["uid", "name", "prompt", "created_at", "updated_at"]
+        "required": ["id", "name", "prompt", "created_at", "updated_at"]
       },
       "ListBotsResponse": {
         "type": "object",
@@ -2771,7 +2771,7 @@
           "override_agent_id": {
             "type": "string",
             "example": "bvrg8wzi487w02m2bc7dh0ev",
-            "description": "The bot UID to override the default agent."
+            "description": "The bot ID to override the default agent."
           },
           "customer_id": {
             "type": "string",
@@ -2995,11 +2995,11 @@
           },
           "inbound_agent_id": {
             "type": "string",
-            "description": "Bot UID for inbound calls"
+            "description": "Bot ID for inbound calls"
           },
           "outbound_agent_id": {
             "type": "string",
-            "description": "Bot UID for outbound calls"
+            "description": "Bot ID for outbound calls"
           },
           "created_at": {
             "type": "string",
@@ -3043,7 +3043,7 @@
           },
           "agent_id": {
             "type": "string",
-            "description": "Bot UID to link"
+            "description": "Bot ID to link"
           },
           "direction": {
             "type": "string",
@@ -3066,11 +3066,11 @@
           },
           "inbound_agent_id": {
             "type": "string",
-            "description": "Bot UID for inbound calls"
+            "description": "Bot ID for inbound calls"
           },
           "outbound_agent_id": {
             "type": "string",
-            "description": "Bot UID for outbound calls"
+            "description": "Bot ID for outbound calls"
           },
           "message": {
             "type": "string",
