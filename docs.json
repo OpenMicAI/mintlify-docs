@@ -66,7 +66,8 @@
             "group": "Integrations",
             "pages": [
               "integrations/ghl-integration",
-              "integrations/zoho-crm-integration"
+              "integrations/zoho-crm-integration",
+              "integrations/emerge-ehr-integration"
             ]
           },
           {

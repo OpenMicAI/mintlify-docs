@@ -1,0 +1,235 @@
+---
+title: Emerge EHR Integration
+subtitle: Connect your OpenMic assistant to Emerge EHR to search patients, register new patients, and book appointments during live calls.
+description: Connect your OpenMic assistant to Emerge EHR to search patients, register new patients, and book appointments during live calls.
+slug: integrations/emerge-ehr
+---
+
+The **Emerge EHR** integration brings patient management and appointment scheduling directly into your OpenMic voice agents. With this integration, agents can look up existing patients using the **Search Contact tool**, register new patients through the **Create Contact tool**, check available appointment slots with the **Check Availability tool**, and book appointments using the **Create Appointment tool**. Together, these tools let your voice assistant handle the full patient intake and scheduling workflow — from identifying a caller to confirming their appointment — all within a single phone call.
+
+---
+
+## Prerequisites
+
+Before connecting Emerge EHR with OpenMic, make sure you have:
+
+1. **An active Emerge EHR account** with API credentials (Client ID and Client Secret).
+2. **An OpenMic account** with at least one agent created.
+3. Access to the **OpenMic Dashboard** to manage integrations and custom functions.
+
+---
+
+## Step 1: Connect Your Emerge EHR Account
+
+1. In the [OpenMic Dashboard](https://app.openmic.ai), go to **Integrations**.
+2. Find the **Emerge EHR** card.
+3. Click **Connect**.
+4. Enter your Emerge EHR **Client ID** and **Client Secret**.
+5. Configure your **Location ID**, **Calendar Slug**, **Provider ID**, and other required settings.
+6. Click **Save** to complete the connection.
+
+<Note>
+  Your Emerge EHR API credentials can be found in your Emerge EHR account settings. Contact your Emerge EHR administrator if you don't have access to these credentials.
+</Note>
+
+---
+
+## Step 2: Add Emerge EHR Functions to an Agent
+
+Once connected, you can add Emerge EHR tools to your agent.
+
+1. Go to **Dashboard → Simple Agents**.
+2. Select or create an agent.
+3. Open the **Custom Functions** tab and click **Add Function**.
+4. From the list, choose from the available Emerge EHR tools:
+   - **Emerge EHR Search Contact** — Look up existing patients
+   - **Emerge EHR Create Contact** — Register new patients
+   - **Emerge EHR Check Availability** — Check open appointment slots
+   - **Emerge EHR Create Appointment** — Book appointments
+
+5. Click **Create Function** to add the selected tool to your agent.
+
+<Frame caption="Available Emerge EHR Functions">
+  <img
+    src="/images/agents/integrations/emergeehr/emergeehr-all-functions.png"
+    alt="All available Emerge EHR functions"
+  />
+</Frame>
+
+<Tip>
+  For a complete patient intake and scheduling workflow, add all four tools to your agent:
+  **Search Contact**, **Create Contact**, **Check Availability**, and **Create Appointment**.
+</Tip>
+
+---
+
+## Available Functions
+
+### Emerge EHR Search Contact
+
+Search for an existing patient/contact in Emerge EHR by phone number, email address, or name.
+
+- **Function Name**: `emergeehr_contact_search`
+- **Search Options**:
+  - **Phone Number** — Search by caller's phone number (recommended as primary)
+  - **Email Address** — Search by patient email
+  - **Patient Name** — Search by first/last name
+
+**How it works**
+
+When triggered, the tool searches your Emerge EHR location for a matching patient record. If found, it returns the patient's name, contact details, and case ID — which is needed for booking appointments. If not found, the agent can proceed to register the caller as a new patient.
+
+<Frame caption="Emerge EHR Search Contact Configuration">
+  <img
+    src="/images/agents/integrations/emergeehr/emergeehr-search-contact.png"
+    alt="Emerge EHR Search Contact function configuration"
+  />
+</Frame>
+
+<Note>
+  During live calls, the caller's phone number is used automatically. You can enable multiple search types as fallbacks — for example, search by phone first, then by name if no match is found.
+</Note>
+
+---
+
+### Emerge EHR Create Contact
+
+Create a new patient/contact in Emerge EHR with a default case.
+
+- **Function Name**: `emergeehr_contact_create`
+- **Required fields**: First name, last name
+- **Optional fields**: Phone number, email address, date of birth, gender
+
+**How it works**
+
+Creates a new patient record in your Emerge EHR location and automatically generates a default case (needed for appointment booking). Returns the new contact ID and case ID so the agent can continue directly to scheduling.
+
+---
+
+### Emerge EHR Check Availability
+
+Check available appointment slots for a specific date in Emerge EHR.
+
+- **Function Name**: `emergeehr_get_available_slots`
+- **Input**: A date (the agent can understand natural language like "tomorrow" or "next Monday")
+
+**How it works**
+
+Queries your Emerge EHR calendar and returns available time slots for the requested date. The agent presents these times to the caller in their local timezone and lets them pick the slot that works best.
+
+---
+
+### Emerge EHR Create Appointment
+
+Book an appointment in Emerge EHR for a patient.
+
+- **Function Name**: `emergeehr_create_appointment`
+- **Required**: Patient contact ID, case ID, selected time slot
+
+**How it works**
+
+Creates an appointment in your Emerge EHR calendar linked to the patient's contact and case. The appointment appears in your Emerge EHR schedule with the correct provider, time, and patient details.
+
+<Note>
+  The agent must have a valid contact ID and case ID before booking. Always use **Search Contact** or **Create Contact** first, then **Check Availability**, and finally **Create Appointment**.
+</Note>
+
+---
+
+## Suggested System Prompt
+
+After adding the Emerge EHR tools, configure your agent's system prompt to define the workflow. Here's a sample prompt you can use or adapt:
+
+```text
+You are a friendly medical office assistant. Your job is to help callers
+schedule appointments or register as new patients.
+
+Flow:
+1. Greet the caller. Ask if they are an existing or new patient.
+
+2. Existing patient:
+   - Use `emergeehr_contact_search` to look up their profile by phone.
+   - If found, confirm their name and move to scheduling.
+   - If not found, let them know and proceed to registration.
+
+3. New patient:
+   - Collect: first name, last name, email, reason for visit.
+   - Use `emergeehr_contact_create` to register them.
+   - Pass information exactly as the caller provides it.
+
+4. Scheduling:
+   - Ask what date they'd like to come in.
+   - Use `emergeehr_get_available_slots` with that date.
+   - Present available times and let the caller choose.
+   - Use `emergeehr_create_appointment` with the selected slot.
+   - Confirm the appointment date and time.
+
+Key rules:
+- Always search for an existing patient before creating a new one.
+- You must have a contact ID and case ID before booking.
+- Always check availability before confirming a time.
+- If the requested time is unavailable, offer 2-3 alternatives.
+- Never modify caller-provided information — pass it exactly as spoken.
+- Keep responses short. Ask one question at a time.
+```
+
+---
+
+## Complete Booking Workflow
+
+Here's how all four Emerge EHR tools work together:
+
+1. **Patient Lookup** — uses **Search Contact** to check if the caller exists in Emerge EHR by phone number.
+   - If found: retrieves contact ID and case ID, skips to step 3.
+   - If not found: proceeds to step 2.
+
+2. **Patient Registration** — uses **Create Contact** to add the caller as a new patient with a default case.
+   - Collects: first name, last name, email, phone.
+   - Returns contact ID and case ID.
+
+3. **Check Available Times** — uses **Check Availability** to find open appointment slots.
+   - Queries the connected Emerge EHR calendar for the requested date.
+   - Presents available times in the caller's local timezone.
+
+4. **Book Appointment** — uses **Create Appointment** to confirm the booking.
+   - Links the appointment to the patient's contact and case.
+   - Creates the entry in your Emerge EHR calendar with the selected provider.
+
+### Example Conversation
+
+```
+Assistant: "Thank you for calling. Are you an existing patient or a new patient?"
+
+Caller:    "I'm a new patient."
+
+Assistant: "May I have your first name?"
+
+Caller:    "John."
+
+Assistant: "And your last name?"
+
+Caller:    "James."
+
+Assistant: "What email should we use for your records?"
+
+Caller:    "john79@gmail.com"
+
+[Assistant uses emergeehr_contact_create]
+
+Assistant: "You're all set. Let's find an appointment time.
+            What date were you hoping to come in?"
+
+Caller:    "Tomorrow afternoon."
+
+[Assistant uses emergeehr_get_available_slots]
+
+Assistant: "I have the following times available: One Twenty PM,
+            Two PM, and Three PM. Which works best?"
+
+Caller:    "Three PM."
+
+[Assistant uses emergeehr_create_appointment]
+
+Assistant: "Your appointment is confirmed for tomorrow at Three PM.
+            Is there anything else I can help with?"
+```
