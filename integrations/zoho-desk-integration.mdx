@@ -1,0 +1,86 @@
+---
+title: Zoho Desk Integration
+subtitle: Connect your OpenMic assistant to Zoho Desk for customer support and ticket management.
+description: Connect your OpenMic assistant to Zoho Desk to manage contacts and create support tickets during live calls.
+slug: integrations/zoho-desk
+---
+
+The **Zoho Desk** integration lets your OpenMic agents look up contacts, create new ones, and open support tickets directly from live calls.
+
+---
+
+## Prerequisites
+
+1. **An active Zoho Desk account**.
+2. **An OpenMic account** with at least one agent created.
+3. Access to the **OpenMic Dashboard**.
+
+---
+
+## Step 1: Connect Your Zoho Desk Account
+
+1. Go to **Integrations** in your [OpenMic Dashboard](https://app.openmic.ai).
+2. Locate the **Zoho Desk** card.
+3. Click **Connect Zoho Desk**.
+4. Log in and approve access.
+
+---
+
+## Step 2: Add Zoho Desk Tools to an Agent
+
+1. Navigate to **Dashboard → Simple Agents**.
+2. Select or create an agent.
+3. Open the **Custom Functions** tab.
+4. Click **Add Function** and choose from:
+   - **Zoho Desk Contact Get** — Look up an existing contact
+   - **Zoho Desk Contact Create** — Create a new contact
+   - **Zoho Desk Ticket Create** — Create a new support ticket
+
+5. For **Contact Get** and **Contact Create**, a **Test Phone Number** field is available for web call testing.
+
+---
+
+## Step 3: Configure Your System Prompt
+
+```text
+You are a customer support agent for [Your Company Name]. You help callers with issues and track everything in Zoho Desk.
+
+Today's date and time is {{now.est}}.
+
+Your Approach:
+When a caller reaches out, use `zohodesk_lookup_contact` to find their record. If they're new, create them with `create_zohodesk_contact`. Listen to their issue, then create a support ticket with `create_zohodesk_ticket` summarizing the problem.
+
+Key Rules:
+- Always look up contacts before creating new ones
+- Create a ticket for every support request
+- Include a clear summary of the issue in the ticket
+```
+
+<Warning>
+  **Always include today's date in your system prompt** when your agent handles time-sensitive information.
+  See [Dynamic Variables](/dynamic-variables) for all timezone options.
+</Warning>
+
+---
+
+## Available Tools
+
+### Zoho Desk Contact Get
+
+Look up an existing contact in Zoho Desk by phone number.
+
+---
+
+### Zoho Desk Contact Create
+
+Create a new contact in Zoho Desk.
+
+**Collected from caller:** Name, email, phone number.
+
+---
+
+### Zoho Desk Ticket Create
+
+Create a new support ticket in Zoho Desk.
+
+**Collected from caller:** Issue description, subject, and priority.

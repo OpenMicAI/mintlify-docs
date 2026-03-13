@@ -1,0 +1,112 @@
+---
+title: Clio Manage Integration
+subtitle: Connect your OpenMic assistant to Clio Manage for contact sync and appointment scheduling.
+description: Connect your OpenMic assistant to Clio Manage for contact management and calendar scheduling during live calls.
+slug: integrations/clio-manage
+---
+
+The **Clio Manage** integration lets your OpenMic agents create and look up contacts, check calendar availability, and book appointments directly from live calls.
+
+---
+
+## Prerequisites
+
+1. **An active Clio Manage account**.
+2. **An OpenMic account** with at least one agent created.
+3. Access to the **OpenMic Dashboard**.
+
+---
+
+## Step 1: Connect Your Clio Manage Account
+
+1. Go to **Integrations** in your [OpenMic Dashboard](https://app.openmic.ai).
+2. Locate the **Clio Manage** card.
+3. Click **Connect Clio Manage**.
+4. Log in and approve access.
+
+---
+
+## Step 2: Add Clio Manage Tools to an Agent
+
+1. Navigate to **Dashboard → Simple Agents**.
+2. Select or create an agent.
+3. Open the **Custom Functions** tab.
+4. Click **Add Function** and choose from:
+   - **Clio Manage Contact Create** — Create a new contact
+   - **Clio Manage Contact Get** — Look up an existing contact
+   - **Clio Manage Calendar Check Availability** — Check open time slots
+   - **Clio Manage Calendar Create Event** — Book an appointment
+
+5. For **Contact Create** and **Contact Get**, a **Test Phone Number** field is available for web call testing.
+
+6. For **Check Availability** and **Create Event**, you'll need to select a **Calendar** from the dropdown (pulled from your Clio Manage account) and optionally set a **Timezone**.
+
+7. For **Create Event**, you can also configure:
+   - **Duration** — Meeting length in minutes (default: 30)
+   - **Don't Allow Double Booking** — Prevents conflicts with existing events
+
+<Tip>
+  For a complete scheduling workflow, add all four tools: **Contact Get**, **Contact Create**, **Check Availability**, and **Create Event**.
+</Tip>
+
+---
+
+## Step 3: Configure Your System Prompt
+
+<Warning>
+  **Always include today's date in your system prompt** to prevent the AI from misinterpreting dates.
+  Add `{{now.est}}` (or your timezone like `{{now.cst}}`, `{{now.pst}}`).
+  See [Dynamic Variables](/dynamic-variables) for all timezone options.
+</Warning>
+
+```text
+You are a scheduling assistant for [Your Law Firm]. You help clients book consultations.
+
+Today's date and time is {{now.est}}.
+
+Your Approach:
+Greet the caller and collect their name and email. Use `clio_lookup_contact` to check if they exist. If not, create them with `create_clio_contact`. Then ask when they'd like to meet, check availability with `check_clio_calendar_availability`, and book with `create_clio_calendar_event`.
+
+Key Rules:
+- Always look up contacts before creating new ones
+- Check availability before confirming any appointment time
+- Confirm the appointment details before booking
+```
+
+---
+
+## Available Tools
+
+### Clio Manage Contact Create
+
+Create a new contact in Clio Manage.
+
+**Collected from caller:** First name, last name, email, phone number.
+
+---
+
+### Clio Manage Contact Get
+
+Look up an existing contact by phone number.
+
+---
+
+### Clio Manage Calendar Check Availability
+
+Check available time slots on a specific Clio Manage calendar.
+
+**Configuration:**
+- **Calendar** — Select from your Clio Manage calendars (required)
+- **Timezone** — Business timezone (default: Eastern Time)
+
+---
+
+### Clio Manage Calendar Create Event
+
+Book an appointment on a Clio Manage calendar.
+
+**Configuration:**
+- **Calendar** — Select from your Clio Manage calendars (required)
+- **Duration** — Meeting length in minutes (default: 30, range: 5-480)
+- **Event Description** — Optional description for the event
+- **Don't Allow Double Booking** — Prevent scheduling conflicts

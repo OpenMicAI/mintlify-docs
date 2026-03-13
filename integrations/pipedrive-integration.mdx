@@ -1,0 +1,87 @@
+---
+title: Pipedrive Integration
+subtitle: Connect your OpenMic assistant to Pipedrive for contact and lead management.
+description: Connect your OpenMic assistant to Pipedrive CRM for contact sync and inbound lead creation during live calls.
+slug: integrations/pipedrive
+---
+
+The **Pipedrive** integration lets your OpenMic agents look up contacts, create leads, and add notes in Pipedrive directly from live calls.
+
+---
+
+## Prerequisites
+
+1. **An active Pipedrive account**.
+2. **An OpenMic account** with at least one agent created.
+3. Access to the **OpenMic Dashboard**.
+
+---
+
+## Step 1: Connect Your Pipedrive Account
+
+1. Go to **Integrations** in your [OpenMic Dashboard](https://app.openmic.ai).
+2. Locate the **Pipedrive** card.
+3. Click **Connect Pipedrive**.
+4. Log in and approve access.
+
+---
+
+## Step 2: Add Pipedrive Tools to an Agent
+
+1. Navigate to **Dashboard → Simple Agents**.
+2. Select or create an agent.
+3. Open the **Custom Functions** tab.
+4. Click **Add Function** and choose from:
+   - **Pipedrive Contact Get** — Search contacts by phone, email, or ID
+   - **Pipedrive Lead Create** — Create a new lead (auto-creates contact if needed)
+   - **Pipedrive Note Add** — Add a note to a contact or lead
+
+5. For **Contact Get** and **Lead Create**, a **Test Phone Number** field is available for web call testing. During live calls, the caller's number is used automatically.
+
+---
+
+## Step 3: Configure Your System Prompt
+
+```text
+You are a sales assistant for [Your Company Name]. You manage leads and contacts in Pipedrive.
+
+Today's date and time is {{now.est}}.
+
+Your Approach:
+When a caller reaches out, use `get_pipedrive_contact` to check if they're already in the system. If not, create a new lead with `create_pipedrive_lead` — this will also create a contact automatically. After the call, use `add_pipedrive_note` to log a summary of the conversation.
+
+Key Rules:
+- Always look up contacts before creating new leads
+- Add a note after every call summarizing the discussion
+- Collect name, email, and reason for calling
+```
+
+<Warning>
+  **Always include today's date in your system prompt** when your agent handles time-sensitive information.
+  Add `{{now.est}}` (or your timezone) to prevent the AI from misinterpreting dates.
+  See [Dynamic Variables](/dynamic-variables) for all timezone options.
+</Warning>
+
+---
+
+## Available Tools
+
+### Pipedrive Contact Get
+
+Search for a Pipedrive contact by phone number, email, or ID.
+
+**How it works:** Automatically uses the caller's phone number during live calls. For web call testing, configure a test phone number.
+
+---
+
+### Pipedrive Lead Create
+
+Create a new lead in Pipedrive. If the contact doesn't exist yet, it will be created automatically.
+
+**Collected from caller:** Name, email, phone number, and reason for inquiry.
+
+---
+
+### Pipedrive Note Add
+
+Add a note to a Pipedrive contact or lead — useful for logging call summaries.

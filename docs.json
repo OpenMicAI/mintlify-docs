@@ -65,9 +65,22 @@
           {
             "group": "Integrations",
             "pages": [
+              "integrations/introduction",
               "integrations/ghl-integration",
+              "integrations/acuity-integration",
               "integrations/zoho-crm-integration",
-              "integrations/emerge-ehr-integration"
+              "integrations/zoho-desk-integration",
+              "integrations/salesforce-integration",
+              "integrations/hubspot-integration",
+              "integrations/pipedrive-integration",
+              "integrations/close-crm-integration",
+              "integrations/clio-manage-integration",
+              "integrations/clio-grow-integration",
+              "integrations/freshdesk-integration",
+              "integrations/attio-integration",
+              "integrations/leap-integration",
+              "integrations/emerge-ehr-integration",
+              "integrations/zapier-integration"
             ]
           },
           {

@@ -1,0 +1,76 @@
+---
+title: Zapier Integration
+subtitle: Connect OpenMic to thousands of apps through Zapier workflows.
+description: Use Zapier to connect OpenMic with thousands of apps — automate post-call workflows, sync data, and trigger actions across your entire stack.
+slug: integrations/zapier
+---
+
+The **Zapier** integration connects OpenMic to **thousands of apps** — letting you automate workflows triggered by your AI voice calls without writing any code.
+
+Unlike native integrations (which add tools your agent uses *during* calls), Zapier workflows run *after* calls to sync data, send notifications, update spreadsheets, create tasks, and more.
+
+---
+
+## How It Works
+
+OpenMic is available as a Zapier app. You can use it as a **trigger** (when something happens in OpenMic) to kick off actions in any of Zapier's 7,000+ connected apps.
+
+For example:
+- **New call completes** → Add a row to Google Sheets with the call summary
+- **New call completes** → Create a lead in Lawcus
+- **New call completes** → Send a Slack message to your team
+- **New call completes** → Create a task in Asana or Monday.com
+- **New call completes** → Update a record in Airtable
+
+---
+
+## Getting Started
+
+<Steps>
+  <Step title="Go to Zapier Workflows">
+    In your [OpenMic Dashboard](https://app.openmic.ai/integrations), click the **Zapier Workflows** tab at the top of the Integrations page.
+  </Step>
+  <Step title="Sign in to Zapier">
+    If you don't have a Zapier account, sign up for free. If you already have one, log in.
+  </Step>
+  <Step title="Create a workflow">
+    Use the **"What would you like to automate?"** prompt or browse popular workflows. Select **Openmic** as the trigger app and choose any app as the action.
+  </Step>
+  <Step title="Connect your OpenMic account">
+    Zapier will ask you to authenticate with your OpenMic API key. You can find this in your [OpenMic Dashboard](https://app.openmic.ai) under account settings.
+  </Step>
+  <Step title="Configure and enable">
+    Map the fields from your OpenMic call data (summary, caller number, duration, etc.) to the action app, then turn on your Zap.
+  </Step>
+</Steps>
+
+---
+
+## Popular Workflows
+
+Here are some commonly used OpenMic + Zapier workflows:
+
+| Workflow | Apps | Use Case |
+|----------|------|----------|
+| Add leads from new calls | OpenMic + Lawcus | Automatically create leads in Lawcus from inbound calls |
+| Log post-call summaries | OpenMic + Google Sheets | Save call summaries and details to a spreadsheet |
+| Notify your team | OpenMic + Slack | Post a message in Slack when a call completes |
+| Create follow-up tasks | OpenMic + Asana | Auto-create tasks from call action items |
+| Sync to your CRM | OpenMic + any CRM | Push call data to CRMs not natively supported |
+
+<Tip>
+  Zapier is especially useful for connecting OpenMic to apps that don't have a native integration yet. If your CRM or tool isn't listed in our [native integrations](/integrations/introduction), Zapier can bridge the gap.
+</Tip>
+
+---
+
+## Native Integrations vs. Zapier
+
+| | Native Integrations | Zapier |
+|---|---|---|
+| **When it runs** | During the call (real-time) | After the call (post-call) |
+| **What it does** | Agent uses tools to look up contacts, book appointments, etc. | Automates data sync, notifications, and follow-ups |
+| **Setup** | One-click OAuth in OpenMic Dashboard | Configure triggers and actions in Zapier |
+| **Best for** | CRM lookups, appointment booking, ticket creation | Post-call workflows, spreadsheets, notifications, unsupported apps |
+
+You can use **both** — native integrations for real-time actions during calls, and Zapier for post-call automation.

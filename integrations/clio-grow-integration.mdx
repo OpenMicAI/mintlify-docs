@@ -1,0 +1,70 @@
+---
+title: Clio Grow Integration
+subtitle: Connect your OpenMic assistant to Clio Grow for automated lead capture.
+description: Connect your OpenMic assistant to Clio Grow to capture and submit leads from live calls directly into your intake pipeline.
+slug: integrations/clio-grow
+---
+
+The **Clio Grow** integration lets your OpenMic agents capture lead details from calls and submit them directly to your Clio Grow intake pipeline.
+
+---
+
+## Prerequisites
+
+1. **An active Clio Grow account** with a lead capture token.
+2. **An OpenMic account** with at least one agent created.
+3. Access to the **OpenMic Dashboard**.
+
+---
+
+## Step 1: Connect Your Clio Grow Account
+
+1. Go to **Integrations** in your [OpenMic Dashboard](https://app.openmic.ai).
+2. Locate the **Clio Grow** card.
+3. Click **Connect Clio Grow**.
+4. Enter your lead capture token.
+
+---
+
+## Step 2: Add Clio Grow Tools to an Agent
+
+1. Navigate to **Dashboard → Simple Agents**.
+2. Select or create an agent.
+3. Open the **Custom Functions** tab.
+4. Click **Add Function** and select:
+   - **Clio Grow Submit Lead** — Capture and send lead details to Clio Grow
+
+The tool automatically extracts the caller's phone number, first name, last name, email, and a message from the conversation.
+
+---
+
+## Step 3: Configure Your System Prompt
+
+```text
+You are an intake assistant for [Your Law Firm]. Your role is to collect caller information and submit it as a new lead.
+
+Today's date and time is {{now.est}}.
+
+Your Approach:
+Greet the caller warmly. Collect their first name, last name, email address, and a brief description of their legal matter. Once you have all the details, submit the lead using `submit_cliogrow_lead`.
+
+Key Rules:
+- Always collect first name, last name, and email
+- Ask about the nature of their legal matter for the lead message
+- Confirm all details before submitting
+```
+
+<Warning>
+  **Always include today's date in your system prompt** when your agent handles time-sensitive information.
+  See [Dynamic Variables](/dynamic-variables) for all timezone options.
+</Warning>
+
+---
+
+## Available Tools
+
+### Clio Grow Submit Lead
+
+Captures lead details from the conversation and submits them to Clio Grow.
+
+**Automatically extracted:** Phone number, first name, last name, email, and message/description.

@@ -117,6 +117,8 @@ Here's a simple example you can use or modify:
 ```text
 You are a professional appointment scheduling assistant for [Your Company Name]. Your role is to provide a seamless booking experience while maintaining accurate contact records in GoHighLevel.
 
+Today's date and time is {{now.est}}.
+
 Your Approach:
 Start every call with a warm greeting and collect the caller's name and email address. Once you have their information, look them up using `ghl_lookup_contact` to see if they're already in the system. If they're new, create their profile with `create_ghl_contact` so you have a contact ID to work with.
 
@@ -130,6 +132,13 @@ Key Rules:
 - Always verify availability before confirming appointment times
 - Offer 2-3 alternative time slots when the requested time isn't available
 ```
+
+<Warning>
+  **Important: Always include today's date in your system prompt when using appointment tools.**
+  Without it, the AI may hallucinate the wrong year — for example, interpreting "March 13th" as 2024 instead of 2026.
+  Add `{{now.est}}` (or your business timezone like `{{now.cst}}`, `{{now.pst}}`, etc.) to your prompt so the assistant always knows the current date and time.
+  See [Dynamic Variables](/dynamic-variables) for all available timezone options.
+</Warning>
 
 ---
 

@@ -1,0 +1,73 @@
+---
+title: Freshdesk Integration
+subtitle: Connect your OpenMic assistant to Freshdesk for support ticket management.
+description: Connect your OpenMic assistant to Freshdesk to create support tickets during live calls.
+slug: integrations/freshdesk
+---
+
+The **Freshdesk** integration lets your OpenMic agents create support tickets from live calls, automatically capturing caller details and issue descriptions.
+
+---
+
+## Prerequisites
+
+1. **An active Freshdesk account**.
+2. **An OpenMic account** with at least one agent created.
+3. Access to the **OpenMic Dashboard**.
+
+---
+
+## Step 1: Connect Your Freshdesk Account
+
+1. Go to **Integrations** in your [OpenMic Dashboard](https://app.openmic.ai).
+2. Locate the **Freshdesk** card.
+3. Click **Connect Freshdesk**.
+4. Enter your Freshdesk credentials and approve access.
+
+---
+
+## Step 2: Add Freshdesk Tools to an Agent
+
+1. Navigate to **Dashboard → Simple Agents**.
+2. Select or create an agent.
+3. Open the **Custom Functions** tab.
+4. Click **Add Function** and select:
+   - **Freshdesk Ticket Create** — Create a new support ticket
+
+**Configuration options:**
+- **Add caller phone and email to the ticket description** — Automatically includes contact details (enabled by default)
+- **Ask for best phone before creating a ticket** — Prompts the caller for their preferred phone number
+- **Ask caller for their name before creating a ticket** — Collects the caller's name (if disabled, the caller's phone number is used as the contact name)
+
+---
+
+## Step 3: Configure Your System Prompt
+
+```text
+You are a support agent for [Your Company Name]. You help callers with their issues and create tickets in Freshdesk.
+
+Today's date and time is {{now.est}}.
+
+Your Approach:
+Listen to the caller's issue carefully. Collect their name and email if needed. Once you understand the problem, create a support ticket with `create_freshdesk_ticket` including a clear description of the issue.
+
+Key Rules:
+- Get a clear understanding of the issue before creating the ticket
+- Include enough detail in the ticket for the support team to act on it
+- Confirm with the caller that you've captured their issue correctly
+```
+
+<Warning>
+  **Always include today's date in your system prompt** when your agent handles time-sensitive information.
+  See [Dynamic Variables](/dynamic-variables) for all timezone options.
+</Warning>
+
+---
+
+## Available Tools
+
+### Freshdesk Ticket Create
+
+Create a new support ticket in Freshdesk.
+
+**Collected from caller:** Issue description, subject, and optionally name, email, and phone number (based on configuration).

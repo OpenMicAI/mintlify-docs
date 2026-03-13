@@ -1,0 +1,107 @@
+---
+title: Salesforce Integration
+subtitle: Connect your OpenMic assistant to Salesforce for lead, contact, account, and opportunity management.
+description: Connect your OpenMic assistant to Salesforce for lead, contact, account, and opportunity management during live calls.
+slug: integrations/salesforce
+---
+
+The **Salesforce** integration lets your OpenMic agents create leads, contacts, accounts, and opportunities — and query records — directly from live calls.
+
+---
+
+## Prerequisites
+
+1. **An active Salesforce account** with API access.
+2. **An OpenMic account** with at least one agent created.
+3. Access to the **OpenMic Dashboard**.
+
+---
+
+## Step 1: Connect Your Salesforce Account
+
+1. Go to **Integrations** in your [OpenMic Dashboard](https://app.openmic.ai).
+2. Locate the **Salesforce** card.
+3. Click **Connect Salesforce**.
+4. Log in to Salesforce and approve access.
+
+---
+
+## Step 2: Add Salesforce Tools to an Agent
+
+1. Navigate to **Dashboard → Simple Agents**.
+2. Select or create an agent.
+3. Open the **Custom Functions** tab.
+4. Click **Add Function** and choose from the available Salesforce tools:
+   - **Create Salesforce Lead** — Creates a new lead from caller info
+   - **Create Salesforce Contact** — Creates a new contact (requires AccountId)
+   - **Create Salesforce Account** — Creates a new company account
+   - **Create Salesforce Opportunity** — Tracks sales deals and revenue
+   - **Query Salesforce Records** — Search records using SOQL (Leads, Contacts, Accounts, etc.)
+
+5. For tools that look up callers (**Create Lead**, **Create Contact**, **Query Records**), a **Test Phone Number** field is available for web call testing. During live calls, the caller's number is used automatically.
+
+---
+
+## Step 3: Configure Your System Prompt
+
+<Warning>
+  **Always include today's date in your system prompt** when your agent handles time-sensitive information.
+  Add `{{now.est}}` (or your timezone) to prevent the AI from misinterpreting dates.
+  See [Dynamic Variables](/dynamic-variables) for all timezone options.
+</Warning>
+
+```text
+You are a sales assistant for [Your Company Name]. Your role is to capture leads and manage contacts in Salesforce during calls.
+
+Today's date and time is {{now.est}}.
+
+Your Approach:
+Start by greeting the caller and collecting their name, email, and company. Use `query_sf` to check if they already exist in Salesforce. If they're new, create a lead with `create_sf_lead`. If they're an existing contact inquiring about a new product, create an opportunity with `create_sf_opportunity`.
+
+Key Rules:
+- Always search before creating to avoid duplicates
+- Collect company name for account creation
+- Use Query Records to check for existing leads/contacts before creating new ones
+```
+
+---
+
+## Available Tools
+
+### Create Salesforce Lead
+
+Creates a new lead in Salesforce when a new caller contacts you.
+
+**Collected from caller:** First name, last name, email, company, phone number.
+
+---
+
+### Create Salesforce Contact
+
+Creates a new contact in Salesforce. Requires an associated AccountId.
+
+**Collected from caller:** First name, last name, email, phone number.
+
+---
+
+### Create Salesforce Account
+
+Creates a new company account in Salesforce.
+
+**Collected from caller:** Company/account name and details.
+
+---
+
+### Create Salesforce Opportunity
+
+Creates a new opportunity to track sales deals and revenue.
+
+**Collected from caller:** Opportunity name, stage, and details.
+
+---
+
+### Query Salesforce Records
+
+Searches Salesforce records using SOQL. Works with Leads, Contacts, Accounts, and other objects.
+
+**How it works:** The agent automatically uses the caller's phone number to search. For web call testing, enter a phone number manually in the tool configuration.
