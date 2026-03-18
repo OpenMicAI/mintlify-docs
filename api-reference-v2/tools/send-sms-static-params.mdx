@@ -4,3 +4,80 @@ subtitle: 'Static params reference for the send_sms tool type'
 description: 'Complete reference for the static_params object when creating or updating a send_sms tool via the v2 API.'
 slug: api-reference-v2/tools/send-sms-static-params
 ---
+
+When creating a tool with `type: "send_sms"` via the [Create Tool](/api-reference-v2/tools/create-tool) endpoint, the `static_params` object configures how the SMS message is generated and sent.
+
+---
+
+## Recommended Tool-Level Defaults
+
+When creating a `send_sms` tool, the following tool-level fields are recommended alongside your `static_params`:
+
+| Field | Recommended Value | Notes |
+|-------|-------------------|-------|
+| `speak_during_execution` | `true` | AI speaks to the caller while the SMS is being sent. Defaults to `true` if omitted. |
+| `speak_after_execution` | `true` | AI speaks to the caller after the SMS is sent. Defaults to `true` if omitted. |
+| `async` | `false` | Defaults to `false` if omitted. |
+
+---
+
+## Static Params Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | `"prompt"` \| `"static"` | Yes | Determines how the SMS message is generated. `"prompt"` uses AI to compose the message dynamically; `"static"` sends a fixed, pre-written message. |
+| `message` | string | Yes | The content of the SMS. When `type` is `"static"`, this is the exact message sent. When `type` is `"prompt"`, this is an instruction the AI uses to generate the message based on conversation context. |
+
+---
+
+## Examples
+
+### Static Message
+
+Send the same fixed message every time the tool is triggered.
+
+```json
+{
+  "type": "send_sms",
+  "name": "send_confirmation_sms",
+  "description": "Send appointment confirmation via SMS when the customer books an appointment",
+  "static_params": {
+    "type": "static",
+    "message": "Your appointment has been confirmed for {{appointment_date}} at {{appointment_time}}. Reply CANCEL to cancel."
+  },
+  "speak_during_execution": true,
+  "speak_after_execution": true
+}
+```
+
+### AI-Generated Message (Prompt)
+
+Let the AI compose the SMS dynamically based on the conversation context.
+
+```json
+{
+  "type": "send_sms",
+  "name": "send_followup_sms",
+  "description": "Send a follow-up SMS with the information the customer requested during the call",
+  "static_params": {
+    "type": "prompt",
+    "message": "Generate an SMS summarizing the key points discussed in this conversation, including any action items or next steps."
+  },
+  "speak_during_execution": true,
+  "speak_after_execution": true
+}
+```
+
+---
+
+## Dynamic Variables
+
+When using `type: "static"`, you can include dynamic variables in the message using double curly braces. These variables are resolved at runtime from the conversation context or tool parameters.
+
+```
+Your order #{{order_id}} has been confirmed. Estimated delivery: {{delivery_date}}.
+```
+
+<Note>
+  For the UI-based setup guide, see the [Send SMS Custom Function](/agents/custom-functions/send-sms) documentation.
+</Note>
