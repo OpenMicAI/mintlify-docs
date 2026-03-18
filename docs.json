@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "OpenMic",
-  "openapi": "OpenMic.json",
+  "openapi": ["OpenMic.json", "OpenMic-v2.json"],
   "logo": {
     "dark": "/images/openmic-dark-logo.svg",
     "light": "/images/openmic-light-logo.svg"
@@ -96,6 +96,88 @@
       {
         "tab": "API Reference",
         "groups": [
+          {
+            "group": "V2",
+            "pages": [
+              {
+                "group": "Auth",
+                "pages": [
+                  "api-reference-v2/auth/whoami"
+                ]
+              },
+              {
+                "group": "Agents",
+                "pages": [
+                  "api-reference-v2/agents/list-agents",
+                  "api-reference-v2/agents/create-agent",
+                  "api-reference-v2/agents/get-agent",
+                  "api-reference-v2/agents/update-agent",
+                  "api-reference-v2/agents/delete-agent"
+                ]
+              },
+              {
+                "group": "Calls",
+                "pages": [
+                  "api-reference-v2/calls/create-call",
+                  "api-reference-v2/calls/list-calls",
+                  "api-reference-v2/calls/get-call"
+                ]
+              },
+              {
+                "group": "Phone Numbers",
+                "pages": [
+                  "api-reference-v2/phone-numbers/list-numbers",
+                  "api-reference-v2/phone-numbers/get-number",
+                  "api-reference-v2/phone-numbers/link-bot",
+                  "api-reference-v2/phone-numbers/unlink-bot"
+                ]
+              },
+              {
+                "group": "Tools",
+                "pages": [
+                  "api-reference-v2/tools/list-tools",
+                  "api-reference-v2/tools/create-tool",
+                  "api-reference-v2/tools/get-tool",
+                  "api-reference-v2/tools/update-tool",
+                  "api-reference-v2/tools/delete-tool",
+                  "api-reference-v2/tools/send-sms-static-params",
+                  "api-reference-v2/tools/transfer-call-static-params"
+                ]
+              },
+              {
+                "group": "Contact Lists",
+                "pages": [
+                  "api-reference-v2/contact-lists/list-contact-lists",
+                  "api-reference-v2/contact-lists/create-contact-list",
+                  "api-reference-v2/contact-lists/get-contact-list",
+                  "api-reference-v2/contact-lists/update-contact-list",
+                  "api-reference-v2/contact-lists/delete-contact-list",
+                  "api-reference-v2/contacts/list-contacts",
+                  "api-reference-v2/contacts/create-contact",
+                  "api-reference-v2/contacts/create-contacts-bulk",
+                  "api-reference-v2/contacts/update-contact",
+                  "api-reference-v2/contacts/delete-contacts"
+                ]
+              },
+              {
+                "group": "Campaigns",
+                "pages": [
+                  "api-reference-v2/campaigns/list-campaigns",
+                  "api-reference-v2/campaigns/create-campaign",
+                  "api-reference-v2/campaigns/get-campaign",
+                  "api-reference-v2/campaigns/update-campaign",
+                  "api-reference-v2/campaigns/delete-campaign"
+                ]
+              },
+              {
+                "group": "Voices",
+                "pages": [
+                  "api-reference-v2/voices/list-voices",
+                  "api-reference-v2/voices/get-voice"
+                ]
+              }
+            ]
+          },
           {
             "group": "Legacy",
             "pages": [
