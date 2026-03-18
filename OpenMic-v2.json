@@ -10,22 +10,48 @@
   },
   "servers": [
     {
-      "url": "https://api.openmic.ai/h/v2",
+      "url": "https://api.openmic.ai",
       "description": "Production"
     }
   ],
   "security": [
-    { "bearerAuth": [] }
+    {
+      "bearerAuth": []
+    }
   ],
   "tags": [
-    { "name": "Auth", "description": "Verify API key identity." },
-    { "name": "Agents", "description": "Create and manage voice AI agents." },
-    { "name": "Calls", "description": "Initiate and track phone calls." },
-    { "name": "Phone Numbers", "description": "Manage phone numbers and agent assignments." },
-    { "name": "Tools", "description": "Manage agent tools (API requests, call transfers, etc.)." },
-    { "name": "Contact Lists", "description": "Manage contact lists and individual contacts." },
-    { "name": "Campaigns", "description": "Create and manage outbound dialing campaigns." },
-    { "name": "Voices", "description": "Browse available voices for agents." }
+    {
+      "name": "Auth",
+      "description": "Verify API key identity."
+    },
+    {
+      "name": "Agents",
+      "description": "Create and manage voice AI agents."
+    },
+    {
+      "name": "Calls",
+      "description": "Initiate and track phone calls."
+    },
+    {
+      "name": "Phone Numbers",
+      "description": "Manage phone numbers and agent assignments."
+    },
+    {
+      "name": "Tools",
+      "description": "Manage agent tools (API requests, call transfers, etc.)."
+    },
+    {
+      "name": "Contact Lists",
+      "description": "Manage contact lists and individual contacts."
+    },
+    {
+      "name": "Campaigns",
+      "description": "Create and manage outbound dialing campaigns."
+    },
+    {
+      "name": "Voices",
+      "description": "Browse available voices for agents."
+    }
   ],
   "components": {
     "securitySchemes": {
@@ -40,8 +66,12 @@
         "type": "object",
         "required": ["error"],
         "properties": {
-          "error": { "type": "string" },
-          "details": { "type": "string" }
+          "error": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
         }
       },
       "PaginationMeta": {
@@ -77,9 +107,15 @@
             "minimum": 1,
             "maximum": 5
           },
-          "silence_timeout_message": { "type": "string" },
-          "call_recording_enabled": { "type": "boolean" },
-          "voicemail_detection_enabled": { "type": "boolean" },
+          "silence_timeout_message": {
+            "type": "string"
+          },
+          "call_recording_enabled": {
+            "type": "boolean"
+          },
+          "voicemail_detection_enabled": {
+            "type": "boolean"
+          },
           "voicemail_action": {
             "type": "string",
             "enum": ["hangup", "leave_message"]
@@ -88,14 +124,20 @@
             "type": "string",
             "enum": ["prompt", "static"]
           },
-          "voicemail_message": { "type": "string" },
+          "voicemail_message": {
+            "type": "string"
+          },
           "voicemail_post_detection_delay": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30
           },
-          "hipaa_compliance_enabled": { "type": "boolean" },
-          "pci_compliance_enabled": { "type": "boolean" }
+          "hipaa_compliance_enabled": {
+            "type": "boolean"
+          },
+          "pci_compliance_enabled": {
+            "type": "boolean"
+          }
         }
       },
       "AdvancedSettings": {
@@ -103,17 +145,32 @@
         "properties": {
           "agent_personality": {
             "type": "string",
-            "enum": ["casual", "humorous", "direct", "formal", "persuasive", "friendly"]
+            "enum": [
+              "casual",
+              "humorous",
+              "direct",
+              "formal",
+              "persuasive",
+              "friendly"
+            ]
           },
-          "humanize_conversation": { "type": "boolean" },
-          "background_noise_reduction": { "type": "boolean" },
-          "allow_interruptions": { "type": "boolean" },
+          "humanize_conversation": {
+            "type": "boolean"
+          },
+          "background_noise_reduction": {
+            "type": "boolean"
+          },
+          "allow_interruptions": {
+            "type": "boolean"
+          },
           "min_interruption_duration": {
             "type": "number",
             "minimum": 0.2,
             "maximum": 5
           },
-          "background_sound": { "type": "string" },
+          "background_sound": {
+            "type": "string"
+          },
           "agent_response_length": {
             "type": "string",
             "enum": ["normal", "short", "concise", "long"]
@@ -128,19 +185,34 @@
             "minimum": 0.5,
             "maximum": 6
           },
-          "filter_phrases": { "type": "string" }
+          "filter_phrases": {
+            "type": "string"
+          }
         }
       },
       "PostCallSettings": {
         "type": "object",
         "properties": {
-          "summary_prompt": { "type": "string" },
-          "success_evaluation_prompt": { "type": "string" },
+          "summary_prompt": {
+            "type": "string"
+          },
+          "success_evaluation_prompt": {
+            "type": "string"
+          },
           "success_evaluation_rubric_type": {
             "type": "string",
-            "enum": ["NUMERIC_SCALE", "DESCRIPTIVE_SCALE", "PERCENTAGE_SCALE", "LIKERT_SCALE", "PASS_FAIL", "SENTIMENT"]
+            "enum": [
+              "NUMERIC_SCALE",
+              "DESCRIPTIVE_SCALE",
+              "PERCENTAGE_SCALE",
+              "LIKERT_SCALE",
+              "PASS_FAIL",
+              "SENTIMENT"
+            ]
           },
-          "structured_extraction_prompt": { "type": "string" },
+          "structured_extraction_prompt": {
+            "type": "string"
+          },
           "structured_extraction_json_schema": {
             "type": "object",
             "description": "A valid JSON Schema object describing the fields to extract."
@@ -151,47 +223,104 @@
         "type": "object",
         "required": ["uid", "name", "prompt", "created_at", "updated_at"],
         "properties": {
-          "uid": { "type": "string", "description": "Unique agent identifier (slug/UUID)." },
-          "name": { "type": "string" },
-          "prompt": { "type": "string" },
-          "first_message": { "type": "string" },
-          "auto_first_message": { "type": "boolean" },
-          "knowledge_base_id": { "type": "integer" },
+          "uid": {
+            "type": "string",
+            "description": "Unique agent identifier (slug/UUID)."
+          },
+          "name": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "first_message": {
+            "type": "string"
+          },
+          "auto_first_message": {
+            "type": "boolean"
+          },
+          "knowledge_base_id": {
+            "type": "integer"
+          },
           "voice_provider": {
             "type": "string",
             "enum": ["OpenAI", "ElevenLabs", "Deepgram", "Cartesia"]
           },
-          "voice": { "type": "string" },
-          "voice_model": { "type": "string" },
-          "voice_speed": { "type": "number" },
-          "llm_model_name": { "type": "string" },
-          "llm_model_temperature": { "type": "number", "minimum": 0, "maximum": 2 },
-          "llm_max_tokens": { "type": "integer" },
-          "stt_provider": { "type": "string", "enum": ["Deepgram"] },
-          "stt_model": { "type": "string" },
-          "auto_end_call": { "type": "boolean" },
-          "call_settings": { "$ref": "#/components/schemas/CallSettings" },
-          "advanced_settings": { "$ref": "#/components/schemas/AdvancedSettings" },
+          "voice": {
+            "type": "string"
+          },
+          "voice_model": {
+            "type": "string"
+          },
+          "voice_speed": {
+            "type": "number"
+          },
+          "llm_model_name": {
+            "type": "string"
+          },
+          "llm_model_temperature": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2
+          },
+          "llm_max_tokens": {
+            "type": "integer"
+          },
+          "stt_provider": {
+            "type": "string",
+            "enum": ["Deepgram"]
+          },
+          "stt_model": {
+            "type": "string"
+          },
+          "auto_end_call": {
+            "type": "boolean"
+          },
+          "call_settings": {
+            "$ref": "#/components/schemas/CallSettings"
+          },
+          "advanced_settings": {
+            "$ref": "#/components/schemas/AdvancedSettings"
+          },
           "boosted_keywords": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "maxItems": 30
           },
           "selected_jargons": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "post_call_settings": { "$ref": "#/components/schemas/PostCallSettings" },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" }
+          "post_call_settings": {
+            "$ref": "#/components/schemas/PostCallSettings"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "CreateAgentRequest": {
         "type": "object",
         "required": ["name", "prompt"],
         "properties": {
-          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "prompt": { "type": "string", "minLength": 1 },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1
+          },
           "first_message": {
             "type": "string",
             "description": "Cannot be combined with `auto_first_message: true`."
@@ -200,44 +329,86 @@
             "type": "boolean",
             "description": "Cannot be combined with `first_message`."
           },
-          "knowledge_base_id": { "type": "integer" },
+          "knowledge_base_id": {
+            "type": "integer"
+          },
           "voice_provider": {
             "type": "string",
             "enum": ["OpenAI", "ElevenLabs", "Deepgram", "Cartesia"]
           },
-          "voice": { "type": "string" },
-          "voice_model": { "type": "string" },
-          "voice_speed": { "type": "number" },
-          "llm_model_name": { "type": "string" },
-          "llm_model_temperature": { "type": "number", "minimum": 0, "maximum": 2 },
-          "llm_max_tokens": { "type": "integer" },
-          "stt_provider": { "type": "string", "enum": ["Deepgram"] },
-          "stt_model": { "type": "string" },
-          "auto_end_call": { "type": "boolean" },
-          "call_settings": { "$ref": "#/components/schemas/CallSettings" },
-          "advanced_settings": { "$ref": "#/components/schemas/AdvancedSettings" },
+          "voice": {
+            "type": "string"
+          },
+          "voice_model": {
+            "type": "string"
+          },
+          "voice_speed": {
+            "type": "number"
+          },
+          "llm_model_name": {
+            "type": "string"
+          },
+          "llm_model_temperature": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2
+          },
+          "llm_max_tokens": {
+            "type": "integer"
+          },
+          "stt_provider": {
+            "type": "string",
+            "enum": ["Deepgram"]
+          },
+          "stt_model": {
+            "type": "string"
+          },
+          "auto_end_call": {
+            "type": "boolean"
+          },
+          "call_settings": {
+            "$ref": "#/components/schemas/CallSettings"
+          },
+          "advanced_settings": {
+            "$ref": "#/components/schemas/AdvancedSettings"
+          },
           "boosted_keywords": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "maxItems": 30
           },
           "selected_jargons": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "post_call_settings": { "$ref": "#/components/schemas/PostCallSettings" }
+          "post_call_settings": {
+            "$ref": "#/components/schemas/PostCallSettings"
+          }
         }
       },
       "UpdateAgentRequest": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "prompt": { "type": "string", "minLength": 1 },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1
+          },
           "first_message": {
             "type": "string",
             "description": "Cannot be combined with `auto_first_message: true`."
           },
-          "auto_first_message": { "type": "boolean" },
+          "auto_first_message": {
+            "type": "boolean"
+          },
           "knowledge_base_id": {
             "type": "integer",
             "nullable": true,
@@ -247,39 +418,74 @@
             "type": "string",
             "enum": ["OpenAI", "ElevenLabs", "Deepgram", "Cartesia"]
           },
-          "voice": { "type": "string" },
-          "voice_model": { "type": "string" },
-          "voice_speed": { "type": "number" },
-          "llm_model_name": { "type": "string" },
-          "llm_model_temperature": { "type": "number", "minimum": 0, "maximum": 2 },
-          "llm_max_tokens": { "type": "integer" },
-          "stt_provider": { "type": "string", "enum": ["Deepgram"] },
-          "stt_model": { "type": "string" },
-          "auto_end_call": { "type": "boolean" },
-          "call_settings": { "$ref": "#/components/schemas/CallSettings" },
-          "advanced_settings": { "$ref": "#/components/schemas/AdvancedSettings" },
+          "voice": {
+            "type": "string"
+          },
+          "voice_model": {
+            "type": "string"
+          },
+          "voice_speed": {
+            "type": "number"
+          },
+          "llm_model_name": {
+            "type": "string"
+          },
+          "llm_model_temperature": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2
+          },
+          "llm_max_tokens": {
+            "type": "integer"
+          },
+          "stt_provider": {
+            "type": "string",
+            "enum": ["Deepgram"]
+          },
+          "stt_model": {
+            "type": "string"
+          },
+          "auto_end_call": {
+            "type": "boolean"
+          },
+          "call_settings": {
+            "$ref": "#/components/schemas/CallSettings"
+          },
+          "advanced_settings": {
+            "$ref": "#/components/schemas/AdvancedSettings"
+          },
           "boosted_keywords": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "maxItems": 30
           },
           "selected_jargons": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "post_call_settings": { "$ref": "#/components/schemas/PostCallSettings" }
+          "post_call_settings": {
+            "$ref": "#/components/schemas/PostCallSettings"
+          }
         }
       },
       "ListAgentsResponse": {
         "allOf": [
-          { "$ref": "#/components/schemas/PaginationMeta" },
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
           {
             "type": "object",
             "required": ["agents", "has_more"],
             "properties": {
               "agents": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/AgentResponse" }
+                "items": {
+                  "$ref": "#/components/schemas/AgentResponse"
+                }
               }
             }
           }
@@ -309,7 +515,9 @@
           },
           "dynamic_variables": {
             "type": "object",
-            "additionalProperties": { "type": "string" },
+            "additionalProperties": {
+              "type": "string"
+            },
             "description": "Key-value pairs injected into the agent prompt as template variables at call time."
           },
           "callback_url": {
@@ -321,11 +529,25 @@
       },
       "CallResponse": {
         "type": "object",
-        "required": ["id", "from_number", "to_number", "call_status", "created_at", "updated_at"],
+        "required": [
+          "id",
+          "from_number",
+          "to_number",
+          "call_status",
+          "created_at",
+          "updated_at"
+        ],
         "properties": {
-          "id": { "type": "string", "description": "CUID call identifier." },
-          "from_number": { "type": "string" },
-          "to_number": { "type": "string" },
+          "id": {
+            "type": "string",
+            "description": "CUID call identifier."
+          },
+          "from_number": {
+            "type": "string"
+          },
+          "to_number": {
+            "type": "string"
+          },
           "call_status": {
             "type": "string",
             "enum": ["registered", "ongoing", "ended", "error"]
@@ -334,27 +556,45 @@
             "type": "string",
             "enum": ["phonecall", "webcall"]
           },
-          "agent_uid": { "type": "string" },
-          "customer_id": { "type": "string" },
+          "agent_uid": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string"
+          },
           "dynamic_variables": {
             "type": "object",
-            "additionalProperties": { "type": "string" }
+            "additionalProperties": {
+              "type": "string"
+            }
           },
-          "callback_url": { "type": "string" },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" }
+          "callback_url": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "ListCallsResponse": {
         "allOf": [
-          { "$ref": "#/components/schemas/PaginationMeta" },
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
           {
             "type": "object",
             "required": ["calls", "has_more"],
             "properties": {
               "calls": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/CallResponse" }
+                "items": {
+                  "$ref": "#/components/schemas/CallResponse"
+                }
               }
             }
           }
@@ -364,25 +604,45 @@
         "type": "object",
         "required": ["id", "phone_number"],
         "properties": {
-          "id": { "type": "string" },
-          "phone_number": { "type": "string" },
-          "name": { "type": "string" },
-          "inbound_agent_uid": { "type": "string" },
-          "outbound_agent_uid": { "type": "string" },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" }
+          "id": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "inbound_agent_uid": {
+            "type": "string"
+          },
+          "outbound_agent_uid": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "ListPhoneNumbersResponse": {
         "allOf": [
-          { "$ref": "#/components/schemas/PaginationMeta" },
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
           {
             "type": "object",
             "required": ["phone_numbers", "has_more"],
             "properties": {
               "phone_numbers": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/PhoneNumberResponse" }
+                "items": {
+                  "$ref": "#/components/schemas/PhoneNumberResponse"
+                }
               }
             }
           }
@@ -392,8 +652,12 @@
         "type": "object",
         "required": ["phone_number_id", "agent_uid", "direction"],
         "properties": {
-          "phone_number_id": { "type": "string" },
-          "agent_uid": { "type": "string" },
+          "phone_number_id": {
+            "type": "string"
+          },
+          "agent_uid": {
+            "type": "string"
+          },
           "direction": {
             "type": "string",
             "enum": ["inbound", "outbound", "both"]
@@ -404,7 +668,9 @@
         "type": "object",
         "required": ["phone_number_id", "direction"],
         "properties": {
-          "phone_number_id": { "type": "string" },
+          "phone_number_id": {
+            "type": "string"
+          },
           "direction": {
             "type": "string",
             "enum": ["inbound", "outbound", "both"]
@@ -414,77 +680,178 @@
       "ToolType": {
         "type": "string",
         "enum": [
-          "api_request", "function", "end_call", "transfer_call",
-          "dtmf", "send_sms", "send_email", "call_booking",
-          "check_calendar_availability", "check_working_hours"
+          "api_request",
+          "function",
+          "end_call",
+          "transfer_call",
+          "dtmf",
+          "send_sms",
+          "send_email",
+          "call_booking",
+          "check_calendar_availability",
+          "check_working_hours"
         ]
       },
       "ToolResponse": {
         "type": "object",
         "required": ["id", "type", "name", "created_at", "updated_at"],
         "properties": {
-          "id": { "type": "integer" },
-          "type": { "$ref": "#/components/schemas/ToolType" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "url": { "type": "string", "description": "Required when `type` is `api_request`." },
-          "method": { "type": "string", "enum": ["get", "post"] },
-          "api_timeout": { "type": "integer" },
-          "parameters": { "type": "object", "description": "JSON Schema object describing the tool parameters." },
-          "use_raw_schema": { "type": "boolean" },
-          "static_params": { "type": "object" },
-          "speak_during_execution": { "type": "boolean" },
-          "speak_after_execution": { "type": "boolean" },
-          "async": { "type": "boolean" },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" }
+          "id": {
+            "type": "integer"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ToolType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "description": "Required when `type` is `api_request`."
+          },
+          "method": {
+            "type": "string",
+            "enum": ["get", "post"]
+          },
+          "api_timeout": {
+            "type": "integer"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "JSON Schema object describing the tool parameters."
+          },
+          "use_raw_schema": {
+            "type": "boolean"
+          },
+          "static_params": {
+            "type": "object"
+          },
+          "speak_during_execution": {
+            "type": "boolean"
+          },
+          "speak_after_execution": {
+            "type": "boolean"
+          },
+          "async": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "CreateToolRequest": {
         "type": "object",
         "required": ["type", "name"],
         "properties": {
-          "type": { "$ref": "#/components/schemas/ToolType" },
-          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "description": { "type": "string" },
-          "url": { "type": "string", "description": "Required when `type` is `api_request`." },
-          "method": { "type": "string", "enum": ["get", "post"] },
-          "api_timeout": { "type": "integer" },
-          "parameters": { "type": "object" },
-          "use_raw_schema": { "type": "boolean" },
-          "static_params": { "type": "object" },
-          "speak_during_execution": { "type": "boolean" },
-          "speak_after_execution": { "type": "boolean" },
-          "async": { "type": "boolean" }
+          "type": {
+            "$ref": "#/components/schemas/ToolType"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "description": "Required when `type` is `api_request`."
+          },
+          "method": {
+            "type": "string",
+            "enum": ["get", "post"]
+          },
+          "api_timeout": {
+            "type": "integer"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "use_raw_schema": {
+            "type": "boolean"
+          },
+          "static_params": {
+            "type": "object"
+          },
+          "speak_during_execution": {
+            "type": "boolean"
+          },
+          "speak_after_execution": {
+            "type": "boolean"
+          },
+          "async": {
+            "type": "boolean"
+          }
         }
       },
       "UpdateToolRequest": {
         "type": "object",
         "properties": {
-          "type": { "$ref": "#/components/schemas/ToolType" },
-          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "description": { "type": "string" },
-          "url": { "type": "string" },
-          "method": { "type": "string", "enum": ["get", "post"] },
-          "api_timeout": { "type": "integer" },
-          "parameters": { "type": "object" },
-          "use_raw_schema": { "type": "boolean" },
-          "static_params": { "type": "object" },
-          "speak_during_execution": { "type": "boolean" },
-          "speak_after_execution": { "type": "boolean" },
-          "async": { "type": "boolean" }
+          "type": {
+            "$ref": "#/components/schemas/ToolType"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string",
+            "enum": ["get", "post"]
+          },
+          "api_timeout": {
+            "type": "integer"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "use_raw_schema": {
+            "type": "boolean"
+          },
+          "static_params": {
+            "type": "object"
+          },
+          "speak_during_execution": {
+            "type": "boolean"
+          },
+          "speak_after_execution": {
+            "type": "boolean"
+          },
+          "async": {
+            "type": "boolean"
+          }
         }
       },
       "ListToolsResponse": {
         "allOf": [
-          { "$ref": "#/components/schemas/PaginationMeta" },
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
           {
             "type": "object",
             "required": ["tools", "has_more"],
             "properties": {
               "tools": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/ToolResponse" }
+                "items": {
+                  "$ref": "#/components/schemas/ToolResponse"
+                }
               }
             }
           }
@@ -494,23 +861,39 @@
         "type": "object",
         "required": ["id", "name"],
         "properties": {
-          "id": { "type": "integer" },
-          "name": { "type": "string" },
-          "contact_count": { "type": "integer" },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" }
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "contact_count": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "ListContactListsResponse": {
         "allOf": [
-          { "$ref": "#/components/schemas/PaginationMeta" },
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
           {
             "type": "object",
             "required": ["contact_lists", "has_more"],
             "properties": {
               "contact_lists": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/ContactListResponse" }
+                "items": {
+                  "$ref": "#/components/schemas/ContactListResponse"
+                }
               }
             }
           }
@@ -520,27 +903,53 @@
         "type": "object",
         "required": ["id", "name"],
         "properties": {
-          "id": { "type": "integer" },
-          "name": { "type": "string" },
-          "phone_number": { "type": "string" },
-          "phone_number_2": { "type": "string" },
-          "phone_number_3": { "type": "string" },
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "phone_number_2": {
+            "type": "string"
+          },
+          "phone_number_3": {
+            "type": "string"
+          },
           "contact_info": {
             "type": "object",
             "description": "Arbitrary key-value metadata for the contact."
           },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" }
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "CreateContactRequest": {
         "type": "object",
         "required": ["name"],
         "properties": {
-          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "phone_number": { "type": "string" },
-          "phone_number_2": { "type": "string" },
-          "phone_number_3": { "type": "string" },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "phone_number_2": {
+            "type": "string"
+          },
+          "phone_number_3": {
+            "type": "string"
+          },
           "contact_info": {
             "type": "object",
             "additionalProperties": true
@@ -555,25 +964,44 @@
             "type": "array",
             "minItems": 1,
             "maxItems": 1000,
-            "items": { "$ref": "#/components/schemas/CreateContactRequest" }
+            "items": {
+              "$ref": "#/components/schemas/CreateContactRequest"
+            }
           }
         }
       },
       "BulkAddContactsResponse": {
         "type": "object",
         "properties": {
-          "created": { "type": "integer", "description": "Number of contacts successfully created." },
-          "failed": { "type": "integer" }
+          "created": {
+            "type": "integer",
+            "description": "Number of contacts successfully created."
+          },
+          "failed": {
+            "type": "integer"
+          }
         }
       },
       "UpdateContactRequest": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "phone_number": { "type": "string" },
-          "phone_number_2": { "type": "string" },
-          "phone_number_3": { "type": "string" },
-          "contact_info": { "type": "object" }
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "phone_number_2": {
+            "type": "string"
+          },
+          "phone_number_3": {
+            "type": "string"
+          },
+          "contact_info": {
+            "type": "object"
+          }
         }
       },
       "DeleteContactsRequest": {
@@ -583,20 +1011,27 @@
           "contact_ids": {
             "type": "array",
             "minItems": 1,
-            "items": { "type": "integer", "minimum": 1 }
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
           }
         }
       },
       "ListContactsResponse": {
         "allOf": [
-          { "$ref": "#/components/schemas/PaginationMeta" },
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
           {
             "type": "object",
             "required": ["contacts", "has_more"],
             "properties": {
               "contacts": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/ContactResponse" }
+                "items": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                }
               }
             }
           }
@@ -604,77 +1039,188 @@
       },
       "CampaignStatus": {
         "type": "string",
-        "enum": ["Running", "Scheduled", "Stopped", "Completed", "Failed", "Expired", "Paused"]
+        "enum": [
+          "Running",
+          "Scheduled",
+          "Stopped",
+          "Completed",
+          "Failed",
+          "Expired",
+          "Paused"
+        ]
       },
       "CampaignDay": {
         "type": "string",
-        "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        "enum": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ]
       },
       "CampaignResponse": {
         "type": "object",
         "required": ["id", "name", "type", "status"],
         "properties": {
-          "id": { "type": "integer" },
-          "name": { "type": "string" },
-          "type": { "type": "string", "enum": ["outbound"] },
-          "status": { "$ref": "#/components/schemas/CampaignStatus" },
-          "agent_uid": { "type": "string" },
-          "from_number": { "type": "string" },
-          "contact_list_id": { "type": "integer" },
-          "time_start": { "type": "string", "description": "HH:MM (24-hour) daily window start.", "example": "09:00" },
-          "time_end": { "type": "string", "description": "HH:MM (24-hour) daily window end.", "example": "17:00" },
-          "timezone": { "type": "string", "example": "America/New_York" },
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["outbound"]
+          },
+          "status": {
+            "$ref": "#/components/schemas/CampaignStatus"
+          },
+          "agent_uid": {
+            "type": "string"
+          },
+          "from_number": {
+            "type": "string"
+          },
+          "contact_list_id": {
+            "type": "integer"
+          },
+          "time_start": {
+            "type": "string",
+            "description": "HH:MM (24-hour) daily window start.",
+            "example": "09:00"
+          },
+          "time_end": {
+            "type": "string",
+            "description": "HH:MM (24-hour) daily window end.",
+            "example": "17:00"
+          },
+          "timezone": {
+            "type": "string",
+            "example": "America/New_York"
+          },
           "days": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/CampaignDay" }
+            "items": {
+              "$ref": "#/components/schemas/CampaignDay"
+            }
           },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" }
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "CreateCampaignRequest": {
         "type": "object",
-        "required": ["name", "type", "agent_uid", "from_number", "contact_list_id", "time_start", "time_end"],
+        "required": [
+          "name",
+          "type",
+          "agent_uid",
+          "from_number",
+          "contact_list_id",
+          "time_start",
+          "time_end"
+        ],
         "properties": {
-          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "type": { "type": "string", "enum": ["outbound"] },
-          "agent_uid": { "type": "string" },
-          "from_number": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$", "description": "E.164 format." },
-          "contact_list_id": { "type": "integer" },
-          "time_start": { "type": "string", "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$", "description": "HH:MM format.", "example": "09:00" },
-          "time_end": { "type": "string", "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$", "description": "HH:MM format.", "example": "17:00" },
-          "timezone": { "type": "string", "example": "America/New_York" },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "type": {
+            "type": "string",
+            "enum": ["outbound"]
+          },
+          "agent_uid": {
+            "type": "string"
+          },
+          "from_number": {
+            "type": "string",
+            "pattern": "^\\+[1-9]\\d{1,14}$",
+            "description": "E.164 format."
+          },
+          "contact_list_id": {
+            "type": "integer"
+          },
+          "time_start": {
+            "type": "string",
+            "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+            "description": "HH:MM format.",
+            "example": "09:00"
+          },
+          "time_end": {
+            "type": "string",
+            "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+            "description": "HH:MM format.",
+            "example": "17:00"
+          },
+          "timezone": {
+            "type": "string",
+            "example": "America/New_York"
+          },
           "days": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/CampaignDay" }
+            "items": {
+              "$ref": "#/components/schemas/CampaignDay"
+            }
           }
         }
       },
       "UpdateCampaignRequest": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "from_number": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$" },
-          "time_start": { "type": "string", "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$" },
-          "time_end": { "type": "string", "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$" },
-          "timezone": { "type": "string" },
-          "contact_list_id": { "type": "integer" },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "from_number": {
+            "type": "string",
+            "pattern": "^\\+[1-9]\\d{1,14}$"
+          },
+          "time_start": {
+            "type": "string",
+            "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+          },
+          "time_end": {
+            "type": "string",
+            "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "contact_list_id": {
+            "type": "integer"
+          },
           "days": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/CampaignDay" }
+            "items": {
+              "$ref": "#/components/schemas/CampaignDay"
+            }
           }
         }
       },
       "ListCampaignsResponse": {
         "allOf": [
-          { "$ref": "#/components/schemas/PaginationMeta" },
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
           {
             "type": "object",
             "required": ["campaigns", "has_more"],
             "properties": {
               "campaigns": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/CampaignResponse" }
+                "items": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
               }
             }
           }
@@ -684,29 +1230,56 @@
         "type": "object",
         "required": ["id", "name", "provider"],
         "properties": {
-          "id": { "type": "integer" },
-          "name": { "type": "string" },
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
           "provider": {
             "type": "string",
-            "enum": ["OpenAI", "ElevenLabs", "Deepgram", "Cartesia", "Rime", "Sarvam"]
+            "enum": [
+              "OpenAI",
+              "ElevenLabs",
+              "Deepgram",
+              "Cartesia",
+              "Rime",
+              "Sarvam"
+            ]
           },
-          "gender": { "type": "string", "enum": ["MALE", "FEMALE", "NEUTRAL"] },
-          "language": { "type": "string" },
-          "accent": { "type": "string" },
-          "preview_url": { "type": "string" },
-          "created_at": { "type": "string", "format": "date-time" }
+          "gender": {
+            "type": "string",
+            "enum": ["MALE", "FEMALE", "NEUTRAL"]
+          },
+          "language": {
+            "type": "string"
+          },
+          "accent": {
+            "type": "string"
+          },
+          "preview_url": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "ListVoicesResponse": {
         "allOf": [
-          { "$ref": "#/components/schemas/PaginationMeta" },
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
           {
             "type": "object",
             "required": ["voices", "has_more"],
             "properties": {
               "voices": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/VoiceResponse" }
+                "items": {
+                  "$ref": "#/components/schemas/VoiceResponse"
+                }
               }
             }
           }
@@ -717,25 +1290,37 @@
       "PageSize": {
         "name": "page_size",
         "in": "query",
-        "schema": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
         "description": "Number of records per page (default 50, max 100)."
       },
       "Cursor": {
         "name": "cursor",
         "in": "query",
-        "schema": { "type": "string" },
+        "schema": {
+          "type": "string"
+        },
         "description": "Opaque pagination cursor returned by the previous response."
       },
       "CreatedAfter": {
         "name": "created_after",
         "in": "query",
-        "schema": { "type": "string", "format": "date-time" },
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        },
         "description": "Filter records created on or after this ISO 8601 timestamp."
       },
       "CreatedBefore": {
         "name": "created_before",
         "in": "query",
-        "schema": { "type": "string", "format": "date-time" },
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        },
         "description": "Filter records created on or before this ISO 8601 timestamp."
       }
     },
@@ -744,7 +1329,9 @@
         "description": "Missing or invalid API key.",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
           }
         }
       },
@@ -752,7 +1339,9 @@
         "description": "The requested resource does not exist.",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
           }
         }
       },
@@ -760,7 +1349,9 @@
         "description": "Validation error or invalid request body.",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
           }
         }
       },
@@ -768,7 +1359,9 @@
         "description": "The resource is in use and cannot be deleted.",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
           }
         }
       },
@@ -779,10 +1372,18 @@
             "schema": {
               "type": "object",
               "properties": {
-                "success": { "type": "boolean" },
-                "message": { "type": "string" },
-                "error": { "type": "string" },
-                "retryAfter": { "type": "integer" }
+                "success": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "error": {
+                  "type": "string"
+                },
+                "retryAfter": {
+                  "type": "integer"
+                }
               }
             }
           }
@@ -792,14 +1393,16 @@
         "description": "Unexpected server error.",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
           }
         }
       }
     }
   },
   "paths": {
-    "/whoami": {
+    "/h/v2/whoami": {
       "get": {
         "operationId": "getWhoami",
         "summary": "Get current user info",
@@ -814,8 +1417,12 @@
                   "type": "object",
                   "required": ["name", "email"],
                   "properties": {
-                    "name": { "type": "string" },
-                    "email": { "type": "string" }
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
                   }
                 },
                 "example": {
@@ -825,35 +1432,51 @@
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/agents": {
+    "/h/v2/agents": {
       "get": {
         "operationId": "listAgents",
         "summary": "List agents",
         "description": "Returns a cursor-paginated list of agents belonging to your organization. Results are ordered newest-first.",
         "tags": ["Agents"],
         "parameters": [
-          { "$ref": "#/components/parameters/PageSize" },
-          { "$ref": "#/components/parameters/Cursor" },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
           {
             "name": "name",
             "in": "query",
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "Case-insensitive partial match on the agent name."
           },
-          { "$ref": "#/components/parameters/CreatedAfter" },
-          { "$ref": "#/components/parameters/CreatedBefore" }
+          {
+            "$ref": "#/components/parameters/CreatedAfter"
+          },
+          {
+            "$ref": "#/components/parameters/CreatedBefore"
+          }
         ],
         "responses": {
           "200": {
             "description": "Paginated list of agents.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ListAgentsResponse" },
+                "schema": {
+                  "$ref": "#/components/schemas/ListAgentsResponse"
+                },
                 "example": {
                   "agents": [
                     {
@@ -870,9 +1493,15 @@
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "post": {
@@ -884,7 +1513,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateAgentRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/CreateAgentRequest"
+              },
               "example": {
                 "name": "Support Agent",
                 "prompt": "You are a friendly customer support agent for Acme Corp.",
@@ -909,25 +1540,39 @@
             "description": "Agent created.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/AgentResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/AgentResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/agents/{uid}": {
+    "/h/v2/agents/{uid}": {
       "parameters": [
         {
           "name": "uid",
           "in": "path",
           "required": true,
-          "schema": { "type": "string" },
+          "schema": {
+            "type": "string"
+          },
           "description": "The agent UID."
         }
       ],
@@ -941,14 +1586,24 @@
             "description": "Agent details.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/AgentResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/AgentResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "patch": {
@@ -960,10 +1615,14 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateAgentRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAgentRequest"
+              },
               "example": {
                 "name": "Updated Support Agent",
-                "call_settings": { "max_call_duration": 15 }
+                "call_settings": {
+                  "max_call_duration": 15
+                }
               }
             }
           }
@@ -973,15 +1632,27 @@
             "description": "Updated agent.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/AgentResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/AgentResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "delete": {
@@ -990,16 +1661,28 @@
         "description": "Permanently deletes an agent.\n\nReturns `409 Conflict` if the agent is currently linked to a phone number or campaign.",
         "tags": ["Agents"],
         "responses": {
-          "204": { "description": "Agent deleted." },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "409": { "$ref": "#/components/responses/Conflict" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "204": {
+            "description": "Agent deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/create-phone-call": {
+    "/h/v2/create-phone-call": {
       "post": {
         "operationId": "createPhoneCall",
         "summary": "Create an outbound phone call",
@@ -1009,7 +1692,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateCallRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/CreateCallRequest"
+              },
               "example": {
                 "from_number": "+12025551234",
                 "to_number": "+14155559876",
@@ -1027,19 +1712,31 @@
             "description": "Call created and queued.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CallResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CallResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/call/{id}": {
+    "/h/v2/call/{id}": {
       "get": {
         "operationId": "getCall",
         "summary": "Get a call",
@@ -1050,7 +1747,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "CUID of the call."
           }
         ],
@@ -1059,51 +1758,101 @@
             "description": "Call details.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CallResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CallResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/calls": {
+    "/h/v2/calls": {
       "get": {
         "operationId": "listCalls",
         "summary": "List calls",
         "description": "Returns a cursor-paginated list of calls, newest first.",
         "tags": ["Calls"],
         "parameters": [
-          { "$ref": "#/components/parameters/PageSize" },
-          { "$ref": "#/components/parameters/Cursor" },
-          { "name": "customer_id", "in": "query", "schema": { "type": "string" } },
-          { "name": "from_number", "in": "query", "schema": { "type": "string" } },
-          { "name": "to_number", "in": "query", "schema": { "type": "string" } },
-          { "name": "agent_uid", "in": "query", "schema": { "type": "string" } },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from_number",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to_number",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_uid",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "from_date",
             "in": "query",
-            "schema": { "type": "string", "format": "date-time" },
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
             "description": "Filter calls on or after this ISO 8601 timestamp."
           },
           {
             "name": "to_date",
             "in": "query",
-            "schema": { "type": "string", "format": "date-time" },
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
             "description": "Filter calls on or before this ISO 8601 timestamp."
           },
           {
             "name": "call_status",
             "in": "query",
-            "schema": { "type": "string", "enum": ["registered", "ongoing", "ended", "error"] }
+            "schema": {
+              "type": "string",
+              "enum": ["registered", "ongoing", "ended", "error"]
+            }
           },
           {
             "name": "call_type",
             "in": "query",
-            "schema": { "type": "string", "enum": ["phonecall", "webcall"] }
+            "schema": {
+              "type": "string",
+              "enum": ["phonecall", "webcall"]
+            }
           }
         ],
         "responses": {
@@ -1111,35 +1860,51 @@
             "description": "Paginated list of calls.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ListCallsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ListCallsResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/phone-numbers": {
+    "/h/v2/phone-numbers": {
       "get": {
         "operationId": "listPhoneNumbers",
         "summary": "List phone numbers",
         "description": "Returns a cursor-paginated list of phone numbers in your organization.",
         "tags": ["Phone Numbers"],
         "parameters": [
-          { "$ref": "#/components/parameters/PageSize" },
-          { "$ref": "#/components/parameters/Cursor" },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
           {
             "name": "phone_number",
             "in": "query",
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "Filter by phone number (partial match)."
           },
           {
             "name": "name",
             "in": "query",
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "Filter by name (partial match)."
           }
         ],
@@ -1148,17 +1913,25 @@
             "description": "Paginated list of phone numbers.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ListPhoneNumbersResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ListPhoneNumbersResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/phone-numbers/{phone_number_id}": {
+    "/h/v2/phone-numbers/{phone_number_id}": {
       "get": {
         "operationId": "getPhoneNumber",
         "summary": "Get a phone number",
@@ -1169,7 +1942,9 @@
             "name": "phone_number_id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1177,18 +1952,28 @@
             "description": "Phone number details.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PhoneNumberResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneNumberResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/phone-numbers/link-agent": {
+    "/h/v2/phone-numbers/link-agent": {
       "post": {
         "operationId": "linkAgentToPhoneNumber",
         "summary": "Link an agent to a phone number",
@@ -1198,7 +1983,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/LinkAgentRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/LinkAgentRequest"
+              },
               "example": {
                 "phone_number_id": "pn_abc123",
                 "agent_uid": "agent_abc123",
@@ -1212,19 +1999,31 @@
             "description": "Updated phone number.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PhoneNumberResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneNumberResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/phone-numbers/unlink-agent": {
+    "/h/v2/phone-numbers/unlink-agent": {
       "post": {
         "operationId": "unlinkAgentFromPhoneNumber",
         "summary": "Unlink an agent from a phone number",
@@ -1234,7 +2033,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UnlinkAgentRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/UnlinkAgentRequest"
+              },
               "example": {
                 "phone_number_id": "pn_abc123",
                 "direction": "inbound"
@@ -1247,24 +2048,36 @@
             "description": "Updated phone number.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PhoneNumberResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneNumberResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/agents/{agent_uid}/tools": {
+    "/h/v2/agents/{agent_uid}/tools": {
       "parameters": [
         {
           "name": "agent_uid",
           "in": "path",
           "required": true,
-          "schema": { "type": "string" },
+          "schema": {
+            "type": "string"
+          },
           "description": "The agent UID."
         }
       ],
@@ -1274,29 +2087,49 @@
         "description": "Returns a cursor-paginated list of tools attached to the agent.",
         "tags": ["Tools"],
         "parameters": [
-          { "$ref": "#/components/parameters/PageSize" },
-          { "$ref": "#/components/parameters/Cursor" },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
           {
             "name": "type",
             "in": "query",
-            "schema": { "$ref": "#/components/schemas/ToolType" }
+            "schema": {
+              "$ref": "#/components/schemas/ToolType"
+            }
           },
-          { "$ref": "#/components/parameters/CreatedAfter" },
-          { "$ref": "#/components/parameters/CreatedBefore" }
+          {
+            "$ref": "#/components/parameters/CreatedAfter"
+          },
+          {
+            "$ref": "#/components/parameters/CreatedBefore"
+          }
         ],
         "responses": {
           "200": {
             "description": "Paginated list of tools.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ListToolsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ListToolsResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "post": {
@@ -1308,7 +2141,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateToolRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/CreateToolRequest"
+              },
               "example": {
                 "type": "api_request",
                 "name": "lookup_order",
@@ -1317,7 +2152,11 @@
                 "method": "post",
                 "parameters": {
                   "type": "object",
-                  "properties": { "order_id": { "type": "string" } },
+                  "properties": {
+                    "order_id": {
+                      "type": "string"
+                    }
+                  },
                   "required": ["order_id"]
                 },
                 "speak_during_execution": true
@@ -1330,30 +2169,44 @@
             "description": "Tool created.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/agents/{agent_uid}/tools/{tool_id}": {
+    "/h/v2/agents/{agent_uid}/tools/{tool_id}": {
       "parameters": [
         {
           "name": "agent_uid",
           "in": "path",
           "required": true,
-          "schema": { "type": "string" }
+          "schema": {
+            "type": "string"
+          }
         },
         {
           "name": "tool_id",
           "in": "path",
           "required": true,
-          "schema": { "type": "integer" },
+          "schema": {
+            "type": "integer"
+          },
           "description": "Numeric tool ID."
         }
       ],
@@ -1367,14 +2220,24 @@
             "description": "Tool details.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "patch": {
@@ -1386,7 +2249,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateToolRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/UpdateToolRequest"
+              },
               "example": {
                 "description": "Updated description for the order lookup tool.",
                 "speak_after_execution": true
@@ -1399,14 +2264,24 @@
             "description": "Updated tool.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "delete": {
@@ -1415,15 +2290,25 @@
         "description": "Permanently removes a tool from the agent.",
         "tags": ["Tools"],
         "responses": {
-          "204": { "description": "Tool deleted." },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "204": {
+            "description": "Tool deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/contact-lists": {
+    "/h/v2/contact-lists": {
       "post": {
         "operationId": "createContactList",
         "summary": "Create a contact list",
@@ -1436,10 +2321,16 @@
                 "type": "object",
                 "required": ["name"],
                 "properties": {
-                  "name": { "type": "string", "minLength": 1, "maxLength": 255 }
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  }
                 }
               },
-              "example": { "name": "Q1 Outreach" }
+              "example": {
+                "name": "Q1 Outreach"
+              }
             }
           }
         },
@@ -1448,12 +2339,18 @@
             "description": "Contact list created.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ContactListResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ContactListResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "get": {
@@ -1461,33 +2358,51 @@
         "summary": "List contact lists",
         "tags": ["Contact Lists"],
         "parameters": [
-          { "$ref": "#/components/parameters/PageSize" },
-          { "$ref": "#/components/parameters/Cursor" },
-          { "$ref": "#/components/parameters/CreatedAfter" },
-          { "$ref": "#/components/parameters/CreatedBefore" }
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/CreatedAfter"
+          },
+          {
+            "$ref": "#/components/parameters/CreatedBefore"
+          }
         ],
         "responses": {
           "200": {
             "description": "Paginated list of contact lists.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ListContactListsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ListContactListsResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/contact-lists/{contact_list_id}": {
+    "/h/v2/contact-lists/{contact_list_id}": {
       "parameters": [
         {
           "name": "contact_list_id",
           "in": "path",
           "required": true,
-          "schema": { "type": "integer" }
+          "schema": {
+            "type": "integer"
+          }
         }
       ],
       "get": {
@@ -1499,13 +2414,21 @@
             "description": "Contact list details.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ContactListResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ContactListResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "patch": {
@@ -1519,10 +2442,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string", "minLength": 1, "maxLength": 255 }
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  }
                 }
               },
-              "example": { "name": "Q1 Outreach – Updated" }
+              "example": {
+                "name": "Q1 Outreach – Updated"
+              }
             }
           }
         },
@@ -1531,13 +2460,21 @@
             "description": "Updated contact list.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ContactListResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ContactListResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "delete": {
@@ -1545,20 +2482,30 @@
         "summary": "Delete a contact list",
         "tags": ["Contact Lists"],
         "responses": {
-          "204": { "description": "Contact list deleted." },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "204": {
+            "description": "Contact list deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/contact-lists/{contact_list_id}/contacts": {
+    "/h/v2/contact-lists/{contact_list_id}/contacts": {
       "parameters": [
         {
           "name": "contact_list_id",
           "in": "path",
           "required": true,
-          "schema": { "type": "integer" }
+          "schema": {
+            "type": "integer"
+          }
         }
       ],
       "post": {
@@ -1570,11 +2517,16 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateContactRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/CreateContactRequest"
+              },
               "example": {
                 "name": "Alice Johnson",
                 "phone_number": "+14155550199",
-                "contact_info": { "company": "Acme", "tier": "enterprise" }
+                "contact_info": {
+                  "company": "Acme",
+                  "tier": "enterprise"
+                }
               }
             }
           }
@@ -1584,13 +2536,21 @@
             "description": "Contact added.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ContactResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "get": {
@@ -1598,21 +2558,33 @@
         "summary": "List contacts in a list",
         "tags": ["Contact Lists"],
         "parameters": [
-          { "$ref": "#/components/parameters/PageSize" },
-          { "$ref": "#/components/parameters/Cursor" }
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          }
         ],
         "responses": {
           "200": {
             "description": "Paginated list of contacts.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ListContactsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ListContactsResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "delete": {
@@ -1624,27 +2596,43 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/DeleteContactsRequest" },
-              "example": { "contact_ids": [101, 102, 103] }
+              "schema": {
+                "$ref": "#/components/schemas/DeleteContactsRequest"
+              },
+              "example": {
+                "contact_ids": [101, 102, 103]
+              }
             }
           }
         },
         "responses": {
-          "204": { "description": "Contacts deleted." },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "204": {
+            "description": "Contacts deleted."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/contact-lists/{contact_list_id}/contacts/bulk": {
+    "/h/v2/contact-lists/{contact_list_id}/contacts/bulk": {
       "parameters": [
         {
           "name": "contact_list_id",
           "in": "path",
           "required": true,
-          "schema": { "type": "integer" }
+          "schema": {
+            "type": "integer"
+          }
         }
       ],
       "post": {
@@ -1656,11 +2644,22 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateContactsBulkRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/CreateContactsBulkRequest"
+              },
               "example": {
                 "contacts": [
-                  { "name": "Alice Johnson", "phone_number": "+14155550199" },
-                  { "name": "Bob Smith", "phone_number": "+14155550200", "contact_info": { "company": "Globex" } }
+                  {
+                    "name": "Alice Johnson",
+                    "phone_number": "+14155550199"
+                  },
+                  {
+                    "name": "Bob Smith",
+                    "phone_number": "+14155550200",
+                    "contact_info": {
+                      "company": "Globex"
+                    }
+                  }
                 ]
               }
             }
@@ -1671,29 +2670,41 @@
             "description": "Contacts added.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/BulkAddContactsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/BulkAddContactsResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/contact-lists/{contact_list_id}/contacts/{contact_id}": {
+    "/h/v2/contact-lists/{contact_list_id}/contacts/{contact_id}": {
       "parameters": [
         {
           "name": "contact_list_id",
           "in": "path",
           "required": true,
-          "schema": { "type": "integer" }
+          "schema": {
+            "type": "integer"
+          }
         },
         {
           "name": "contact_id",
           "in": "path",
           "required": true,
-          "schema": { "type": "integer" }
+          "schema": {
+            "type": "integer"
+          }
         }
       ],
       "patch": {
@@ -1705,10 +2716,14 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateContactRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContactRequest"
+              },
               "example": {
                 "phone_number": "+14155550300",
-                "contact_info": { "tier": "vip" }
+                "contact_info": {
+                  "tier": "vip"
+                }
               }
             }
           }
@@ -1718,45 +2733,71 @@
             "description": "Updated contact.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ContactResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/campaigns": {
+    "/h/v2/campaigns": {
       "get": {
         "operationId": "listCampaigns",
         "summary": "List campaigns",
         "description": "Returns a cursor-paginated list of campaigns, newest first.",
         "tags": ["Campaigns"],
         "parameters": [
-          { "$ref": "#/components/parameters/PageSize" },
-          { "$ref": "#/components/parameters/Cursor" },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
           {
             "name": "status",
             "in": "query",
-            "schema": { "$ref": "#/components/schemas/CampaignStatus" }
+            "schema": {
+              "$ref": "#/components/schemas/CampaignStatus"
+            }
           },
-          { "$ref": "#/components/parameters/CreatedAfter" },
-          { "$ref": "#/components/parameters/CreatedBefore" }
+          {
+            "$ref": "#/components/parameters/CreatedAfter"
+          },
+          {
+            "$ref": "#/components/parameters/CreatedBefore"
+          }
         ],
         "responses": {
           "200": {
             "description": "Paginated list of campaigns.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ListCampaignsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ListCampaignsResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "post": {
@@ -1768,7 +2809,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateCampaignRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignRequest"
+              },
               "example": {
                 "name": "Q1 Sales Blitz",
                 "type": "outbound",
@@ -1788,25 +2831,39 @@
             "description": "Campaign created.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CampaignResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/campaigns/{campaign_id}": {
+    "/h/v2/campaigns/{campaign_id}": {
       "parameters": [
         {
           "name": "campaign_id",
           "in": "path",
           "required": true,
-          "schema": { "type": "integer" }
+          "schema": {
+            "type": "integer"
+          }
         }
       ],
       "get": {
@@ -1818,14 +2875,24 @@
             "description": "Campaign details.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CampaignResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "patch": {
@@ -1837,7 +2904,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateCampaignRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignRequest"
+              },
               "example": {
                 "time_start": "08:00",
                 "time_end": "18:00"
@@ -1850,15 +2919,27 @@
             "description": "Updated campaign.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CampaignResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       },
       "delete": {
@@ -1866,48 +2947,126 @@
         "summary": "Delete a campaign",
         "tags": ["Campaigns"],
         "responses": {
-          "204": { "description": "Campaign deleted." },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "204": {
+            "description": "Campaign deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/voices": {
+    "/h/v2/voices": {
       "get": {
         "operationId": "listVoices",
         "summary": "List voices",
         "description": "Returns a cursor-paginated catalogue of available voices.\nUse the `voice` field from a voice record when creating or updating an agent.",
         "tags": ["Voices"],
         "parameters": [
-          { "$ref": "#/components/parameters/PageSize" },
-          { "$ref": "#/components/parameters/Cursor" },
-          { "name": "search", "in": "query", "schema": { "type": "string" }, "description": "Full-text search on voice name." },
-          { "name": "gender", "in": "query", "schema": { "type": "string", "enum": ["MALE", "FEMALE", "NEUTRAL"] } },
-          { "name": "provider", "in": "query", "schema": { "type": "string", "enum": ["OpenAI", "ElevenLabs", "Deepgram", "Cartesia", "Rime", "Sarvam"] } },
-          { "name": "language", "in": "query", "schema": { "type": "string" } },
-          { "name": "accent", "in": "query", "schema": { "type": "string" } },
-          { "name": "sort_by", "in": "query", "schema": { "type": "string", "enum": ["name", "created_at"] } },
-          { "name": "sort_order", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"] } }
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Full-text search on voice name."
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["MALE", "FEMALE", "NEUTRAL"]
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OpenAI",
+                "ElevenLabs",
+                "Deepgram",
+                "Cartesia",
+                "Rime",
+                "Sarvam"
+              ]
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accent",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["name", "created_at"]
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Paginated list of voices.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ListVoicesResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ListVoicesResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     },
-    "/voices/{voice_id}": {
+    "/h/v2/voices/{voice_id}": {
       "get": {
         "operationId": "getVoice",
         "summary": "Get a voice",
@@ -1918,7 +3077,9 @@
             "name": "voice_id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" }
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "responses": {
@@ -1926,14 +3087,24 @@
             "description": "Voice details.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/VoiceResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "429": { "$ref": "#/components/responses/TooManyRequests" },
-          "500": { "$ref": "#/components/responses/InternalServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
         }
       }
     }
