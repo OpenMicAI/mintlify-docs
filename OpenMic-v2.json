@@ -1402,7 +1402,7 @@
     }
   },
   "paths": {
-    "/h/v2/whoami": {
+    "/v2/whoami": {
       "get": {
         "operationId": "getWhoami",
         "summary": "Get current user info",
@@ -1441,7 +1441,7 @@
         }
       }
     },
-    "/h/v2/agents": {
+    "/v2/agents": {
       "get": {
         "operationId": "listAgents",
         "summary": "List agents",
@@ -1564,7 +1564,7 @@
         }
       }
     },
-    "/h/v2/agents/{uid}": {
+    "/v2/agents/{uid}": {
       "parameters": [
         {
           "name": "uid",
@@ -1682,7 +1682,7 @@
         }
       }
     },
-    "/h/v2/create-phone-call": {
+    "/v2/create-phone-call": {
       "post": {
         "operationId": "createPhoneCall",
         "summary": "Create an outbound phone call",
@@ -1736,7 +1736,7 @@
         }
       }
     },
-    "/h/v2/call/{id}": {
+    "/v2/call/{id}": {
       "get": {
         "operationId": "getCall",
         "summary": "Get a call",
@@ -1779,7 +1779,7 @@
         }
       }
     },
-    "/h/v2/calls": {
+    "/v2/calls": {
       "get": {
         "operationId": "listCalls",
         "summary": "List calls",
@@ -1878,7 +1878,7 @@
         }
       }
     },
-    "/h/v2/phone-numbers": {
+    "/v2/phone-numbers": {
       "get": {
         "operationId": "listPhoneNumbers",
         "summary": "List phone numbers",
@@ -1931,7 +1931,7 @@
         }
       }
     },
-    "/h/v2/phone-numbers/{phone_number_id}": {
+    "/v2/phone-numbers/{phone_number_id}": {
       "get": {
         "operationId": "getPhoneNumber",
         "summary": "Get a phone number",
@@ -1973,7 +1973,7 @@
         }
       }
     },
-    "/h/v2/phone-numbers/link-agent": {
+    "/v2/phone-numbers/link-agent": {
       "post": {
         "operationId": "linkAgentToPhoneNumber",
         "summary": "Link an agent to a phone number",
@@ -2023,7 +2023,7 @@
         }
       }
     },
-    "/h/v2/phone-numbers/unlink-agent": {
+    "/v2/phone-numbers/unlink-agent": {
       "post": {
         "operationId": "unlinkAgentFromPhoneNumber",
         "summary": "Unlink an agent from a phone number",
@@ -2069,7 +2069,7 @@
         }
       }
     },
-    "/h/v2/agents/{agent_uid}/tools": {
+    "/v2/agents/{agent_uid}/tools": {
       "parameters": [
         {
           "name": "agent_uid",
@@ -2190,7 +2190,7 @@
         }
       }
     },
-    "/h/v2/agents/{agent_uid}/tools/{tool_id}": {
+    "/v2/agents/{agent_uid}/tools/{tool_id}": {
       "parameters": [
         {
           "name": "agent_uid",
@@ -2308,7 +2308,7 @@
         }
       }
     },
-    "/h/v2/contact-lists": {
+    "/v2/contact-lists": {
       "post": {
         "operationId": "createContactList",
         "summary": "Create a contact list",
@@ -2394,7 +2394,7 @@
         }
       }
     },
-    "/h/v2/contact-lists/{contact_list_id}": {
+    "/v2/contact-lists/{contact_list_id}": {
       "parameters": [
         {
           "name": "contact_list_id",
@@ -2497,7 +2497,7 @@
         }
       }
     },
-    "/h/v2/contact-lists/{contact_list_id}/contacts": {
+    "/v2/contact-lists/{contact_list_id}/contacts": {
       "parameters": [
         {
           "name": "contact_list_id",
@@ -2624,7 +2624,7 @@
         }
       }
     },
-    "/h/v2/contact-lists/{contact_list_id}/contacts/bulk": {
+    "/v2/contact-lists/{contact_list_id}/contacts/bulk": {
       "parameters": [
         {
           "name": "contact_list_id",
@@ -2688,7 +2688,7 @@
         }
       }
     },
-    "/h/v2/contact-lists/{contact_list_id}/contacts/{contact_id}": {
+    "/v2/contact-lists/{contact_list_id}/contacts/{contact_id}": {
       "parameters": [
         {
           "name": "contact_list_id",
@@ -2751,7 +2751,7 @@
         }
       }
     },
-    "/h/v2/campaigns": {
+    "/v2/campaigns": {
       "get": {
         "operationId": "listCampaigns",
         "summary": "List campaigns",
@@ -2855,7 +2855,7 @@
         }
       }
     },
-    "/h/v2/campaigns/{campaign_id}": {
+    "/v2/campaigns/{campaign_id}": {
       "parameters": [
         {
           "name": "campaign_id",
@@ -2965,7 +2965,7 @@
         }
       }
     },
-    "/h/v2/voices": {
+    "/v2/voices": {
       "get": {
         "operationId": "listVoices",
         "summary": "List voices",
@@ -3066,7 +3066,7 @@
         }
       }
     },
-    "/h/v2/voices/{voice_id}": {
+    "/v2/voices/{voice_id}": {
       "get": {
         "operationId": "getVoice",
         "summary": "Get a voice",
