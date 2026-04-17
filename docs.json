@@ -170,6 +170,12 @@
                 ]
               },
               {
+                "group": "SMS",
+                "pages": [
+                  "api-reference-v2/sms/send-sms"
+                ]
+              },
+              {
                 "group": "Voices",
                 "pages": [
                   "api-reference-v2/voices/list-voices",

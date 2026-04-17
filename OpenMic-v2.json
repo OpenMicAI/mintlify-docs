@@ -51,6 +51,10 @@
     {
       "name": "Voices",
       "description": "Browse available voices for agents."
+    },
+    {
+      "name": "SMS",
+      "description": "Send SMS messages."
     }
   ],
   "components": {
@@ -1397,6 +1401,58 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        }
+      }
+    },
+    "SendSmsRequest": {
+      "type": "object",
+      "required": ["to_number", "message"],
+      "properties": {
+        "from_number": {
+          "type": "string",
+          "description": "Sender phone number in E.164 format. Optional — defaults to your account's Surge phone number if not provided.",
+          "example": "+16625658792"
+        },
+        "to_number": {
+          "type": "string",
+          "description": "Recipient phone number in E.164 format.",
+          "example": "+17189153182"
+        },
+        "message": {
+          "type": "string",
+          "description": "The text message to send. Must not be empty.",
+          "example": "Hello from OpenMic!"
+        }
+      }
+    },
+    "SendSmsResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique message identifier.",
+          "example": "msg_01kpbgtyntfktvzseh0ykcmqm4"
+        },
+        "from_number": {
+          "type": "string",
+          "description": "The phone number the message was sent from.",
+          "example": "+16625658792"
+        },
+        "to_number": {
+          "type": "string",
+          "description": "The phone number the message was sent to.",
+          "example": "+17189153182"
+        },
+        "message": {
+          "type": "string",
+          "description": "The message body that was sent.",
+          "example": "Hello from OpenMic!"
+        },
+        "status": {
+          "type": "string",
+          "description": "The delivery status of the message.",
+          "enum": ["queued"],
+          "example": "queued"
         }
       }
     }
@@ -3098,6 +3154,67 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/send-sms": {
+      "post": {
+        "operationId": "sendSms",
+        "summary": "Send SMS",
+        "description": "Send an SMS message to a phone number. Messages are queued for delivery.",
+        "tags": ["SMS"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendSmsRequest"
+              },
+              "example": {
+                "from_number": "+16625658792",
+                "to_number": "+17189153182",
+                "message": "Hello from OpenMic! Here is your appointment link: https://example.com/book"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "SMS queued for delivery",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendSmsResponse"
+                },
+                "example": {
+                  "id": "msg_01kpbgtyntfktvzseh0ykcmqm4",
+                  "from_number": "+16625658792",
+                  "to_number": "+17189153182",
+                  "message": "Hello from OpenMic! Here is your appointment link: https://example.com/book",
+                  "status": "queued"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "description": "Validation error — invalid phone number format or unsupported destination",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "429": {
             "$ref": "#/components/responses/TooManyRequests"
