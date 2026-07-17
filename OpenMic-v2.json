@@ -1340,6 +1340,168 @@
             "example": "queued"
           }
         }
+      },
+      "SmsLogResponse": {
+        "type": "object",
+        "required": ["id", "direction", "to_number", "created_at"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique SMS log entry identifier.",
+            "example": 42
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["inbound", "outbound"],
+            "description": "Message direction relative to your organization."
+          },
+          "from_number": {
+            "type": "string",
+            "nullable": true,
+            "description": "The phone number the message was sent from.",
+            "example": "+16625658792"
+          },
+          "to_number": {
+            "type": "string",
+            "description": "The phone number the message was sent to.",
+            "example": "+17189153182"
+          },
+          "session_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "ID of the linked session when the message was part of an SMS conversation."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the message was logged."
+          }
+        }
+      },
+      "ListSmsLogsResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "required": ["sms_logs", "has_more"],
+            "properties": {
+              "sms_logs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SmsLogResponse"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "SmsLogDetailResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SmsLogResponse"
+          },
+          {
+            "type": "object",
+            "required": ["status"],
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": ["delivered", "failed", "sent", "queued", "unknown"],
+                "description": "Delivery status reported by the SMS provider. `unknown` when provider details are unavailable."
+              },
+              "message": {
+                "type": "string",
+                "nullable": true,
+                "description": "The message body, fetched from the SMS provider.",
+                "example": "Hello from OpenMic!"
+              },
+              "sent_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "When the message was sent by the provider."
+              },
+              "delivered_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "When the message was delivered."
+              },
+              "failure_reason": {
+                "type": "string",
+                "nullable": true,
+                "description": "Reason the message failed, if delivery failed."
+              }
+            }
+          }
+        ]
+      },
+      "UsageBucket": {
+        "type": "object",
+        "required": ["period_start", "minutes", "sms_sent"],
+        "properties": {
+          "period_start": {
+            "type": "string",
+            "description": "UTC start date of the bucket (YYYY-MM-DD). Weekly buckets start on Monday.",
+            "example": "2026-07-10"
+          },
+          "minutes": {
+            "type": "number",
+            "description": "Call minutes used in this period, rounded to 2 decimals.",
+            "example": 6.5
+          },
+          "sms_sent": {
+            "type": "integer",
+            "description": "Outbound SMS messages sent in this period.",
+            "example": 2
+          }
+        }
+      },
+      "GetUsageResponse": {
+        "type": "object",
+        "required": [
+          "group_by",
+          "start_date",
+          "end_date",
+          "total_minutes",
+          "total_sms_sent",
+          "breakdown"
+        ],
+        "properties": {
+          "group_by": {
+            "type": "string",
+            "enum": ["day", "week", "month"],
+            "description": "Bucket granularity used for the breakdown."
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start of the reported range (inclusive)."
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End of the reported range (exclusive)."
+          },
+          "total_minutes": {
+            "type": "number",
+            "description": "Total call minutes used in the range.",
+            "example": 16.5
+          },
+          "total_sms_sent": {
+            "type": "integer",
+            "description": "Total outbound SMS messages sent in the range.",
+            "example": 3
+          },
+          "breakdown": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UsageBucket"
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -3215,6 +3377,234 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/sms-logs": {
+      "get": {
+        "operationId": "listSmsLogs",
+        "summary": "List SMS logs",
+        "description": "Returns a cursor-paginated list of SMS log entries for your organization, newest first. Entries contain delivery metadata (direction, phone numbers, timestamps) — message bodies are not stored.",
+        "tags": ["SMS"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["inbound", "outbound"]
+            },
+            "description": "Filter by message direction."
+          },
+          {
+            "name": "from_number",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by sender phone number (partial match)."
+          },
+          {
+            "name": "to_number",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by recipient phone number (partial match)."
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter messages logged on or after this ISO 8601 timestamp."
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter messages logged on or before this ISO 8601 timestamp."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of SMS log entries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSmsLogsResponse"
+                },
+                "example": {
+                  "sms_logs": [
+                    {
+                      "id": 62,
+                      "direction": "outbound",
+                      "from_number": "+16625658792",
+                      "to_number": "+17189153182",
+                      "session_id": null,
+                      "created_at": "2026-07-10T10:00:00.000Z"
+                    }
+                  ],
+                  "has_more": true,
+                  "next_cursor": "61"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/sms-logs/{sms_log_id}": {
+      "get": {
+        "operationId": "getSmsLog",
+        "summary": "Get an SMS log",
+        "description": "Returns a single SMS log entry enriched with message details fetched live from the SMS provider: message body, delivery status, sent/delivered timestamps, and failure reason. If provider details are unavailable, the entry is returned with `status: \"unknown\"` and null detail fields.",
+        "tags": ["SMS"],
+        "parameters": [
+          {
+            "name": "sms_log_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "SMS log entry ID from the list endpoint."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SMS log entry with message details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmsLogDetailResponse"
+                },
+                "example": {
+                  "id": 62,
+                  "direction": "outbound",
+                  "from_number": "+16625658792",
+                  "to_number": "+17189153182",
+                  "session_id": null,
+                  "created_at": "2026-07-10T10:00:00.000Z",
+                  "status": "delivered",
+                  "message": "Hello from OpenMic! Here is your appointment link: https://example.com/book",
+                  "sent_at": "2026-07-10T10:00:01.000Z",
+                  "delivered_at": "2026-07-10T10:00:03.000Z",
+                  "failure_reason": null
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/usage": {
+      "get": {
+        "operationId": "getUsage",
+        "summary": "Get usage",
+        "description": "Returns call-minutes and sent-SMS usage for your organization, grouped by day, week, or month (UTC buckets; weekly buckets start on Monday). When from_date is omitted, the range defaults to the last 30 days for day, 12 weeks for week, and 12 months for month.",
+        "tags": ["Usage"],
+        "parameters": [
+          {
+            "name": "group_by",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["day", "week", "month"],
+              "default": "day"
+            },
+            "description": "Bucket granularity for the breakdown."
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Start of the range (inclusive, ISO 8601)."
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "End of the range (exclusive, ISO 8601). Defaults to now."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage totals and per-period breakdown.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsageResponse"
+                },
+                "example": {
+                  "group_by": "day",
+                  "start_date": "2026-06-17T00:00:00.000Z",
+                  "end_date": "2026-07-17T00:00:00.000Z",
+                  "total_minutes": 16.5,
+                  "total_sms_sent": 3,
+                  "breakdown": [
+                    {
+                      "period_start": "2026-06-20",
+                      "minutes": 10,
+                      "sms_sent": 1
+                    },
+                    {
+                      "period_start": "2026-07-10",
+                      "minutes": 6.5,
+                      "sms_sent": 2
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           },
           "429": {
             "$ref": "#/components/responses/TooManyRequests"

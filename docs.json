@@ -172,7 +172,15 @@
               {
                 "group": "SMS",
                 "pages": [
-                  "api-reference-v2/sms/send-sms"
+                  "api-reference-v2/sms/send-sms",
+                  "api-reference-v2/sms/list-sms-logs",
+                  "api-reference-v2/sms/get-sms-log"
+                ]
+              },
+              {
+                "group": "Usage",
+                "pages": [
+                  "api-reference-v2/usage/get-usage"
                 ]
               },
               {
