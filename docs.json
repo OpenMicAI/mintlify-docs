@@ -55,6 +55,16 @@
             ]
           },
           {
+            "group": "Web Calls",
+            "pages": [
+              "web-calls/introduction",
+              "web-calls/public-api-key",
+              "web-calls/voice-widget",
+              "web-calls/chat-widget",
+              "web-calls/share-link"
+            ]
+          },
+          {
             "group": "Webhooks",
             "pages": [
               "pre-call-webhook",
