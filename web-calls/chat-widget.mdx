@@ -1,0 +1,217 @@
+---
+title: "Chat Widget"
+subtitle: "Add a floating text-chat panel backed by the same agent"
+description: "Embed the OpenMic chat widget so visitors can message your AI agent from any web page — HTML and React setup, attribute reference, and troubleshooting."
+---
+
+The chat widget adds a floating chat button to your site. Clicking it opens a panel where visitors type to the same agent that answers your calls — same prompt, same knowledge base, same tools.
+
+<Info>
+	The widget renders inside a **Shadow DOM**, so your site's CSS cannot break
+	it and its styles cannot leak into your page. It works on sites using
+	Tailwind, Bootstrap, aggressive CSS resets, and strict Content Security
+	Policies.
+</Info>
+
+## Quick start
+
+Paste this before the closing `</body>` tag of any page:
+
+```html
+<openmic-chat-widget
+    bot-uid="your-agent-uid"
+    public-api-key="omic_pub_your_public_key"
+    title="Chat with us">
+</openmic-chat-widget>
+
+<script src="https://unpkg.com/@openmic/openmic-chat-widget@latest/widget/widget-standalone.js"></script>
+```
+
+A chat button appears in the bottom-right corner of the page. The dashboard generates this snippet pre-filled under any agent's **Widget** tab.
+
+<Warning>
+	The package is **scoped** — `@openmic/openmic-chat-widget`. The unscoped name
+	`openmic-chat-widget` has no published versions, so a script URL without the
+	`@openmic/` prefix will 404.
+</Warning>
+
+<Note>
+	The chat widget identifies agents with `bot-uid`, while the [voice
+	widget](/web-calls/voice-widget) uses `assistant-id`. Both take the same
+	agent UID — only the attribute name differs.
+</Note>
+
+### Complete working page
+
+<Accordion title="Full HTML example">
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support</title>
+</head>
+<body>
+    <h1>Support</h1>
+    <p>Questions? Use the chat button in the corner.</p>
+
+    <openmic-chat-widget
+        bot-uid="your-agent-uid"
+        public-api-key="omic_pub_your_public_key"
+        title="Chat with us"
+        status-text="Online now"
+        placeholder="Ask a detailed question...">
+    </openmic-chat-widget>
+
+    <script src="https://unpkg.com/@openmic/openmic-chat-widget@latest/widget/widget-standalone.js"></script>
+</body>
+</html>
+```
+</Accordion>
+
+## Attributes
+
+| Attribute | Required | Default | Description |
+| --- | --- | --- | --- |
+| `bot-uid` | **Yes** | — | UID of the agent to chat with. Required unless you use `bot-id`. |
+| `bot-id` | — | — | Numeric agent ID, an alternative to `bot-uid`. |
+| `public-api-key` | **Yes** | — | Your organization's public key (`omic_pub_...`). Never a secret key. |
+| `title` | No | `OpenMic Agent` | Heading shown at the top of the chat panel. |
+| `status-text` | No | `Online now` | Status line under the title. |
+| `placeholder` | No | `Ask a detailed question...` | Placeholder text in the message input. |
+| `api-base` | No | `https://api.openmic.ai/v1` | API base URL. Override only for local development. |
+
+<Note>
+	Every attribute also accepts a `data-` prefix (`data-bot-uid`,
+	`data-public-api-key`, and so on) for stricter HTML validators. The
+	unprefixed form takes precedence when both are present.
+</Note>
+
+<Warning>
+	`subtitle` and `primary-color` are **not supported** by the current build.
+	They appear in the package README and in the dashboard's generated snippet,
+	but the widget never reads them — setting either has no effect.
+</Warning>
+
+Unlike the voice widget, the chat widget has no demo fallback. If `bot-uid` and `bot-id` are both missing it logs `Missing bot-uid or bot-id attribute` and disables itself rather than connecting to something unexpected.
+
+## Using it in React
+
+The chat widget watches the DOM for elements being added and removed, so it initializes correctly in React and other SPAs with no extra work. Render the script and the element together:
+
+```jsx
+import { useEffect } from "react";
+
+const WIDGET_SRC =
+  "https://unpkg.com/@openmic/openmic-chat-widget@latest/widget/widget-standalone.js";
+
+export default function ChatWidget() {
+  useEffect(() => {
+    if (document.querySelector(`script[src="${WIDGET_SRC}"]`)) return;
+    const script = document.createElement("script");
+    script.src = WIDGET_SRC;
+    document.body.appendChild(script);
+  }, []);
+
+  return (
+    <openmic-chat-widget
+      bot-uid="your-agent-uid"
+      public-api-key="omic_pub_your_public_key"
+      title="Chat with us"
+    />
+  );
+}
+```
+
+<Tip>
+	Re-loading the script is a no-op and multiple widgets on one page work
+	independently, so you do not need to coordinate mounting the way the [voice
+	widget](/web-calls/voice-widget#using-it-in-react) requires. When the
+	element unmounts, the widget tears down its listeners and cancels in-flight
+	requests automatically.
+</Tip>
+
+### TypeScript
+
+```ts
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "openmic-chat-widget": {
+        "bot-uid"?: string;
+        "bot-id"?: string;
+        "public-api-key"?: string;
+        title?: string;
+        "status-text"?: string;
+        placeholder?: string;
+        "api-base"?: string;
+      };
+    }
+  }
+}
+
+export {};
+```
+
+## Behaviour worth knowing
+
+<AccordionGroup>
+	<Accordion title="Sessions survive page reloads" icon="clock-rotate-left">
+		The active chat session is persisted in `localStorage`, so a visitor who
+		reloads or navigates keeps their conversation. Sessions that have expired
+		server-side recover gracefully with a "session expired" message rather
+		than failing silently.
+	</Accordion>
+
+	<Accordion title="Retries and cancellation" icon="rotate">
+		Transient network errors and 5xx responses are retried up to three times
+		with exponential backoff (250ms, 500ms, 1000ms). 4xx responses — bad key,
+		wrong agent UID — fail immediately without retrying. Closing the panel
+		aborts any in-flight request, so a message the visitor never sees is not
+		billed.
+	</Accordion>
+
+	<Accordion title="Lazy rendering" icon="feather">
+		The chat panel's DOM is only built the first time a visitor clicks the
+		launcher, so pages where nobody opens chat pay almost nothing for having
+		the widget present.
+	</Accordion>
+
+	<Accordion title="Browser support" icon="globe">
+		Chrome 89+, Firefox 85+, Safari 14+, Edge 89+. The widget checks at load
+		time for `fetch`, `ReadableStream`, `MutationObserver`, `AbortController`,
+		and Shadow DOM; if any are missing it logs a clear error and disables
+		itself instead of half-working.
+	</Accordion>
+
+	<Accordion title="Local development" icon="laptop-code">
+		To point the widget at a backend running on your machine, set `api-base`:
+
+```html
+<openmic-chat-widget
+    bot-uid="your-agent-uid"
+    public-api-key="omic_pub_your_public_key"
+    api-base="http://localhost:3005/v1">
+</openmic-chat-widget>
+```
+
+		Unlike the voice widget, the chat widget works normally when served from
+		`localhost`.
+	</Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| No chat button; console says `Missing bot-uid or bot-id attribute` | Neither identifier was set | Add `bot-uid` with your agent's UID |
+| Script 404s | Unscoped package name | Use `@openmic/openmic-chat-widget` in the URL |
+| Button appears, messages fail with 401 | Wrong or inactive key | Confirm the key starts with `omic_pub_` and the agent belongs to the same organization |
+| `subtitle` or `primary-color` does nothing | Not supported by the current build | Use `status-text` for a second line; colors are not yet configurable |
+| Nothing at all, console mentions unsupported browser | Missing required browser features | Test on a current version of a supported browser |
+
+<Tip>
+	All widget logs are prefixed with `[openmic-chat-widget]`, so filtering the
+	console by that string shows exactly what happened.
+</Tip>
