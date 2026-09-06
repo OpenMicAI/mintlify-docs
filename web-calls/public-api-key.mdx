@@ -1,0 +1,83 @@
+---
+title: "Public API Key"
+subtitle: "The only OpenMic credential that is safe to put in a web page"
+description: "How OpenMic public API keys differ from secret keys, how to fetch yours, and how the browser widgets use them."
+---
+
+OpenMic issues two kinds of API key. Client-side code — anything a visitor's browser downloads — must use the **public** key.
+
+<Warning>
+	**Never put a secret key in a browser.** A secret key can create agents,
+	place outbound phone calls, read every call transcript, and spend your
+	account balance. Anything you paste into a widget snippet, a React
+	component, or any other front-end file is readable by every visitor via
+	"View source". If you have already shipped a secret key to a web page,
+	rotate it in the dashboard now.
+</Warning>
+
+## Public vs secret at a glance
+
+| | Public key | Secret key |
+| --- | --- | --- |
+| Prefix | `omic_pub_` | `omic_` |
+| Safe in front-end code | **Yes** — that is its purpose | **No** — server-side only |
+| Used by | Voice widget, chat widget | REST API, webhooks, back-end integrations |
+| Can start a browser call | Yes | — |
+| Can place outbound phone calls | No | Yes |
+| Can create, edit, or delete agents | No | Yes |
+| Can read call logs and transcripts | No | Yes |
+| How many per organization | One | Many |
+
+<Info>
+	Telling them apart is easy: the public key has `pub` in the prefix. If your
+	key reads `omic_pub_9f84...` it is public and safe to embed. If it reads
+	`omic_9f84...` it is secret — keep it on your server.
+</Info>
+
+## Get your public key
+
+<Steps>
+	<Step title="Open your agent in the dashboard">
+		Select the agent you want to embed.
+	</Step>
+
+	<Step title="Go to the Widget tab">
+		The generated voice and chat snippets already contain your public key and
+		the agent's UID, so copying a snippet is usually all you need to do.
+	</Step>
+</Steps>
+
+You can also read the key directly from the **API Key** page in the dashboard, where public keys are shown in full (secret keys are masked after creation).
+
+<Note>
+	Your organization has exactly one public key. It is created automatically the
+	first time it is needed, so there is nothing to set up.
+</Note>
+
+## How the widgets use it
+
+Both widgets send the public key as a bearer token to the OpenMic API:
+
+```http
+POST https://api.openmic.ai/v1/test-call
+Authorization: Bearer omic_pub_3f2a91c4d7e05b8a6c1f4e2d9b7a3c5e8f01
+Content-Type: application/json
+```
+
+OpenMic resolves the key to your organization and returns a short-lived room token that the browser uses to join the call. You do not need to write any of this yourself — the widgets handle the exchange — but it explains why the public key is enough for a call and useless for anything else.
+
+## What a leaked public key can do
+
+The public key is designed to be published, so treat a "leak" as expected rather than an incident. Its blast radius is limited to starting browser conversations with your agents, which someone could do anyway by visiting your site.
+
+That said, the calls it starts are billed to your account, so the usual abuse controls apply:
+
+-   Keep widgets on pages you control rather than handing the snippet out.
+-   Watch usage in the dashboard if you embed on a high-traffic public page.
+-   Rotate the key from the dashboard if you see traffic you cannot explain.
+
+<Tip>
+	Rotating the public key immediately invalidates the old one, so update any
+	embedded snippets at the same time — otherwise widgets in the wild will stop
+	connecting.
+</Tip>

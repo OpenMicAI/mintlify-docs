@@ -1,0 +1,83 @@
+---
+title: "Web Calls"
+subtitle: "Let visitors talk to your agent directly from a browser — no phone number required"
+description: "Overview of OpenMic's browser-based calling: the voice widget, the chat widget, and shareable agent links."
+---
+
+Everything in the Agents and Campaign sections assumes a phone call. OpenMic also runs the same agents **inside a web browser** over WebRTC — a visitor clicks a button on your site and starts talking, with no phone number, no carrier, and no telephony setup.
+
+<Info>
+	The agent is the same object either way. A single agent you have already
+	built and tested can take phone calls and browser calls at the same time —
+	same prompt, same voice, same tools, same knowledge base, same webhooks.
+</Info>
+
+## Three ways to get an agent into a browser
+
+<CardGroup cols={3}>
+	<Card title="Voice widget" icon="microphone" href="/web-calls/voice-widget">
+		A drop-in voice call button for your website. One script tag.
+	</Card>
+
+	<Card title="Chat widget" icon="comments" href="/web-calls/chat-widget">
+		A floating text-chat panel backed by the same agent. One script tag.
+	</Card>
+
+	<Card title="Share link" icon="link" href="/web-calls/share-link">
+		A public URL anyone can open and talk to your agent. Zero integration.
+	</Card>
+</CardGroup>
+
+### Which one should I use?
+
+| | Voice widget | Chat widget | Share link |
+| --- | --- | --- | --- |
+| Modality | Voice | Text | Voice **and** text |
+| Integration effort | One script tag | One script tag | None — copy a URL |
+| Lives on | Your website | Your website | An OpenMic-hosted page |
+| Needs a public API key | Yes | Yes | No |
+| Good for | Demos, support lines, "talk to sales" | Support deflection, lead capture | Sharing an agent with a client or teammate |
+| Lifetime | Permanent | Permanent | Expires after 24 hours |
+
+<Tip>
+	**Just want to show someone your agent?** Use a
+	[share link](/web-calls/share-link). It takes one click in the dashboard and
+	requires no code at all.
+</Tip>
+
+## Before you start
+
+Both widgets are client-side embeds, so they authenticate with your organization's **public** API key — never your secret key.
+
+<Warning>
+	Never paste a secret API key (`omic_...`) into a web page. Anything in a
+	widget snippet is visible to every visitor. Client-side embeds use the
+	public key (`omic_pub_...`) only. See [Public API
+	key](/web-calls/public-api-key).
+</Warning>
+
+You will need:
+
+<Steps>
+	<Step title="An agent">
+		Any agent from your dashboard. Copy its **UID** — the widgets identify
+		agents by UID, not by name or numeric ID.
+	</Step>
+
+	<Step title="Your public API key">
+		Found in the dashboard, or via `GET /api-keys/public-key`. It starts with
+		`omic_pub_`. See [Public API key](/web-calls/public-api-key).
+	</Step>
+
+	<Step title="An HTTPS page">
+		Browsers only grant microphone access on secure origins. `https://` and
+		`http://localhost` both count as secure — but note the voice widget has a
+		[known localhost limitation](/web-calls/voice-widget#requirements-and-limitations).
+	</Step>
+</Steps>
+
+<Note>
+	The dashboard generates ready-to-paste snippets for both widgets, filled in
+	with the selected agent's UID and your public key. Open any agent and choose
+	the **Widget** tab.
+</Note>

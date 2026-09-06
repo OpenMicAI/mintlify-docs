@@ -1,0 +1,266 @@
+---
+title: "Voice Widget"
+subtitle: "Add a browser voice call button to your website with one script tag"
+description: "Embed the OpenMic voice widget so visitors can talk to your AI agent from any web page — HTML and React setup, attribute reference, and troubleshooting."
+---
+
+The voice widget puts a call button on your site. A visitor clicks it, grants microphone access, and is talking to your agent over WebRTC — no phone number involved.
+
+<Info>
+	The widget is fully self-contained. The script loads everything it needs
+	(React, ReactDOM, and the LiveKit browser client) from the CDN at runtime,
+	so it works on a plain HTML page with no build step and no dependencies of
+	your own.
+</Info>
+
+## Quick start
+
+Paste this before the closing `</body>` tag of any page, replacing the agent UID and public key with your own:
+
+```html
+<openmic-widget
+    assistant-id="your-agent-uid"
+    public-api-key="omic_pub_your_public_key"
+    title="OpenMic Voice Call"
+    subtitle="Start a voice conversation with our AI bot"
+    type="floating">
+</openmic-widget>
+
+<script src="https://unpkg.com/openmic-voice-widget@latest/widget/widget-standalone.js"></script>
+```
+
+That is the whole integration. The dashboard generates this snippet pre-filled for you under any agent's **Widget** tab.
+
+<Warning>
+	Always set `assistant-id` and `public-api-key` explicitly. If you omit them
+	the widget falls back to a demo agent and demo key baked into the package —
+	your visitors would connect to a demo bot instead of yours.
+</Warning>
+
+### Complete working page
+
+<Accordion title="Full HTML example">
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk to our AI assistant</title>
+</head>
+<body>
+    <h1>Talk to our AI assistant</h1>
+    <p>Click the button to start a voice call.</p>
+
+    <openmic-widget
+        assistant-id="your-agent-uid"
+        public-api-key="omic_pub_your_public_key"
+        title="OpenMic Voice Call"
+        subtitle="Start a voice conversation with our AI bot"
+        type="floating">
+    </openmic-widget>
+
+    <script src="https://unpkg.com/openmic-voice-widget@latest/widget/widget-standalone.js"></script>
+</body>
+</html>
+```
+</Accordion>
+
+## Attributes
+
+| Attribute | Required | Default | Description |
+| --- | --- | --- | --- |
+| `assistant-id` | **Yes** | *demo agent* | UID of the agent to call. Copy it from the agent's page in the dashboard. |
+| `public-api-key` | **Yes** | *demo key* | Your organization's public key (`omic_pub_...`). Never a secret key. |
+| `type` | No | `floating` | Display style — `floating` or `fixed`. See [Display types](#display-types). |
+| `title` | No | `OpenMic Voice Call` | Heading shown on the widget. |
+| `subtitle` | No | `Start a voice conversation with our AI bot` | Supporting line under the title. |
+
+<Note>
+	`assistant-id` and `public-api-key` are marked required because you should
+	always set them, not because the widget errors without them — it silently
+	falls back to demo values instead.
+</Note>
+
+### Display types
+
+<Tabs>
+	<Tab title="floating">
+		The default. The widget renders as a compact launcher that stays
+		collapsed until the visitor clicks it, then expands into the call panel.
+		Best for adding a call option to an existing page without changing the
+		layout.
+
+```html
+<openmic-widget
+    assistant-id="your-agent-uid"
+    public-api-key="omic_pub_your_public_key"
+    type="floating">
+</openmic-widget>
+```
+	</Tab>
+
+	<Tab title="fixed">
+		The call panel is rendered open immediately and stays open. Best for a
+		dedicated "talk to us" page where the call is the point of the page.
+
+```html
+<openmic-widget
+    assistant-id="your-agent-uid"
+    public-api-key="omic_pub_your_public_key"
+    type="fixed">
+</openmic-widget>
+```
+	</Tab>
+</Tabs>
+
+<Warning>
+	`theme`, `position`, and `auto-start` are accepted by the current build but
+	have no effect on rendering. They appear in the package README, so they are
+	easy to find and easy to trust — but setting them changes nothing today.
+</Warning>
+
+## Using it in React
+
+The widget is a plain custom element, so it works in React — but it needs one extra step that plain HTML does not.
+
+<Warning>
+	**The widget scans the page for `openmic-widget` elements exactly once, when
+	the script loads.** In a React app your element is rendered *after* that
+	scan, so a bare copy-paste of the HTML snippet silently does nothing — the
+	console logs `No widget elements found`. Load the script from an effect,
+	after the element is mounted, as shown below.
+</Warning>
+
+```jsx
+import { useEffect } from "react";
+
+const WIDGET_SRC =
+  "https://unpkg.com/openmic-voice-widget@latest/widget/widget-standalone.js";
+
+export default function VoiceWidget() {
+  useEffect(() => {
+    const existing = document.querySelector(`script[src="${WIDGET_SRC}"]`);
+
+    if (!existing) {
+      // First mount: loading the script also initializes any element already
+      // in the DOM — which ours is, because effects run after commit.
+      const script = document.createElement("script");
+      script.src = WIDGET_SRC;
+      document.body.appendChild(script);
+    } else if (window.OpenMicWidget) {
+      // Re-mount: the script is cached and will not re-scan on its own.
+      window.OpenMicWidget.init();
+    }
+  }, []);
+
+  return (
+    <openmic-widget
+      assistant-id="your-agent-uid"
+      public-api-key="omic_pub_your_public_key"
+      title="OpenMic Voice Call"
+      subtitle="Start a voice conversation with our AI bot"
+      type="floating"
+    />
+  );
+}
+```
+
+<Note>
+	`window.OpenMicWidget.init()` re-scans the **whole page**. If you render
+	several widgets, mount them together rather than one at a time, or an
+	already-initialized widget can be rendered twice.
+</Note>
+
+### TypeScript
+
+`openmic-widget` is not a known JSX element, so declare it once:
+
+```ts
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "openmic-widget": {
+        "assistant-id"?: string;
+        "public-api-key"?: string;
+        title?: string;
+        subtitle?: string;
+        type?: "floating" | "fixed";
+      };
+    }
+  }
+
+  interface Window {
+    OpenMicWidget?: { init: () => void; version: string };
+  }
+}
+
+export {};
+```
+
+<Note>
+	Load the widget from the CDN script above in every environment, React
+	included. It ships as a browser bundle rather than an ES module, so there is
+	no component to import and no package to add to your dependencies.
+</Note>
+
+## Requirements and limitations
+
+<AccordionGroup>
+	<Accordion title="Testing on localhost" icon="triangle-exclamation">
+		**The widget does not work when served from `localhost` or
+		`127.0.0.1`.** On those hostnames it tries to load its stylesheet from a
+		relative path that does not exist in your project. The stylesheet fails,
+		initialization aborts before the widget renders, and the console shows
+		`Failed to initialize`.
+
+		To test locally, serve the page on a hostname that is not `localhost` —
+		your machine's LAN IP (`http://192.168.1.x:3000`) works, as does any
+		tunnelling tool that gives you a public hostname. Deployed sites are
+		unaffected.
+	</Accordion>
+
+	<Accordion title="Browser and permissions" icon="microphone">
+		Requires a modern browser (Chrome 60+, Firefox 55+, Safari 12+, Edge
+		79+) with WebRTC and microphone support. Browsers only grant microphone
+		access on secure origins, so the page must be served over HTTPS in
+		production. The visitor sees a permission prompt on the first call.
+	</Accordion>
+
+	<Accordion title="What the script loads" icon="download">
+		If they are not already present on the page, the widget loads React 18,
+		ReactDOM 18, and `livekit-client` from `unpkg.com`, plus its own
+		stylesheet. If your site sets a Content Security Policy, allow
+		`unpkg.com` for `script-src` and `style-src`, and the OpenMic API and
+		LiveKit hosts for `connect-src`.
+
+		Pages that already run React are fine — the widget reuses the React
+		already on the page and otherwise loads its own copy.
+	</Accordion>
+
+	<Accordion title="Pinning a version" icon="tag">
+		The snippets above use `@latest`, which always serves the newest
+		release. For production you may prefer to pin an exact version so a new
+		release cannot change behaviour without you:
+
+```html
+<script src="https://unpkg.com/openmic-voice-widget@1.0.26/widget/widget-standalone.js"></script>
+```
+	</Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| Nothing renders; console says `No widget elements found` | The script ran before your element existed — usually a React or other SPA | Load the script from an effect and call `window.OpenMicWidget.init()`, as shown [above](#using-it-in-react) |
+| Nothing renders; console says `Failed to initialize` | Serving from `localhost` or `127.0.0.1` | Use a LAN IP or a tunnel hostname instead |
+| Widget renders but the call fails immediately | Invalid or wrong-type key | Confirm the key starts with `omic_pub_`, and that the agent UID belongs to the same organization |
+| Visitor connects to an unfamiliar bot | `assistant-id` or `public-api-key` missing | Set both explicitly — blank attributes fall back to demo values |
+| No audio and no permission prompt | Page is not on a secure origin | Serve over HTTPS |
+
+<Tip>
+	The widget logs every step of startup to the browser console, prefixed with
+	a microphone emoji. Opening the console is the fastest way to see how far it
+	got.
+</Tip>

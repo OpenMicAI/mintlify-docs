@@ -1,0 +1,92 @@
+---
+title: "Share Link"
+subtitle: "Send someone a URL and let them talk to your agent — no embedding, no code"
+description: "Generate a public OpenMic share link so anyone can voice or text chat with your agent from a hosted page, with no integration at all."
+---
+
+A share link is the fastest way to put an agent in front of someone. You generate a URL in the dashboard, send it, and the recipient opens it and starts talking — no account, no login, no code on your side.
+
+<Info>
+	This is the right tool for demos, client reviews, and internal QA. For
+	something permanent on your own website, embed the [voice
+	widget](/web-calls/voice-widget) or [chat
+	widget](/web-calls/chat-widget) instead.
+</Info>
+
+## Create a link
+
+<Steps>
+	<Step title="Open the agent">
+		Select the agent you want to share in the dashboard.
+	</Step>
+
+	<Step title="Click Share">
+		The **Share** button in the agent header opens the share dialog and
+		generates a link.
+	</Step>
+
+	<Step title="Copy and send it">
+		The dialog shows the URL, a countdown to expiry, and a **Regenerate**
+		button. Copy the link and send it to whoever needs it.
+	</Step>
+</Steps>
+
+The link looks like this:
+
+```
+https://app.openmic.ai/share/omshare_xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+## What the recipient gets
+
+Opening the link loads a hosted page showing your agent's name and organization, with two ways to talk to it:
+
+<CardGroup cols={2}>
+	<Card title="Voice" icon="microphone">
+		A live voice call in the browser, the same experience as the voice
+		widget.
+	</Card>
+
+	<Card title="Chat" icon="comments">
+		A text conversation with the same agent.
+	</Card>
+</CardGroup>
+
+Recipients need no OpenMic account to use either mode. Calls placed through a share link run against your agent and are billed to your organization, exactly like any other call.
+
+<Warning>
+	**Anyone with the link can talk to your agent, and can also clone it.** The
+	share page offers a "clone this agent" action that copies the agent's
+	configuration into the visitor's own OpenMic account after they sign in.
+	Treat a share link as public: send it only to people you would be willing to
+	hand a copy of the agent to.
+</Warning>
+
+## Expiry and limits
+
+| | |
+| --- | --- |
+| Link lifetime | **24 hours** from generation |
+| Links per agent | 5 new links per agent per 24 hours |
+| Reuse | Requesting a link again returns the existing one while it is still valid |
+| Regenerating | **Regenerate** issues a fresh link and invalidates the previous one |
+
+<Note>
+	Because links expire after a day, a share link is not a substitute for
+	embedding. If you find yourself regenerating one repeatedly for the same
+	page, that is a sign you want a [widget](/web-calls/voice-widget).
+</Note>
+
+An expired or revoked link shows a clear "this share link has expired" message rather than failing silently, so recipients know to ask you for a new one.
+
+## Choosing between a share link and a widget
+
+| | Share link | Widget |
+| --- | --- | --- |
+| Setup | One click, no code | One script tag |
+| Lives on | An OpenMic-hosted page | Your own site |
+| Lifetime | 24 hours | Permanent |
+| Modality | Voice and chat | One per widget |
+| Needs a public API key | No | Yes |
+| Recipient can clone the agent | Yes | No |
+| Best for | Demos, reviews, one-off tests | Production traffic |
