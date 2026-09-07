@@ -28,7 +28,9 @@ A web call is registered first, then joined — the same shape as creating a pho
 ```ts
 import { OpenMicClient, OpenMicWebClient } from "@openmic/web-sdk";
 
-const openmic = new OpenMicClient("omic_pub_...");
+// Keep the key in your env/config, e.g. import.meta.env.VITE_OPENMIC_PUBLIC_KEY
+// (Vite) or process.env.NEXT_PUBLIC_OPENMIC_KEY (Next.js)
+const openmic = new OpenMicClient(OPENMIC_PUBLIC_KEY);
 const webClient = new OpenMicWebClient();
 
 // 1. Register the call
