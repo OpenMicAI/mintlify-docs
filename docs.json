@@ -59,6 +59,7 @@
             "pages": [
               "web-calls/introduction",
               "web-calls/public-api-key",
+              "web-calls/web-sdk",
               "web-calls/voice-widget",
               "web-calls/chat-widget",
               "web-calls/share-link"

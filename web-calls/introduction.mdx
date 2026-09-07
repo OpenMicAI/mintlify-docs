@@ -12,9 +12,14 @@ Everything in the Agents and Campaign sections assumes a phone call. OpenMic als
 	same prompt, same voice, same tools, same knowledge base, same webhooks.
 </Info>
 
-## Three ways to get an agent into a browser
+## Four ways to get an agent into a browser
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
+	<Card title="Web SDK" icon="code" href="/web-calls/web-sdk">
+		Build calls into your own UI — live transcription, controls, and per-call
+		dynamic variables.
+	</Card>
+
 	<Card title="Voice widget" icon="microphone" href="/web-calls/voice-widget">
 		A drop-in voice call button for your website. One script tag.
 	</Card>
@@ -30,14 +35,14 @@ Everything in the Agents and Campaign sections assumes a phone call. OpenMic als
 
 ### Which one should I use?
 
-| | Voice widget | Chat widget | Share link |
-| --- | --- | --- | --- |
-| Modality | Voice | Text | Voice **and** text |
-| Integration effort | One script tag | One script tag | None — copy a URL |
-| Lives on | Your website | Your website | An OpenMic-hosted page |
-| Needs a public API key | Yes | Yes | No |
-| Good for | Demos, support lines, "talk to sales" | Support deflection, lead capture | Sharing an agent with a client or teammate |
-| Lifetime | Permanent | Permanent | Expires after 24 hours |
+| | Web SDK | Voice widget | Chat widget | Share link |
+| --- | --- | --- | --- | --- |
+| Modality | Voice | Voice | Text | Voice **and** text |
+| Integration effort | npm package, your own UI | One script tag | One script tag | None — copy a URL |
+| Lives on | Your product | Your website | Your website | An OpenMic-hosted page |
+| Needs a public API key | Yes | Yes | Yes | No |
+| Good for | AI interviewers, in-app copilots, any custom call UI | Demos, support lines, "talk to sales" | Support deflection, lead capture | Sharing an agent with a client or teammate |
+| Lifetime | Permanent | Permanent | Permanent | Expires after 24 hours |
 
 <Tip>
 	**Just want to show someone your agent?** Use a
