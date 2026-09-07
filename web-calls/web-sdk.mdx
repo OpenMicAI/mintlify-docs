@@ -86,28 +86,21 @@ await webClient.startAudioPlayback(); // from a tap handler, if autoplay is bloc
 
 ## After the call
 
-The `call_id` from `create-web-call` is the same id used by the calls API, so post-call retrieval needs no correlation tricks:
+The `call_id` from `create-web-call` is the same id used by the calls API, so post-call retrieval needs no correlation tricks — store it when you start the call, then fetch from **your backend** with your secret key:
 
-```ts
-const details = await openmic.getCall(call.call_id);
-// details.transcript, details.recording_url, details.call_analysis
+```
+GET https://api.openmic.ai/v2/call/{call_id}
+Authorization: Bearer omic_...
 ```
 
-If the agent has a post-call webhook configured, web calls fire it too, with `dynamicVariables` (including anything you passed at start) echoed in the payload.
+The response carries the transcript, `recording_url`, and call analysis. If the agent has a post-call webhook configured, web calls fire it too, with `dynamicVariables` (including anything you passed at start) echoed in the payload.
 
-## Managing agents from code
-
-`OpenMicClient` also wraps agent CRUD — use it server-side with a private key:
-
-```ts
-const agent = await openmic.createAgent({
-	name: "Interviewer",
-	prompt: "You are interviewing {{candidate_name}} for the {{role}} position...",
-});
-
-await openmic.updateAgent(agent.uid, { prompt: "..." });
-await openmic.listCalls({ agent_uid: agent.uid, call_type: "webcall" });
-```
+<Note>
+	The Web SDK deliberately covers only what is safe to run in a browser with a
+	public key: registering and joining web calls. Reading call logs and
+	creating or updating agents require your secret key — do those from your
+	backend via the REST API (a server SDK is planned).
+</Note>
 
 ## Script tag (no build step)
 
