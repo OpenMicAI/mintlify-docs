@@ -1,0 +1,125 @@
+---
+title: "Web SDK"
+subtitle: "Build browser calls with your own UI — live transcription, call controls, and per-call dynamic variables"
+description: "Use @openmic/web-sdk to embed OpenMic voice calls in your own product: start and stop calls, render live transcripts, personalize the prompt per call, and fetch the transcript and recording afterwards."
+---
+
+The widgets are drop-in bubbles for a website. When you are building a **product** around a voice call — an AI interviewer, an in-app copilot, a guided intake flow — you need your own UI: your own buttons, your own transcript pane, your own loading and error states. That is what the Web SDK is for.
+
+```bash
+npm install @openmic/web-sdk
+```
+
+## How a web call starts
+
+A web call is registered first, then joined — the same shape as creating a phone call:
+
+1. `POST /v2/create-web-call` registers the call and returns an `access_token`, the `livekit_url` to connect to, and a `call_id`.
+2. The browser joins with `OpenMicWebClient.startCall`.
+
+<Tip>
+	In production, call `create-web-call` from **your backend** so you decide who
+	can start calls and with which variables. For prototypes you can call it
+	straight from the browser with your public key (`omic_pub_...`).
+</Tip>
+
+## Quickstart
+
+```ts
+import { OpenMicClient, OpenMicWebClient } from "@openmic/web-sdk";
+
+// Keep the key in your env/config, e.g. import.meta.env.VITE_OPENMIC_PUBLIC_KEY
+// (Vite) or process.env.NEXT_PUBLIC_OPENMIC_KEY (Next.js)
+const openmic = new OpenMicClient(OPENMIC_PUBLIC_KEY);
+const webClient = new OpenMicWebClient();
+
+// 1. Register the call
+const call = await openmic.createWebCall({
+	agent_uid: "your-agent-uid",
+	dynamic_variables: {
+		candidate_name: "Ada",
+		role: "Senior Backend Engineer",
+	},
+	customer_id: "attempt-42",
+});
+
+// 2. Join from the browser — call this from a click handler
+await webClient.startCall({
+	accessToken: call.access_token,
+	livekitUrl: call.livekit_url,
+});
+```
+
+`dynamic_variables` are substituted into the agent prompt wherever it references `{{candidate_name}}` or `{{role}}`, so one durable agent serves every call with per-call context — no need to create an agent per call. `customer_id` is your own identifier; it comes back on the call record and the post-call webhook so you can attribute the call to the session that started it.
+
+## Live transcript and call state
+
+```ts
+webClient.on("call_started", () => {}); // connected, mic live
+webClient.on("call_ready", () => {}); // agent audio is up — hide your loader
+webClient.on("call_ended", () => {});
+webClient.on("agent_start_talking", () => {});
+webClient.on("agent_stop_talking", () => {});
+webClient.on("error", (message) => {});
+
+webClient.on("update", (event) => {
+	// event.transcript — the full running transcript, oldest first:
+	// [{ role: "agent" | "user", content: "..." }, ...]
+});
+```
+
+Transcription is on by default for every web call — partial segments stream in as each side speaks, so captions render live rather than at the end of each turn.
+
+## Controls
+
+```ts
+webClient.stopCall();
+webClient.mute();
+webClient.unmute();
+webClient.isMuted();
+webClient.getTranscript(); // same shape as the update event
+await webClient.sendTextMessage("..."); // inject a typed user turn mid-call
+await webClient.startAudioPlayback(); // from a tap handler, if autoplay is blocked
+```
+
+`startCall` also accepts `sampleRate`, `captureDeviceId`, `playbackDeviceId`, and `emitRawAudioSamples` (which streams raw `Float32Array` agent audio via the `audio` event, for visualizations).
+
+## After the call
+
+The `call_id` from `create-web-call` is the same id used by the calls API, so post-call retrieval needs no correlation tricks:
+
+```ts
+const details = await openmic.getCall(call.call_id);
+// details.transcript, details.recording_url, details.call_analysis
+```
+
+If the agent has a post-call webhook configured, web calls fire it too, with `dynamicVariables` (including anything you passed at start) echoed in the payload.
+
+## Managing agents from code
+
+`OpenMicClient` also wraps agent CRUD — use it server-side with a private key:
+
+```ts
+const agent = await openmic.createAgent({
+	name: "Interviewer",
+	prompt: "You are interviewing {{candidate_name}} for the {{role}} position...",
+});
+
+await openmic.updateAgent(agent.uid, { prompt: "..." });
+await openmic.listCalls({ agent_uid: agent.uid, call_type: "webcall" });
+```
+
+## Script tag (no build step)
+
+```html
+<script src="https://unpkg.com/@openmic/web-sdk@latest/dist/web-sdk.standalone.global.js"></script>
+<script>
+	const { OpenMicClient, OpenMicWebClient } = OpenMicSDK;
+</script>
+```
+
+<Warning>
+	Never put a secret key (`omic_...`) in browser code. Use the public key
+	(`omic_pub_...`) client-side, or better, register calls from your backend.
+	See [Public API key](/web-calls/public-api-key).
+</Warning>
