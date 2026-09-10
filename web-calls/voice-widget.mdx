@@ -66,6 +66,30 @@ That is the whole integration. The dashboard generates this snippet pre-filled f
 ```
 </Accordion>
 
+### Installing from npm
+
+The widget is also published to npm as `openmic-voice-widget`, if you would rather serve it from your own bundle than from unpkg:
+
+```bash
+npm i openmic-voice-widget
+```
+
+The install puts the same files under `node_modules/openmic-voice-widget/widget/`:
+
+| File | Use |
+| --- | --- |
+| `widget/widget-standalone.js` | Self-contained build — loads its own dependencies and stylesheet. Use this one. |
+| `widget/widget.js` | Bare build. Needs `React`, `ReactDOM` and `LivekitClient` already on the page, plus `widget/widget.css` linked yourself. |
+| `widget/openmic-sdk.js` | Headless SDK, no widget UI. |
+
+Point the script tag at the local copy instead of the CDN:
+
+```html
+<script src="./node_modules/openmic-voice-widget/widget/widget-standalone.js"></script>
+```
+
+In a bundler, import it for its side effects instead — see [With the npm package](#with-the-npm-package).
+
 ## Attributes
 
 | Attribute | Required | Default | Description |
@@ -198,10 +222,26 @@ declare global {
 export {};
 ```
 
+### With the npm package
+
+If you installed `openmic-voice-widget` rather than loading the CDN script, import the standalone build for its side effects inside the same effect:
+
+```jsx
+useEffect(() => {
+  if (window.OpenMicWidget) {
+    // Re-mount: the module is cached and will not re-scan on its own.
+    window.OpenMicWidget.init();
+  } else {
+    import("openmic-voice-widget/widget/widget-standalone.js");
+  }
+}, []);
+```
+
 <Note>
-	Load the widget from the CDN script above in every environment, React
-	included. It ships as a browser bundle rather than an ES module, so there is
-	no component to import and no package to add to your dependencies.
+	The widget ships as a browser bundle rather than an ES module, so there is no
+	component to import — the import only exists to run the script. Everything
+	else on this page applies unchanged whether you load it from the CDN or from
+	`node_modules`.
 </Note>
 
 ## Requirements and limitations
