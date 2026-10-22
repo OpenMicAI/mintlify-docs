@@ -139,6 +139,7 @@
                 "pages": [
                   "api-reference-v2/phone-numbers/list-numbers",
                   "api-reference-v2/phone-numbers/get-number",
+              "api-reference-v2/phone-numbers/purchase-number",
                   "api-reference-v2/phone-numbers/link-bot",
                   "api-reference-v2/phone-numbers/unlink-bot"
                 ]
