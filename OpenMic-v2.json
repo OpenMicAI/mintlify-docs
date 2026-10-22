@@ -652,7 +652,21 @@
           }
         ]
       },
-      "LinkAgentRequest": {
+      "PurchasePhoneNumberRequest": {
+      "type": "object",
+      "required": [
+        "phone_number"
+      ],
+      "properties": {
+        "phone_number": {
+          "type": "string",
+          "pattern": "^\\+[1-9]\\d{1,14}$",
+          "description": "The exact number to purchase, in E.164 format. There is no availability-search endpoint, so this must be a number already known to be purchasable.",
+          "example": "+14155551234"
+        }
+      }
+    },
+    "LinkAgentRequest": {
         "type": "object",
         "required": ["phone_number_id", "agent_uid", "direction"],
         "properties": {
@@ -2181,6 +2195,56 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/phone-numbers/purchase": {
+      "post": {
+        "operationId": "purchasePhoneNumber",
+        "summary": "Purchase a phone number",
+        "description": "Purchases a phone number into your organization. The number is provisioned through OpenMic's upstream telephony provider and then appears in `GET /v2/phone-numbers`, ready to be linked to an agent.\n\n`phone_number` must be the **exact** number in E.164 format. There is no availability-search endpoint on this API, so the number has to be one you already know to be purchasable; requesting a number that is not available returns `404`.\n\nThis endpoint provisions a billable resource and is not idempotent — call it once per number.",
+        "tags": [
+          "Phone Numbers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchasePhoneNumberRequest"
+              },
+              "example": {
+                "phone_number": "+14155551234"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The purchased phone number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneNumberResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "The requested number is not available for purchase from the upstream provider."
           },
           "429": {
             "$ref": "#/components/responses/TooManyRequests"
